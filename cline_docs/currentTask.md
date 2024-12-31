@@ -43,25 +43,55 @@ Based on the project review and feedback, we need to implement an "opt-in/out" i
    - Added configuration validation
    - Created sample_config.env with documentation
 
-### Phase 4: Security Enhancements (Next Steps)
-1. Improve secret management
-   - Add sample_config.env
-   - Implement password hashing helper
-   - Add external secrets documentation
+### Phase 4: Testing & Validation
+1. Pre-deployment Testing
+   - Test on fresh Ubuntu VM
+   - Verify all scripts run without errors
+   - Confirm Docker container health
+   - Validate upgrade paths
 
-2. Enhance security configurations
-   - Extend Fail2Ban protection
-   - Improve firewall configuration
-   - Add security best practices
+2. Performance Testing
+   - Monitor resource usage
+   - Document hardware recommendations
+   - Test selective installation impact
+   - Verify Watchtower updates
+
+### Phase 5: Security Enhancements
+1. Improve UFW Configuration
+   - Add custom SSH port prompts
+   - Implement port validation
+   - Add user confirmation
+   - Document port requirements
+
+2. Enhance Fail2Ban Protection
+   - Add recommended rules for services
+   - Extend monitoring beyond SSH/Nginx
+   - Implement custom jail configurations
+   - Add log monitoring
+
+3. Improve Authentication Security
+   - Create Authelia password helper script
+   - Add secure password generation
+   - Implement external secrets support
+   - Document security best practices
+
+### Phase 6: Resource Optimization
+1. Performance Improvements
+   - Add resource usage monitoring
+   - Implement usage recommendations
+   - Document optimization strategies
+   - Add container resource limits
 
 ## Next Steps
-1. Test the service selection system thoroughly
-2. Implement security enhancements
-   - Add password hashing helper script
-   - Improve secret management
-   - Extend Fail2Ban protection
-3. Update main installation scripts to use new modular system
-4. Update documentation with new installation process
+1. Begin pre-deployment testing on fresh Ubuntu VM
+2. Create Authelia password helper script:
+   ```bash
+   # Example implementation
+   docker run --rm authelia/authelia:latest authelia hash-password 'MyPlaintextPassword'
+   ```
+3. Add UFW custom port configuration
+4. Implement recommended Fail2Ban rules
+5. Document resource optimization guidelines
 
 ## Related Tasks from Roadmap
 - Service Management > Service catalog implementation
