@@ -1,0 +1,114 @@
+version: '3.8'
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  plex_config:
+    name: plex_config
+  sonarr_config:
+    name: sonarr_config
+  radarr_config:
+    name: radarr_config
+  overseerr_config:
+    name: overseerr_config
+  media:
+    name: media
+    driver_opts:
+      type: none
+      o: bind
+      device: ${MEDIA_DIR:-/opt/media-server/media}
+
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - "32400:32400"
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ}
+      - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM:-}
+    volumes:
+      - plex_config:/config
+      - media:/media
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:32400/web/index.html"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - sonarr_config:/config
+      - media:/media
+    depends_on:
+      plex:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - radarr_config:/config
+      - media:/media
+    depends_on:
+      plex:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - overseerr_config:/config
+    depends_on:
+      plex:
+        condition: service_healthy
+      sonarr:
+        condition: service_healthy
+      radarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5055/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

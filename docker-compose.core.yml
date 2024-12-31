@@ -1,0 +1,88 @@
+version: '3.8'
+
+networks:
+  proxy:
+    name: proxy
+    driver: bridge
+
+volumes:
+  npm_data:
+    name: npm_data
+  npm_ssl:
+    name: npm_ssl
+  npm_db:
+    name: npm_db
+  authelia_config:
+    name: authelia_config
+  authelia_db:
+    name: authelia_db
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    volumes:
+      - npm_data:/data
+      - npm_ssl:/etc/letsencrypt
+      - npm_db:/etc/nginx/proxy-manager/nginx.db
+    networks:
+      - proxy
+    healthcheck:
+      test: ["CMD", "/bin/check-health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  authelia:
+    image: authelia/authelia:latest
+    container_name: authelia
+    restart: unless-stopped
+    volumes:
+      - authelia_config:/config
+      - authelia_db:/var/lib/authelia
+    networks:
+      - proxy
+    environment:
+      - TZ=${TZ}
+    depends_on:
+      nginx-proxy-manager:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: fail2ban
+    restart: unless-stopped
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - /var/log:/var/log:ro
+      - ./fail2ban:/data
+    environment:
+      - TZ=${TZ}
+      - F2B_LOG_TARGET=STDOUT
+      - F2B_LOG_LEVEL=INFO
+      - F2B_DB_PURGE_AGE=7d
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=${TZ}
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 * * * # Update at 4 AM daily
+    command: --schedule "0 0 4 * * *" --cleanup

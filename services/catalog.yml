@@ -1,0 +1,115 @@
+# Monsterr Media Server Service Catalog
+
+version: "1.0"
+
+# Service Groups define logical collections of related services
+service_groups:
+  core:
+    name: "Core Services"
+    description: "Essential services required for basic functionality"
+    required: true
+    services:
+      nginx_proxy_manager:
+        name: "Nginx Proxy Manager"
+        description: "Reverse proxy for managing access to services"
+        image: "jc21/nginx-proxy-manager:latest"
+        required: true
+        ports:
+          - "80:80"
+          - "443:443"
+          - "81:81"
+      
+      authelia:
+        name: "Authelia"
+        description: "Authentication and authorization server"
+        image: "authelia/authelia:latest"
+        required: true
+        depends_on:
+          - nginx_proxy_manager
+
+  media:
+    name: "Media Services"
+    description: "Services for managing and streaming media content"
+    required: false
+    services:
+      plex:
+        name: "Plex Media Server"
+        description: "Media streaming server"
+        image: "lscr.io/linuxserver/plex:latest"
+        required: false
+        ports:
+          - "32400:32400"
+      
+      sonarr:
+        name: "Sonarr"
+        description: "TV series management"
+        image: "lscr.io/linuxserver/sonarr:latest"
+        required: false
+        depends_on:
+          - plex
+      
+      radarr:
+        name: "Radarr"
+        description: "Movie management"
+        image: "lscr.io/linuxserver/radarr:latest"
+        required: false
+        depends_on:
+          - plex
+      
+      overseerr:
+        name: "Overseerr"
+        description: "Media request management"
+        image: "lscr.io/linuxserver/overseerr:latest"
+        required: false
+        depends_on:
+          - plex
+
+  downloads:
+    name: "Download Services"
+    description: "Services for downloading content"
+    required: false
+    services:
+      qbittorrent:
+        name: "qBittorrent"
+        description: "Torrent client"
+        image: "lscr.io/linuxserver/qbittorrent:latest"
+        required: false
+        
+      prowlarr:
+        name: "Prowlarr"
+        description: "Indexer manager"
+        image: "lscr.io/linuxserver/prowlarr:latest"
+        required: false
+      
+      sabnzbd:
+        name: "SABnzbd"
+        description: "Usenet client"
+        image: "lscr.io/linuxserver/sabnzbd:latest"
+        required: false
+
+  extras:
+    name: "Extra Services"
+    description: "Additional utility services"
+    required: false
+    services:
+      portainer:
+        name: "Portainer"
+        description: "Docker management interface"
+        image: "portainer/portainer-ce:latest"
+        required: false
+        ports:
+          - "9000:9000"
+      
+      tautulli:
+        name: "Tautulli"
+        description: "Plex monitoring and statistics"
+        image: "lscr.io/linuxserver/tautulli:latest"
+        required: false
+        depends_on:
+          - plex
+      
+      organizr:
+        name: "Organizr"
+        description: "Services dashboard"
+        image: "organizr/organizr:latest"
+        required: false
