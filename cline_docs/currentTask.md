@@ -43,7 +43,26 @@ Based on the project review and feedback, we need to implement an "opt-in/out" i
    - Added configuration validation
    - Created sample_config.env with documentation
 
-### Phase 4: Testing & Validation
+### Phase 4: User Experience Enhancement
+1. Post-Installation Verification
+   - Add container health check system
+   - Implement status summary display
+   - Create service URL overview
+   - Add troubleshooting guidance
+
+2. Interactive Configuration
+   - Group related configuration prompts
+   - Add context and explanations
+   - Implement real-time validation
+   - Add confirmation messages
+
+3. Error Handling
+   - Add descriptive error messages
+   - Implement graceful failure handling
+   - Add recovery suggestions
+   - Create error logging system
+
+### Phase 5: Testing & Validation
 1. Pre-deployment Testing
    - Test on fresh Ubuntu VM
    - Verify all scripts run without errors
@@ -83,15 +102,43 @@ Based on the project review and feedback, we need to implement an "opt-in/out" i
    - Add container resource limits
 
 ## Next Steps
-1. Begin pre-deployment testing on fresh Ubuntu VM
-2. Create Authelia password helper script:
+1. Implement post-installation health checks:
    ```bash
    # Example implementation
-   docker run --rm authelia/authelia:latest authelia hash-password 'MyPlaintextPassword'
+   check_container() {
+     local container=$1
+     local status=$(docker inspect -f '{{.State.Health.Status}}' "$container" 2>/dev/null)
+     if [ "$status" = "healthy" ]; then
+       echo "[OK] $container"
+     else
+       echo "[FAIL] $container (Status: $status)"
+     fi
+   }
    ```
-3. Add UFW custom port configuration
-4. Implement recommended Fail2Ban rules
-5. Document resource optimization guidelines
+
+2. Create service URL summary:
+   ```text
+   Setup Complete!
+   
+   Access your services:
+   -------------------------------------------------
+   Nginx Proxy Manager:  http://<YOUR_IP>:81
+   Portainer:           http://<YOUR_IP>:9000
+   Plex:                http://<YOUR_IP>:32400/web
+   Authelia:            https://auth.<YOUR_DOMAIN>
+   ```
+
+3. Enhance configuration prompts:
+   - Group domain-related settings
+   - Add Plex claim token explanation
+   - Include security recommendations
+   - Add backup schedule options
+
+4. Implement error handling improvements:
+   - Add dependency checks
+   - Validate configuration values
+   - Create recovery procedures
+   - Add detailed error messages
 
 ## Related Tasks from Roadmap
 - Service Management > Service catalog implementation
