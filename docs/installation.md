@@ -121,12 +121,37 @@ This guide provides detailed instructions for installing and configuring the Mon
    - Plex: http://localhost:32400/web
 
 2. **Configure Media Libraries**
-   ```bash
-   # Create media directories
-   mkdir -p /opt/media-server/media/{movies,tv,music,books}
-   
-   # Set permissions
-   chown -R $PUID:$PGID /opt/media-server/media
+   During installation, you'll be prompted to specify custom locations for your media and downloads folders. This allows you to:
+   - Use an external drive (e.g., `/mnt/externaldrive/media`)
+   - Use a NAS mount (e.g., `/mnt/nas/media`)
+   - Use any custom location on your system
+
+   Default locations if not specified:
+   - Media: `/opt/media-server/media`
+   - Downloads: `/opt/media-server/downloads`
+
+   Important considerations:
+   - Ensure the specified directories exist and are mounted before installation
+   - The paths must be accessible and writable
+   - For external drives, ensure they are mounted at boot (via /etc/fstab)
+   - Permissions will be set automatically using your PUID/PGID
+
+   The following subdirectories will be created in your media location:
+   ```
+   media/
+   ├── movies/
+   ├── tv/
+   ├── music/
+   ├── books/
+   ├── audiobooks/
+   └── podcasts/
+   ```
+
+   And in your downloads location:
+   ```
+   downloads/
+   ├── complete/
+   └── incomplete/
    ```
 
 3. **Security Setup**

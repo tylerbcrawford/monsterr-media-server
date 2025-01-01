@@ -5,6 +5,19 @@ All notable changes to Monsterr Media Server will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2024-01-25
+
+### Added
+- Custom media and downloads location support
+  - Users can now specify custom paths during installation
+  - Support for external drives and NAS mounts
+  - Automatic directory structure creation
+  - Updated documentation with path configuration guide
+- Enhanced directory management
+  - Improved permission handling
+  - Structured downloads directory with complete/incomplete folders
+  - Better organization of media subdirectories
+
 ## [1.0.0] - 2024-01-20
 
 ### Added
