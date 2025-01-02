@@ -276,19 +276,132 @@ check_docker() {
     docker network ls --format "  {{.Name}}" 2>/dev/null || log_error "Failed to list Docker networks"
 }
 
+# Function to show usage
+show_usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo
+    echo "Options:"
+    echo "  --check-only     Only check system requirements"
+    echo "  --network        Only check network configuration"
+    echo "  --security       Only check security settings"
+    echo "  --permissions    Only check directory permissions"
+    echo "  --services       Only check service configuration"
+    echo "  --all           Run all checks (default)"
+    echo "  --help          Show this help message"
+}
+
+# Function to check system requirements
+check_requirements() {
+    log_section "System Requirements Check"
+    
+    # Check OS version
+    source /etc/os-release
+    log_info "Operating System: $PRETTY_NAME"
+    
+    # Check CPU
+    local cpu_cores
+    cpu_cores=$(nproc)
+    if [ "$cpu_cores" -lt 2 ]; then
+        log_error "Insufficient CPU cores: $cpu_cores (minimum: 2)"
+    else
+        log_info "CPU cores: $cpu_cores"
+    fi
+    
+    # Check RAM
+    local total_ram
+    total_ram=$(free -m | awk '/^Mem:/{print $2}')
+    if [ "$total_ram" -lt 4096 ]; then
+        log_error "Insufficient RAM: ${total_ram}MB (minimum: 4096MB)"
+    else
+        log_info "RAM: ${total_ram}MB"
+    fi
+    
+    # Check disk space
+    local root_space
+    root_space=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
+    if [ "$root_space" -lt 20 ]; then
+        log_error "Insufficient disk space: ${root_space}GB (minimum: 20GB)"
+    else
+        log_info "Disk space: ${root_space}GB"
+    fi
+}
+
+# Function to check services
+check_services() {
+    log_section "Service Configuration Check"
+    
+    # Check Docker service
+    if systemctl is-active --quiet docker; then
+        log_info "Docker service: Running"
+    else
+        log_error "Docker service: Not running"
+    fi
+    
+    # Check Docker networks
+    if docker network ls | grep -q "proxy"; then
+        log_info "Docker proxy network: Created"
+    else
+        log_error "Docker proxy network: Missing"
+    fi
+    
+    # Check container status
+    check_container "nginx-proxy-manager"
+    check_container "authelia"
+    check_container "fail2ban"
+    check_container "watchtower"
+}
+
 # Main function
 main() {
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help)
+                show_usage
+                exit 0
+                ;;
+            --check-only)
+                check_requirements
+                exit 0
+                ;;
+            --network)
+                check_network
+                exit 0
+                ;;
+            --security)
+                check_security
+                exit 0
+                ;;
+            --permissions)
+                check_permissions
+                exit 0
+                ;;
+            --services)
+                check_services
+                exit 0
+                ;;
+            --all)
+                RUN_ALL=true
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                show_usage
+                exit 1
+                ;;
+        esac
+        shift
+    done
+    
+    # If no arguments provided or --all specified, run all checks
     log_section "Post-Installation Check"
     
-    # Check core components
+    check_requirements
     check_network
     check_security
     check_docker
     check_permissions
     check_web_interface
-    
-    # Check containers
-    log_section "Container Health Check"
+    check_services
     
     # Check core services
     check_container "nginx-proxy-manager"
