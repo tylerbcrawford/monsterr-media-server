@@ -107,6 +107,122 @@ display_service_urls() {
     fi
 }
 
+# Function to check network connectivity
+check_network() {
+    log_section "Network Connectivity"
+    
+    # Check DNS resolution
+    if host google.com >/dev/null 2>&1; then
+        log_info "DNS Resolution: OK"
+    else
+        log_error "DNS Resolution: Failed"
+    fi
+    
+    # Check internet connectivity
+    if ping -c 1 8.8.8.8 >/dev/null 2>&1; then
+        log_info "Internet Connectivity: OK"
+    else
+        log_error "Internet Connectivity: Failed"
+    fi
+    
+    # Check required ports
+    local ports=(80 443 81)
+    echo "Port Status:"
+    for port in "${ports[@]}"; do
+        if netstat -tuln | grep -q ":$port "; then
+            echo "  Port $port: ${GREEN}Open${NC}"
+        else
+            echo "  Port $port: ${RED}Closed${NC}"
+        fi
+    done
+}
+
+# Function to check security configuration
+check_security() {
+    log_section "Security Configuration"
+    
+    # Check UFW status
+    if command -v ufw >/dev/null 2>&1; then
+        if ufw status | grep -q "Status: active"; then
+            log_info "UFW Firewall: Active"
+            echo "Allowed ports:"
+            ufw status | grep ALLOW | sed 's/^/  /'
+        else
+            log_warn "UFW Firewall: Inactive"
+        fi
+    else
+        log_error "UFW Firewall: Not installed"
+    fi
+    
+    # Check Fail2Ban status
+    if command -v fail2ban-client >/dev/null 2>&1; then
+        if systemctl is-active fail2ban >/dev/null 2>&1; then
+            log_info "Fail2Ban: Active"
+            echo "Active jails:"
+            fail2ban-client status | grep "Jail list" | sed 's/^.*://' | tr ',' '\n' | sed 's/^/  /'
+        else
+            log_warn "Fail2Ban: Inactive"
+        fi
+    else
+        log_error "Fail2Ban: Not installed"
+    fi
+    
+    # Check SSL certificates
+    if [ -d "./npm/letsencrypt" ]; then
+        log_info "SSL Certificates directory exists"
+    else
+        log_warn "SSL Certificates directory not found"
+    fi
+}
+
+# Function to check directory permissions
+check_permissions() {
+    log_section "Directory Permissions"
+    
+    # Load environment variables
+    if [ -f "./config.env" ]; then
+        # shellcheck disable=SC1091
+        source ./config.env
+    fi
+    
+    local dirs=(
+        "${MEDIA_DIR:-/opt/media-server/media}"
+        "${DOWNLOADS_DIR:-/opt/media-server/downloads}"
+        "./npm"
+        "./authelia"
+    )
+    
+    for dir in "${dirs[@]}"; do
+        if [ -d "$dir" ]; then
+            local perms
+            perms=$(stat -c "%U:%G" "$dir")
+            echo "$dir: $perms"
+            if [ "$perms" != "${PUID:-1000}:${PGID:-1000}" ]; then
+                log_warn "Incorrect permissions on $dir"
+            fi
+        else
+            log_error "Directory not found: $dir"
+        fi
+    done
+}
+
+# Function to check web interface
+check_web_interface() {
+    log_section "Web Interface Check"
+    
+    # Check if Python HTTP server is running
+    if pgrep -f "python.*http.server.*8080" >/dev/null; then
+        log_info "Web interface server: Running"
+        if curl -s http://localhost:8080 >/dev/null; then
+            log_info "Web interface accessible: Yes"
+        else
+            log_warn "Web interface accessible: No"
+        fi
+    else
+        log_info "Web interface server: Not running"
+    fi
+}
+
 # Function to check system resources
 check_system_resources() {
     log_section "System Resources"
@@ -133,8 +249,45 @@ check_system_resources() {
     fi
 }
 
+# Function to check Docker status
+check_docker() {
+    log_section "Docker Status"
+    
+    # Check Docker service
+    if systemctl is-active docker >/dev/null 2>&1; then
+        log_info "Docker service: Active"
+    else
+        log_error "Docker service: Inactive"
+        return
+    fi
+    
+    # Check Docker Compose
+    if command -v docker-compose >/dev/null 2>&1; then
+        log_info "Docker Compose: Installed"
+    else
+        log_error "Docker Compose: Not installed"
+    fi
+    
+    # Display Docker info
+    echo "Docker Version:"
+    docker version --format 'Client: {{.Client.Version}}\nServer: {{.Server.Version}}' 2>/dev/null || log_error "Failed to get Docker version"
+    
+    echo -e "\nDocker Networks:"
+    docker network ls --format "  {{.Name}}" 2>/dev/null || log_error "Failed to list Docker networks"
+}
+
 # Main function
 main() {
+    log_section "Post-Installation Check"
+    
+    # Check core components
+    check_network
+    check_security
+    check_docker
+    check_permissions
+    check_web_interface
+    
+    # Check containers
     log_section "Container Health Check"
     
     # Check core services
