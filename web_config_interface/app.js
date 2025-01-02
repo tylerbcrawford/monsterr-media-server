@@ -33,13 +33,32 @@ const showValidationFeedback = (element, isValid, message) => {
 // Function to check domain availability
 const checkDomain = async (domain) => {
     try {
-        const response = await fetch(`/check-domain?domain=${encodeURIComponent(domain)}`);
-        if (!response.ok) throw new Error('Domain check failed');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+        const response = await fetch(`/check-domain?domain=${encodeURIComponent(domain)}`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            throw new Error('Domain check failed');
+        }
         const data = await response.json();
-        return data.available;
+        return {
+            success: true,
+            available: data.available,
+            message: data.available ? 'Domain is available' : 'Domain may not be accessible'
+        };
     } catch (error) {
         console.error('Domain check error:', error);
-        return false;
+        return {
+            success: false,
+            available: false,
+            message: error.name === 'AbortError' 
+                ? 'Domain check timed out. Please try again.'
+                : 'Unable to verify domain. Please check your internet connection.'
+        };
     }
 };
 
@@ -95,13 +114,22 @@ document.addEventListener('DOMContentLoaded', function() {
             // Debounce domain availability check
             clearTimeout(domainCheckTimeout);
             if (isValid) {
+                showValidationFeedback(this, true, 'Checking domain availability...');
                 domainCheckTimeout = setTimeout(async () => {
-                    const available = await checkDomain(this.value);
+                    const result = await checkDomain(this.value);
                     showValidationFeedback(
                         this,
-                        available,
-                        available ? 'Domain is available' : 'Domain may not be accessible'
+                        result.success && result.available,
+                        result.message
                     );
+                    
+                    // Add warning class for network errors
+                    if (!result.success) {
+                        const feedback = this.parentElement.querySelector('.validation-feedback');
+                        if (feedback) {
+                            feedback.classList.add('warning');
+                        }
+                    }
                 }, 500);
             }
         });
