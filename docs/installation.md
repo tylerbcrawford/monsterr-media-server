@@ -52,25 +52,31 @@ This guide provides detailed instructions for installing and configuring the Mon
 3. **Configure Network and Domain**
 
    a. Network Setup
-   - Set static IP (recommended) or configure DDNS for dynamic IP
-   - Configure port forwarding for ports 80, 443, and 81
-   - Ensure your router allows these ports through the firewall
+   - Configure your network settings:
+     * Set up port forwarding for ports 80, 443, and 81
+     * Ensure your router allows these ports through the firewall
+     * Choose between static IP or dynamic IP (DDNS)
+   - For custom SSH port:
+     * The installer will prompt for custom SSH port configuration
+     * UFW will be automatically configured for your chosen port
 
    b. Domain Setup
    1. Static IP Setup:
       - Log in to your domain registrar (e.g., Namecheap, Cloudflare)
       - Create an A record pointing your domain to your server's IP
       - Create CNAME records for subdomains (or a wildcard *.domain.com)
-      - In config.env, set DOMAIN="yourdomain.com"
+      - During installation, choose 'n' when asked about DDNS
+      - Enter your domain when prompted
 
    2. Dynamic IP Setup (DDNS):
-      - Sign up at a DDNS provider (e.g., Dynu, DuckDNS)
-      - Obtain a hostname (e.g., myhome.dynu.net)
-      - Run our DDNS setup script:
-        ```bash
-        sudo ./scripts/setup_ddns_dynu.sh
-        ```
-      - The script will:
+      - Sign up at a DDNS provider (e.g., Dynu)
+      - Create a dynamic DNS hostname (e.g., myhome.dynu.net)
+      - Get your API credentials from Dynu
+      - During installation, when prompted:
+        * Choose "y" when asked about using dynamic IP with DDNS
+        * Enter your Dynu hostname
+        * Enter your API key (Note: This will be stored in config.env. Consider using external secrets management for production)
+      - The installer will automatically:
         * Configure automatic IP updates
         * Set up a systemd service for updates
         * Update your config.env with the DDNS hostname
@@ -124,7 +130,11 @@ This guide provides detailed instructions for installing and configuring the Mon
 
 4. **Follow Setup Wizard**
    - Choose between web-based or CLI configuration
-   - Enter required information when prompted
+   - Enter required information when prompted:
+     * Domain configuration (static or DDNS)
+     * Custom media and downloads locations
+     * Security settings (SSH port, UFW, Fail2Ban)
+     * Service-specific settings
 
 ### Method 2: Manual Installation
 
@@ -206,6 +216,10 @@ This guide provides detailed instructions for installing and configuring the Mon
    - Configure Authelia
    - Set up Fail2Ban
    - Configure SSL certificates
+   - Review firewall rules:
+     ```bash
+     sudo ufw status numbered
+     ```
 
 4. **Configure Backup System**
    ```bash
