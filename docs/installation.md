@@ -59,6 +59,23 @@ This guide provides detailed instructions for installing and configuring the Mon
    - For custom SSH port:
      * The installer will prompt for custom SSH port configuration
      * UFW will be automatically configured for your chosen port
+     * Important: If using a custom SSH port, ensure your router/ISP:
+       - Forwards the custom port to your server
+       - Allows the custom port through any ISP-level firewall
+       - Updates any existing port forwarding rules from port 22
+
+   - Security Considerations:
+     * During installation, you'll be asked if you want to enable:
+       - UFW (Uncomplicated Firewall)
+       - Fail2Ban (Intrusion Prevention)
+     * If you choose not to enable these security features:
+       - They will not be installed or configured
+       - You must implement alternative security measures
+       - Consider using:
+         * Hardware firewall
+         * Router-level security
+         * Cloud provider security groups
+         * Alternative intrusion prevention systems
 
    b. Domain Setup
    1. Static IP Setup:
