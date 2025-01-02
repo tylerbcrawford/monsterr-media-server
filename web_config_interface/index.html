@@ -1,20 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Media Server Configuration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monsterr Media Server Configuration</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Media Server Configuration</h1>
-    <form id="config-form">
-        <!-- Form fields for configuration variables -->
-        <label for="timezone">Timezone:</label>
-        <input type="text" id="timezone" name="timezone" placeholder="America/Toronto" required>
+    <div class="container">
+        <h1>Monsterr Media Server Configuration</h1>
+        <form id="config-form">
+            <!-- System Settings -->
+            <section class="config-section">
+                <h2>System Settings</h2>
+                <div class="form-group">
+                    <label for="timezone">Timezone:</label>
+                    <input type="text" id="timezone" name="timezone" placeholder="America/Toronto" required>
+                    <small>Your local timezone (e.g., America/Toronto)</small>
+                </div>
+                <div class="form-group">
+                    <label for="puid">PUID:</label>
+                    <input type="number" id="puid" name="puid" placeholder="1000" required>
+                    <small>User ID for file permissions</small>
+                </div>
+                <div class="form-group">
+                    <label for="pgid">PGID:</label>
+                    <input type="number" id="pgid" name="pgid" placeholder="1000" required>
+                    <small>Group ID for file permissions</small>
+                </div>
+            </section>
 
-        <!-- Additional form fields for other variables -->
+            <!-- Domain Configuration -->
+            <section class="config-section">
+                <h2>Domain Configuration</h2>
+                <div class="form-group">
+                    <label>IP Configuration:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="static-ip" name="ip-type" value="static" checked>
+                        <label for="static-ip">Static IP</label>
+                        <input type="radio" id="dynamic-ip" name="ip-type" value="dynamic">
+                        <label for="dynamic-ip">Dynamic IP (DDNS)</label>
+                    </div>
+                </div>
 
-        <button type="submit">Submit Configuration</button>
-    </form>
+                <div id="static-domain-section" class="form-group">
+                    <label for="domain">Domain Name:</label>
+                    <input type="text" id="domain" name="domain" placeholder="example.com">
+                    <small>Your domain name (e.g., example.com)</small>
+                </div>
+
+                <div id="ddns-section" class="form-group hidden">
+                    <label for="ddns-hostname">DDNS Hostname:</label>
+                    <input type="text" id="ddns-hostname" name="ddns-hostname" placeholder="myhome.dynu.net">
+                    <small>Your Dynu DDNS hostname</small>
+
+                    <label for="ddns-api-key">Dynu API Key:</label>
+                    <input type="password" id="ddns-api-key" name="ddns-api-key">
+                    <small>Your Dynu API key (stored in config.env)</small>
+                </div>
+            </section>
+
+            <!-- Security Configuration -->
+            <section class="config-section">
+                <h2>Security Configuration</h2>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="enable-ufw" name="enable-ufw" checked>
+                        Enable UFW Firewall
+                    </label>
+                    <small>Recommended for server security</small>
+                </div>
+
+                <div id="ssh-section" class="form-group">
+                    <label>
+                        <input type="checkbox" id="custom-ssh" name="custom-ssh">
+                        Use Custom SSH Port
+                    </label>
+                    <div id="ssh-port-input" class="hidden">
+                        <label for="ssh-port">SSH Port:</label>
+                        <input type="number" id="ssh-port" name="ssh-port" placeholder="22" min="1" max="65535">
+                        <small>Remember to update your router's port forwarding</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="enable-fail2ban" name="enable-fail2ban" checked>
+                        Enable Fail2Ban
+                    </label>
+                    <small>Protection against brute force attacks</small>
+                </div>
+            </section>
+
+            <!-- Media Paths -->
+            <section class="config-section">
+                <h2>Media Locations</h2>
+                <div class="form-group">
+                    <label for="media-dir">Media Directory:</label>
+                    <input type="text" id="media-dir" name="media-dir" placeholder="/opt/media-server/media">
+                    <small>Location for your media files (movies, TV shows, etc.)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="downloads-dir">Downloads Directory:</label>
+                    <input type="text" id="downloads-dir" name="downloads-dir" placeholder="/opt/media-server/downloads">
+                    <small>Location for downloaded files</small>
+                </div>
+            </section>
+
+            <!-- Service Configuration -->
+            <section class="config-section">
+                <h2>Service Configuration</h2>
+                <div class="form-group">
+                    <label for="plex-claim">Plex Claim Token:</label>
+                    <input type="text" id="plex-claim" name="plex-claim" placeholder="claim-xxxxxxxx">
+                    <small>Get your claim token from <a href="https://plex.tv/claim" target="_blank">plex.tv/claim</a></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="vpn-username">VPN Username:</label>
+                    <input type="text" id="vpn-username" name="vpn-username">
+                    <small>Your VPN service username</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="vpn-password">VPN Password:</label>
+                    <input type="password" id="vpn-password" name="vpn-password">
+                    <small>Your VPN service password</small>
+                </div>
+            </section>
+
+            <button type="submit" class="submit-button">Save Configuration</button>
+        </form>
+    </div>
 
     <script src="app.js"></script>
 </body>
