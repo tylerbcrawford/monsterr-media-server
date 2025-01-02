@@ -488,8 +488,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Configuration saved successfully!\n\n' +
                     'Next Steps:\n' +
                     '1. Review the configuration in config.env\n' +
-                    '2. Run the post-installation checks\n' +
+                    '2. Run the post-installation checks with:\n' +
+                    '   sudo ./scripts/post_install_check.sh --all\n' +
                     '3. Configure your services\n\n' +
+                    'Note: You can run the health check script anytime to verify\n' +
+                    'system status and troubleshoot issues.\n\n' +
                     'Would you like to proceed with the installation?';
                 
                 if (confirm(message)) {

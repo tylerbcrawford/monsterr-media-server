@@ -29,6 +29,26 @@ Whether you're a home user or a small business, Monsterr Media Server is the per
 
 To get started with Monsterr Media Server, please refer to the [Installation Guide](docs/installation.md) in the project documentation.
 
+## Post-Installation Health Checks
+
+Monsterr Media Server includes a comprehensive health check script that verifies:
+- Container health status
+- Service connectivity
+- Network configuration
+- Security settings
+- Resource availability
+
+Run the health check at any time with:
+```bash
+sudo ./scripts/post_install_check.sh --all
+```
+
+This script is automatically run after installation, but you can use it anytime to:
+- Verify system health
+- Troubleshoot issues
+- Check service status
+- Validate configuration
+
 ## Contributing
 
 We welcome contributions from the community! Please read the [Contributing Guidelines](CONTRIBUTING.md) to learn more about how you can get involved.
