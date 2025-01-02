@@ -328,35 +328,52 @@ This guide provides detailed configuration instructions for all services include
 
 1. **How do I add Watchlistarr after installation?**
    ```bash
-   # 1. Edit config.env and add:
+   # 1. Edit config.env and add required API keys:
    SONARR_API_KEY=your_sonarr_api_key
    RADARR_API_KEY=your_radarr_api_key
+
+   # 2. For Trakt integration (optional), add:
    TRAKT_CLIENT_ID=your_trakt_client_id
    TRAKT_CLIENT_SECRET=your_trakt_client_secret
+
+   # 3. For IMDB integration (optional), add:
    IMDB_USER_ID=your_imdb_user_id
 
-   # 2. Restart the service
+   # 4. Restart the service
    docker-compose restart watchlistarr
    ```
 
-2. **Where do I find the required API keys?**
-   - Sonarr API Key: Settings -> General
-   - Radarr API Key: Settings -> General
-   - Trakt: Create app at https://trakt.tv/oauth/applications
-   - IMDB: Your profile URL (format: ur12345678)
+2. **Can I use only one watchlist service?**
+   Yes! You can choose to use:
+   - Only Trakt: Add Trakt credentials only
+   - Only IMDB: Add IMDB user ID only
+   - Both: Add both Trakt and IMDB credentials
 
-3. **Watchlistarr not syncing?**
+3. **Where do I find the required API keys?**
+   - Required for any integration:
+     * Sonarr API Key: Settings -> General
+     * Radarr API Key: Settings -> General
+   - For Trakt integration:
+     * Create app at https://trakt.tv/oauth/applications
+     * Get Client ID and Client Secret
+   - For IMDB integration:
+     * Get user ID from your profile URL (format: ur12345678)
+     * Ensure your watchlist is public
+
+4. **Watchlistarr not syncing?**
    - Check container logs: `docker-compose logs watchlistarr`
    - Verify API keys are correct
    - Ensure Sonarr/Radarr are accessible
-   - Check Trakt/IMDB watchlists are public
+   - For Trakt: Check application credentials
+   - For IMDB: Verify watchlist is public
    - Verify network connectivity between containers
 
-4. **Common Issues:**
+5. **Common Issues:**
    - "Invalid API key": Double-check keys in Sonarr/Radarr settings
    - "Connection refused": Ensure services are running and healthy
    - "Rate limit exceeded": Wait and try again (Trakt API limits)
    - "Invalid IMDB ID": Verify format is ur12345678
+   - "Watchlist not found": Check IMDB profile is public
 
 ## Additional Resources
 - [Installation Guide](installation.md)

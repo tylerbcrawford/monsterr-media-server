@@ -203,16 +203,52 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Handle Trakt integration toggle
+    const enableTraktCheckbox = document.getElementById('enable-trakt');
+    const traktConfig = document.getElementById('trakt-config');
+    if (enableTraktCheckbox && traktConfig) {
+        enableTraktCheckbox.addEventListener('change', function() {
+            traktConfig.classList.toggle('hidden', !this.checked);
+            // Clear validation messages when disabled
+            if (!this.checked) {
+                ['trakt-client-id', 'trakt-client-secret'].forEach(id => {
+                    const element = document.getElementById(id);
+                    const feedback = element.parentElement.querySelector('.validation-feedback');
+                    if (feedback) feedback.remove();
+                    element.classList.remove('invalid');
+                });
+            }
+        });
+    }
+
+    // Handle IMDB integration toggle
+    const enableImdbCheckbox = document.getElementById('enable-imdb');
+    const imdbConfig = document.getElementById('imdb-config');
+    if (enableImdbCheckbox && imdbConfig) {
+        enableImdbCheckbox.addEventListener('change', function() {
+            imdbConfig.classList.toggle('hidden', !this.checked);
+            // Clear validation messages when disabled
+            if (!this.checked) {
+                const element = document.getElementById('imdb-user-id');
+                const feedback = element.parentElement.querySelector('.validation-feedback');
+                if (feedback) feedback.remove();
+                element.classList.remove('invalid');
+            }
+        });
+    }
+
     // Add validation for IMDB User ID
     const imdbUserIdInput = document.getElementById('imdb-user-id');
     if (imdbUserIdInput) {
         imdbUserIdInput.addEventListener('input', function() {
-            const isValid = validateImdbId(this.value);
-            showValidationFeedback(
-                this,
-                isValid,
-                isValid ? 'Valid IMDB User ID format' : 'Must be in format ur12345678'
-            );
+            if (enableImdbCheckbox.checked) {
+                const isValid = validateImdbId(this.value);
+                showValidationFeedback(
+                    this,
+                    isValid,
+                    isValid ? 'Valid IMDB User ID format' : 'Must be in format ur12345678'
+                );
+            }
         });
     }
 
@@ -364,36 +400,60 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Validate watchlistarr configuration if any fields are filled
-        const watchlistarrFields = {
-            'sonarr-api-key': 'Sonarr API key',
-            'radarr-api-key': 'Radarr API key',
-            'trakt-client-id': 'Trakt Client ID',
-            'trakt-client-secret': 'Trakt Client Secret',
-            'imdb-user-id': 'IMDB User ID'
-        };
+        // Validate watchlistarr configuration
+        const sonarrApiKey = document.getElementById('sonarr-api-key').value;
+        const radarrApiKey = document.getElementById('radarr-api-key').value;
+        const enableTrakt = document.getElementById('enable-trakt').checked;
+        const enableImdb = document.getElementById('enable-imdb').checked;
 
-        let hasWatchlistarrConfig = false;
-        for (const [id, label] of Object.entries(watchlistarrFields)) {
-            if (document.getElementById(id).value) {
-                hasWatchlistarrConfig = true;
-                break;
+        // At least one integration must be enabled if API keys are provided
+        if (sonarrApiKey || radarrApiKey) {
+            if (!enableTrakt && !enableImdb) {
+                showValidationFeedback(
+                    document.getElementById('enable-trakt').parentElement,
+                    false,
+                    'Enable at least one watchlist integration'
+                );
+                hasErrors = true;
             }
         }
 
-        if (hasWatchlistarrConfig) {
-            for (const [id, label] of Object.entries(watchlistarrFields)) {
+        // Validate Trakt configuration if enabled
+        if (enableTrakt) {
+            const traktFields = {
+                'trakt-client-id': 'Trakt Client ID',
+                'trakt-client-secret': 'Trakt Client Secret'
+            };
+
+            for (const [id, label] of Object.entries(traktFields)) {
                 const value = document.getElementById(id).value;
                 if (!value) {
-                    showValidationFeedback(document.getElementById(id), false, `${label} is required for watchlistarr`);
+                    showValidationFeedback(document.getElementById(id), false, `${label} is required for Trakt integration`);
                     hasErrors = true;
                 }
             }
+        }
 
-            // Validate IMDB User ID format
+        // Validate IMDB configuration if enabled
+        if (enableImdb) {
             const imdbUserId = document.getElementById('imdb-user-id').value;
-            if (!validateImdbId(imdbUserId)) {
+            if (!imdbUserId) {
+                showValidationFeedback(document.getElementById('imdb-user-id'), false, 'IMDB User ID is required for IMDB integration');
+                hasErrors = true;
+            } else if (!validateImdbId(imdbUserId)) {
                 showValidationFeedback(document.getElementById('imdb-user-id'), false, 'Invalid IMDB User ID format (must be ur12345678)');
+                hasErrors = true;
+            }
+        }
+
+        // Validate API keys if any integration is enabled
+        if (enableTrakt || enableImdb) {
+            if (!sonarrApiKey) {
+                showValidationFeedback(document.getElementById('sonarr-api-key'), false, 'Sonarr API key is required for watchlist integration');
+                hasErrors = true;
+            }
+            if (!radarrApiKey) {
+                showValidationFeedback(document.getElementById('radarr-api-key'), false, 'Radarr API key is required for watchlist integration');
                 hasErrors = true;
             }
         }
