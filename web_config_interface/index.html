@@ -128,7 +128,61 @@
                     <input type="password" id="vpn-password" name="vpn-password">
                     <small>Your VPN service password</small>
                 </div>
+
+                <div class="form-group">
+                    <label for="grafana-password">Grafana Admin Password:</label>
+                    <input type="password" id="grafana-password" name="grafana-password">
+                    <small>Password for Grafana admin user</small>
+                </div>
             </section>
+
+            <!-- Email Configuration -->
+            <section class="config-section">
+                <h2>Email Configuration (Authelia)</h2>
+                <div class="form-group">
+                    <label for="smtp-host">SMTP Host:</label>
+                    <input type="text" id="smtp-host" name="smtp-host" placeholder="smtp.gmail.com">
+                    <small>Your SMTP server hostname</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="smtp-port">SMTP Port:</label>
+                    <input type="number" id="smtp-port" name="smtp-port" placeholder="587">
+                    <small>SMTP server port (usually 587 for TLS)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="smtp-username">SMTP Username:</label>
+                    <input type="text" id="smtp-username" name="smtp-username">
+                    <small>Your SMTP account username</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="smtp-password">SMTP Password:</label>
+                    <input type="password" id="smtp-password" name="smtp-password">
+                    <small>Your SMTP account password or app-specific password</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="smtp-sender">Sender Email:</label>
+                    <input type="email" id="smtp-sender" name="smtp-sender" placeholder="your@email.com">
+                    <small>Email address to send notifications from</small>
+                </div>
+            </section>
+
+            <!-- DDNS Service Configuration -->
+            <div id="ddns-service-section" class="config-section hidden">
+                <h2>DDNS Service Setup</h2>
+                <div class="alert info">
+                    <p>A systemd service will be created to automatically update your IP address every 5 minutes.</p>
+                    <p>The service will:</p>
+                    <ul>
+                        <li>Create an update script in /opt/media-server/dynu</li>
+                        <li>Configure a systemd service and timer</li>
+                        <li>Enable automatic startup at boot</li>
+                    </ul>
+                </div>
+            </div>
 
             <button type="submit" class="submit-button">Save Configuration</button>
         </form>

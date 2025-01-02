@@ -15,6 +15,11 @@ const validatePath = (path) => {
     return path && path.startsWith('/') && !path.includes('..') && path.length > 1;
 };
 
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
 // Function to show validation feedback
 const showValidationFeedback = (element, isValid, message) => {
     const feedback = element.parentElement.querySelector('.validation-feedback');
@@ -68,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const ipTypeRadios = document.getElementsByName('ip-type');
     const staticDomainSection = document.getElementById('static-domain-section');
     const ddnsSection = document.getElementById('ddns-section');
+    const ddnsServiceSection = document.getElementById('ddns-service-section');
     const customSshCheckbox = document.getElementById('custom-ssh');
     const sshPortInput = document.getElementById('ssh-port-input');
     const enableUfwCheckbox = document.getElementById('enable-ufw');
@@ -79,9 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.value === 'static') {
                 staticDomainSection.classList.remove('hidden');
                 ddnsSection.classList.add('hidden');
+                ddnsServiceSection.classList.add('hidden');
             } else {
                 staticDomainSection.classList.add('hidden');
                 ddnsSection.classList.remove('hidden');
+                ddnsServiceSection.classList.remove('hidden');
             }
         });
     });
@@ -163,6 +171,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Add validation for email
+    const emailInput = document.getElementById('smtp-sender');
+    if (emailInput) {
+        emailInput.addEventListener('input', function() {
+            const isValid = validateEmail(this.value);
+            showValidationFeedback(
+                this,
+                isValid,
+                isValid ? 'Valid email format' : 'Invalid email format'
+            );
+        });
+    }
+
+    // Add validation for SMTP port
+    const smtpPortInput = document.getElementById('smtp-port');
+    if (smtpPortInput) {
+        smtpPortInput.addEventListener('input', function() {
+            const isValid = validatePort(this.value);
+            showValidationFeedback(
+                this,
+                isValid,
+                isValid ? 'Valid port number' : 'Port must be between 1 and 65535'
+            );
+        });
+    }
+
     // Handle custom SSH port checkbox with validation
     customSshCheckbox.addEventListener('change', function() {
         sshPortField.classList.toggle('hidden', !this.checked);
@@ -224,7 +258,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Service Configuration
             plex_claim: document.getElementById('plex-claim').value,
             vpn_username: document.getElementById('vpn-username').value,
-            vpn_password: document.getElementById('vpn-password').value
+            vpn_password: document.getElementById('vpn-password').value,
+            grafana_password: document.getElementById('grafana-password').value,
+
+            // Email Configuration
+            smtp_host: document.getElementById('smtp-host').value,
+            smtp_port: document.getElementById('smtp-port').value,
+            smtp_username: document.getElementById('smtp-username').value,
+            smtp_password: document.getElementById('smtp-password').value,
+            smtp_sender: document.getElementById('smtp-sender').value
         };
 
         // Validate all required fields before submission
@@ -255,6 +297,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 showValidationFeedback(document.getElementById('ddns-hostname'), false, 'Invalid DDNS hostname format');
                 hasErrors = true;
             }
+            if (!document.getElementById('ddns-api-key').value) {
+                showValidationFeedback(document.getElementById('ddns-api-key'), false, 'API key is required for DDNS');
+                hasErrors = true;
+            }
         }
 
         // Validate custom SSH port if enabled
@@ -272,6 +318,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const path = document.getElementById(pathId).value;
             if (!validatePath(path)) {
                 showValidationFeedback(document.getElementById(pathId), false, 'Invalid path format');
+                hasErrors = true;
+            }
+        }
+
+        // Validate SMTP configuration if provided
+        const smtpHost = document.getElementById('smtp-host').value;
+        if (smtpHost) {
+            const smtpPort = document.getElementById('smtp-port').value;
+            const smtpSender = document.getElementById('smtp-sender').value;
+            
+            if (!validatePort(smtpPort)) {
+                showValidationFeedback(document.getElementById('smtp-port'), false, 'Invalid SMTP port');
+                hasErrors = true;
+            }
+            if (!validateEmail(smtpSender)) {
+                showValidationFeedback(document.getElementById('smtp-sender'), false, 'Invalid email format');
                 hasErrors = true;
             }
         }
@@ -331,4 +393,5 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('media-dir').value = '/opt/media-server/media';
     document.getElementById('downloads-dir').value = '/opt/media-server/downloads';
     document.getElementById('ssh-port').value = '22';
+    document.getElementById('smtp-port').value = '587';
 });
