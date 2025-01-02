@@ -56,13 +56,14 @@ service_groups:
         depends_on:
           - plex
       
-      overseerr:
-        name: "Overseerr"
-        description: "Media request management"
-        image: "lscr.io/linuxserver/overseerr:latest"
+      watchlistarr:
+        name: "Watchlistarr"
+        description: "Watchlist synchronization between Sonarr/Radarr and Trakt/IMDB"
+        image: "ghcr.io/nylonee/watchlistarr:latest"
         required: false
         depends_on:
-          - plex
+          - sonarr
+          - radarr
 
   downloads:
     name: "Download Services"

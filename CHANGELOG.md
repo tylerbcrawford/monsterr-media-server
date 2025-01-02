@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2024-01-25
 
 ### Added
+- Watchlistarr Integration
+  - Added watchlist synchronization with Trakt and IMDB
+  - Automatic sync with Sonarr and Radarr
+  - Configuration documentation and setup guide
+  - Environment variable support for API keys
 - Custom media and downloads location support
   - Users can now specify custom paths during installation
   - Support for external drives and NAS mounts

@@ -48,6 +48,39 @@ This guide provides detailed configuration instructions for all services include
    - Configure qBittorrent
    - Set up quality profiles
 
+### Watchlistarr (Watchlist Sync)
+
+1. **Configuration**
+   ```yaml
+   watchlistarr:
+     image: ghcr.io/nylonee/watchlistarr:latest
+     environment:
+       - SONARR_API_KEY=${SONARR_API_KEY}
+       - RADARR_API_KEY=${RADARR_API_KEY}
+       - TRAKT_CLIENT_ID=${TRAKT_CLIENT_ID}
+       - TRAKT_CLIENT_SECRET=${TRAKT_CLIENT_SECRET}
+       - IMDB_USER_ID=${IMDB_USER_ID}
+   ```
+
+2. **Setup Instructions**
+   - Get API keys from Sonarr/Radarr:
+     * Go to Settings -> General
+     * Copy the API Key
+   - Set up Trakt integration:
+     * Create an account at https://trakt.tv
+     * Go to https://trakt.tv/oauth/applications
+     * Create a new application
+     * Copy Client ID and Client Secret
+   - Set up IMDB integration:
+     * Get your IMDB user ID from your profile URL
+     * Format: urxxxxxxxx (e.g., ur12345678)
+
+3. **Features**
+   - Syncs Trakt watchlist to Sonarr/Radarr
+   - Syncs IMDB watchlist to Sonarr/Radarr
+   - Automatic periodic sync
+   - Manual sync via web interface
+
 ### Radarr (Movies)
 
 1. **Configuration**
