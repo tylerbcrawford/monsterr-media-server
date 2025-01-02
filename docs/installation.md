@@ -49,10 +49,58 @@ This guide provides detailed instructions for installing and configuring the Mon
    df -h
    ```
 
-3. **Configure Network**
-   - Set static IP (recommended)
-   - Configure port forwarding if needed
-   - Set up domain/subdomain DNS
+3. **Configure Network and Domain**
+
+   a. Network Setup
+   - Set static IP (recommended) or configure DDNS for dynamic IP
+   - Configure port forwarding for ports 80, 443, and 81
+   - Ensure your router allows these ports through the firewall
+
+   b. Domain Setup
+   1. Static IP Setup:
+      - Log in to your domain registrar (e.g., Namecheap, Cloudflare)
+      - Create an A record pointing your domain to your server's IP
+      - Create CNAME records for subdomains (or a wildcard *.domain.com)
+      - In config.env, set DOMAIN="yourdomain.com"
+
+   2. Dynamic IP Setup (DDNS):
+      - Sign up at a DDNS provider (e.g., Dynu, DuckDNS)
+      - Obtain a hostname (e.g., myhome.dynu.net)
+      - Run our DDNS setup script:
+        ```bash
+        sudo ./scripts/setup_ddns_dynu.sh
+        ```
+      - The script will:
+        * Configure automatic IP updates
+        * Set up a systemd service for updates
+        * Update your config.env with the DDNS hostname
+
+   c. Service Subdomains
+   The following table shows recommended subdomain configurations:
+
+   | Service            | Default Port | Suggested Subdomain         | Container Name       |
+   |-------------------|--------------|----------------------------|---------------------|
+   | Nginx Proxy Manager| 81          | npm.yourdomain.com        | nginx-proxy-manager |
+   | Plex              | 32400        | plex.yourdomain.com       | plex               |
+   | Sonarr            | 8989         | sonarr.yourdomain.com     | sonarr             |
+   | Radarr            | 7878         | radarr.yourdomain.com     | radarr             |
+   | Lidarr            | 8686         | lidarr.yourdomain.com     | lidarr             |
+   | Readarr           | 8787         | readarr.yourdomain.com    | readarr            |
+   | Bazarr            | 6767         | bazarr.yourdomain.com     | bazarr             |
+   | qBittorrent       | 8080         | qbittorrent.yourdomain.com| qbittorrentvpn     |
+   | Prowlarr          | 9696         | prowlarr.yourdomain.com   | prowlarr           |
+   | NZBGet            | 6789         | nzbget.yourdomain.com     | nzbget             |
+   | Overseerr         | 5055         | overseerr.yourdomain.com  | overseerr          |
+   | Tautulli          | 8181         | tautulli.yourdomain.com   | tautulli           |
+   | Portainer         | 9000         | portainer.yourdomain.com  | portainer          |
+   | Organizr          | 80           | organizr.yourdomain.com   | organizr           |
+   | Authelia          | 9091         | auth.yourdomain.com       | authelia           |
+
+   After installation, configure these in Nginx Proxy Manager:
+   1. Access NPM at http://<SERVER_IP>:81
+   2. Add a Proxy Host for each service
+   3. Point each subdomain to the corresponding container and port
+   4. Enable SSL certificates through Let's Encrypt
 
 ## Installation Methods
 

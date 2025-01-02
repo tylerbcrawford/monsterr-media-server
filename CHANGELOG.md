@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved permission handling
   - Structured downloads directory with complete/incomplete folders
   - Better organization of media subdirectories
+- Improved domain and DDNS support
+  - Added Dynu DDNS integration script
+  - Automated IP address updates
+  - Comprehensive domain setup documentation
+  - Service subdomain reference table
+  - Support for both static and dynamic IP configurations
 
 ## [1.0.0] - 2024-01-20
 
