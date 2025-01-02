@@ -155,6 +155,22 @@ echo
 read -p "Enter your PUID: " PUID
 read -p "Enter your PGID: " PGID
 read -p "Enter your Plex claim token: " PLEX_CLAIM_TOKEN
+
+echo
+echo "Watchlistarr Configuration"
+echo "-------------------------"
+echo "For watchlist synchronization with Sonarr/Radarr, you'll need:"
+echo "1. API keys from Sonarr and Radarr"
+echo "2. Trakt.tv application credentials"
+echo "3. Your IMDB user ID"
+echo
+
+read -p "Enter your Sonarr API key: " SONARR_API_KEY
+read -p "Enter your Radarr API key: " RADARR_API_KEY
+read -p "Enter your Trakt Client ID: " TRAKT_CLIENT_ID
+read -p "Enter your Trakt Client Secret: " TRAKT_CLIENT_SECRET
+read -p "Enter your IMDB User ID (e.g., ur12345678): " IMDB_USER_ID
+
 read -p "Enter your VPN username: " VPN_USERNAME
 read -p "Enter your VPN password: " VPN_PASSWORD
 read -p "Enter your Grafana admin password: " GRAFANA_ADMIN_PASSWORD
@@ -172,6 +188,15 @@ read -p "Enter your SMTP password: " AUTHELIA_NOTIFIER_SMTP_PASSWORD
 read -p "Enter your SMTP sender email: " AUTHELIA_NOTIFIER_SMTP_SENDER
 
 # Save variables to config.env
+# Validate IMDB User ID format
+if [[ ! "$IMDB_USER_ID" =~ ^ur[0-9]{7,8}$ ]]; then
+    echo "Warning: IMDB User ID should be in format 'urXXXXXXXX'"
+    read -p "Are you sure this is correct? (y/n): " confirm
+    if [[ "$confirm" != "y" ]]; then
+        read -p "Please enter your IMDB User ID again (e.g., ur12345678): " IMDB_USER_ID
+    fi
+fi
+
 cat <<EOL > config.env
 # DDNS Configuration
 USE_DDNS="${USE_DDNS}"
@@ -183,6 +208,14 @@ DOWNLOADS_DIR="${DOWNLOADS_DIR}"
 
 # System Configuration
 TIMEZONE="${TIMEZONE}"
+
+# Watchlistarr Configuration
+SONARR_API_KEY="${SONARR_API_KEY}"
+RADARR_API_KEY="${RADARR_API_KEY}"
+TRAKT_CLIENT_ID="${TRAKT_CLIENT_ID}"
+TRAKT_CLIENT_SECRET="${TRAKT_CLIENT_SECRET}"
+IMDB_USER_ID="${IMDB_USER_ID}"
+
 DOMAIN="${DOMAIN}"
 PUID=${PUID}
 PGID=${PGID}

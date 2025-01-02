@@ -108,6 +108,50 @@
                 </div>
             </section>
 
+            <!-- Watchlistarr Configuration -->
+            <section class="config-section">
+                <h2>Watchlistarr Configuration</h2>
+                <div class="alert info">
+                    <p>Configure watchlist synchronization between Sonarr/Radarr and Trakt/IMDB.</p>
+                    <p>You'll need:</p>
+                    <ul>
+                        <li>API keys from Sonarr and Radarr (Settings -> General)</li>
+                        <li>Trakt.tv application credentials (from https://trakt.tv/oauth/applications)</li>
+                        <li>Your IMDB user ID (from your profile URL: ur12345678)</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label for="sonarr-api-key">Sonarr API Key:</label>
+                    <input type="password" id="sonarr-api-key" name="sonarr-api-key">
+                    <small>Found in Sonarr under Settings -> General</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="radarr-api-key">Radarr API Key:</label>
+                    <input type="password" id="radarr-api-key" name="radarr-api-key">
+                    <small>Found in Radarr under Settings -> General</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="trakt-client-id">Trakt Client ID:</label>
+                    <input type="password" id="trakt-client-id" name="trakt-client-id">
+                    <small>From your Trakt.tv application</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="trakt-client-secret">Trakt Client Secret:</label>
+                    <input type="password" id="trakt-client-secret" name="trakt-client-secret">
+                    <small>From your Trakt.tv application</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="imdb-user-id">IMDB User ID:</label>
+                    <input type="text" id="imdb-user-id" name="imdb-user-id" placeholder="ur12345678" pattern="^ur[0-9]{7,8}$">
+                    <small>Found in your IMDB profile URL (format: ur12345678)</small>
+                </div>
+            </section>
+
             <!-- Service Configuration -->
             <section class="config-section">
                 <h2>Service Configuration</h2>
