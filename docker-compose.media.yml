@@ -46,36 +46,6 @@ services:
       timeout: 10s
       retries: 3
 
-  watchlistarr:
-    image: ghcr.io/nylonee/watchlistarr:latest
-    container_name: watchlistarr
-    restart: unless-stopped
-    networks:
-      - proxy
-    environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
-      - TZ=${TZ}
-      - SONARR_URL=http://sonarr:8989
-      - RADARR_URL=http://radarr:7878
-      - SONARR_API_KEY=${SONARR_API_KEY:-}
-      - RADARR_API_KEY=${RADARR_API_KEY:-}
-      - TRAKT_CLIENT_ID=${TRAKT_CLIENT_ID:-}
-      - TRAKT_CLIENT_SECRET=${TRAKT_CLIENT_SECRET:-}
-      - IMDB_USER_ID=${IMDB_USER_ID:-}
-    volumes:
-      - watchlistarr_config:/config
-    depends_on:
-      sonarr:
-        condition: service_healthy
-      radarr:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7878/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -144,3 +114,36 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  watchlistarr:
+    image: ghcr.io/nylonee/watchlistarr:latest
+    container_name: watchlistarr
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - "8008:8008"  # Default watchlistarr port
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ}
+      - SONARR_URL=http://sonarr:8989
+      - RADARR_URL=http://radarr:7878
+      - SONARR_API_KEY=${SONARR_API_KEY:-}
+      - RADARR_API_KEY=${RADARR_API_KEY:-}
+      - TRAKT_CLIENT_ID=${TRAKT_CLIENT_ID:-}
+      - TRAKT_CLIENT_SECRET=${TRAKT_CLIENT_SECRET:-}
+      - IMDB_USER_ID=${IMDB_USER_ID:-}
+    volumes:
+      - watchlistarr_config:/config
+    depends_on:
+      sonarr:
+        condition: service_healthy
+      radarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

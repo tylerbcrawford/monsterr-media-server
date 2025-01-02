@@ -322,6 +322,42 @@ This guide provides detailed configuration instructions for all services include
    - Storage limits
    - Analysis tools
 
+## FAQ & Troubleshooting
+
+### Watchlistarr
+
+1. **How do I add Watchlistarr after installation?**
+   ```bash
+   # 1. Edit config.env and add:
+   SONARR_API_KEY=your_sonarr_api_key
+   RADARR_API_KEY=your_radarr_api_key
+   TRAKT_CLIENT_ID=your_trakt_client_id
+   TRAKT_CLIENT_SECRET=your_trakt_client_secret
+   IMDB_USER_ID=your_imdb_user_id
+
+   # 2. Restart the service
+   docker-compose restart watchlistarr
+   ```
+
+2. **Where do I find the required API keys?**
+   - Sonarr API Key: Settings -> General
+   - Radarr API Key: Settings -> General
+   - Trakt: Create app at https://trakt.tv/oauth/applications
+   - IMDB: Your profile URL (format: ur12345678)
+
+3. **Watchlistarr not syncing?**
+   - Check container logs: `docker-compose logs watchlistarr`
+   - Verify API keys are correct
+   - Ensure Sonarr/Radarr are accessible
+   - Check Trakt/IMDB watchlists are public
+   - Verify network connectivity between containers
+
+4. **Common Issues:**
+   - "Invalid API key": Double-check keys in Sonarr/Radarr settings
+   - "Connection refused": Ensure services are running and healthy
+   - "Rate limit exceeded": Wait and try again (Trakt API limits)
+   - "Invalid IMDB ID": Verify format is ur12345678
+
 ## Additional Resources
 - [Installation Guide](installation.md)
 - [Security Guide](security.md)

@@ -20,6 +20,12 @@ const validateEmail = (email) => {
     return emailRegex.test(email);
 };
 
+const validateImdbId = (id) => {
+    // IMDB user ID format: ur12345678
+    const imdbRegex = /^ur[0-9]{7,8}$/;
+    return imdbRegex.test(id);
+};
+
 // Function to show validation feedback
 const showValidationFeedback = (element, isValid, message) => {
     const feedback = element.parentElement.querySelector('.validation-feedback');
@@ -197,6 +203,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Add validation for IMDB User ID
+    const imdbUserIdInput = document.getElementById('imdb-user-id');
+    if (imdbUserIdInput) {
+        imdbUserIdInput.addEventListener('input', function() {
+            const isValid = validateImdbId(this.value);
+            showValidationFeedback(
+                this,
+                isValid,
+                isValid ? 'Valid IMDB User ID format' : 'Must be in format ur12345678'
+            );
+        });
+    }
+
     // Handle custom SSH port checkbox with validation
     customSshCheckbox.addEventListener('change', function() {
         sshPortField.classList.toggle('hidden', !this.checked);
@@ -266,7 +285,14 @@ document.addEventListener('DOMContentLoaded', function() {
             smtp_port: document.getElementById('smtp-port').value,
             smtp_username: document.getElementById('smtp-username').value,
             smtp_password: document.getElementById('smtp-password').value,
-            smtp_sender: document.getElementById('smtp-sender').value
+            smtp_sender: document.getElementById('smtp-sender').value,
+
+            // Watchlistarr Configuration
+            sonarr_api_key: document.getElementById('sonarr-api-key').value,
+            radarr_api_key: document.getElementById('radarr-api-key').value,
+            trakt_client_id: document.getElementById('trakt-client-id').value,
+            trakt_client_secret: document.getElementById('trakt-client-secret').value,
+            imdb_user_id: document.getElementById('imdb-user-id').value
         };
 
         // Validate all required fields before submission
@@ -334,6 +360,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (!validateEmail(smtpSender)) {
                 showValidationFeedback(document.getElementById('smtp-sender'), false, 'Invalid email format');
+                hasErrors = true;
+            }
+        }
+
+        // Validate watchlistarr configuration if any fields are filled
+        const watchlistarrFields = {
+            'sonarr-api-key': 'Sonarr API key',
+            'radarr-api-key': 'Radarr API key',
+            'trakt-client-id': 'Trakt Client ID',
+            'trakt-client-secret': 'Trakt Client Secret',
+            'imdb-user-id': 'IMDB User ID'
+        };
+
+        let hasWatchlistarrConfig = false;
+        for (const [id, label] of Object.entries(watchlistarrFields)) {
+            if (document.getElementById(id).value) {
+                hasWatchlistarrConfig = true;
+                break;
+            }
+        }
+
+        if (hasWatchlistarrConfig) {
+            for (const [id, label] of Object.entries(watchlistarrFields)) {
+                const value = document.getElementById(id).value;
+                if (!value) {
+                    showValidationFeedback(document.getElementById(id), false, `${label} is required for watchlistarr`);
+                    hasErrors = true;
+                }
+            }
+
+            // Validate IMDB User ID format
+            const imdbUserId = document.getElementById('imdb-user-id').value;
+            if (!validateImdbId(imdbUserId)) {
+                showValidationFeedback(document.getElementById('imdb-user-id'), false, 'Invalid IMDB User ID format (must be ur12345678)');
                 hasErrors = true;
             }
         }
