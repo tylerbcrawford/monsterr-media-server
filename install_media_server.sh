@@ -1,5 +1,10 @@
 #!/bin/bash
+
+# Exit on error, undefined variables, and pipe failures
 set -euo pipefail
+
+# Script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Color codes for output
 RED='\033[0;31m'
@@ -14,130 +19,136 @@ log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 log_section() { echo -e "\n${BLUE}=== $1 ===${NC}\n"; }
 
+# Progress bar function
+show_progress() {
+    local current=$1
+    local total=$2
+    local width=50
+    local percentage=$((current * 100 / total))
+    local completed=$((width * current / total))
+    local remaining=$((width - completed))
+    
+    printf "\rProgress: ["
+    printf "%${completed}s" | tr ' ' '='
+    printf "%${remaining}s" | tr ' ' ' '
+    printf "] %d%%" "$percentage"
+    
+    if [ "$current" -eq "$total" ]; then
+        echo
+    fi
+}
+
 # Error handler
-trap 'log_error "An error occurred on line $LINENO. Exiting..."; exit 1' ERR
+handle_error() {
+    local exit_code=$?
+    local line_number=$1
+    log_error "An error occurred on line $line_number (Exit code: $exit_code)"
+    
+    # Save error state if it exists
+    if [ -f "$SCRIPT_DIR/config.env" ]; then
+        cp "$SCRIPT_DIR/config.env" "$SCRIPT_DIR/config.env.error"
+    fi
+    
+    log_error "Installation failed. See error details above."
+    log_info "You can resume the installation by running: sudo ./install_media_server.sh --resume"
+    exit $exit_code
+}
 
-# Function to check system requirements
-check_system_requirements() {
+trap 'handle_error $LINENO' ERR
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    log_error "This script must be run as root"
+    log_error "Try: sudo ./install_media_server.sh"
+    exit 1
+fi
+
+# Initialize progress counter
+TOTAL_STEPS=7
+current_step=0
+
+# Function to update progress
+update_progress() {
+    ((current_step++))
+    show_progress "$current_step" "$TOTAL_STEPS"
+}
+
+# Check for resume flag
+RESUME=false
+if [ "${1:-}" = "--resume" ]; then
+    RESUME=true
+    if [ -f "$SCRIPT_DIR/config.env.error" ]; then
+        log_info "Resuming installation from last error..."
+        mv "$SCRIPT_DIR/config.env.error" "$SCRIPT_DIR/config.env"
+    else
+        log_error "No previous installation state found"
+        exit 1
+    fi
+fi
+
+# Display welcome message
+log_section "Welcome to Monsterr Media Server Installation"
+echo "This script will guide you through the installation process."
+echo "You can cancel at any time by pressing Ctrl+C."
+echo
+
+# Check system requirements
+if ! $RESUME; then
     log_section "Checking System Requirements"
+    ./scripts/post_install_check.sh --check-only
+    update_progress
+fi
 
-    # Check OS
-    if [ ! -f /etc/os-release ]; then
-        log_error "Could not determine OS version"
-        exit 1
-    }
-    source /etc/os-release
-    if [[ ! "$ID" =~ ^(ubuntu|debian)$ ]]; then
-        log_error "This script requires Ubuntu or Debian"
-        exit 1
-    }
-    if [ "$ID" = "ubuntu" ] && [ "${VERSION_ID%%.*}" -lt 20 ]; then
-        log_error "Ubuntu 20.04 or higher is required"
-        exit 1
-    }
-    log_info "OS Check: $PRETTY_NAME"
+# Install dependencies
+log_section "Installing Dependencies"
+./scripts/install_dependencies.sh
+update_progress
 
-    # Check CPU cores
-    cpu_cores=$(nproc)
-    if [ "$cpu_cores" -lt 2 ]; then
-        log_warn "Recommended minimum: 2 CPU cores (found: $cpu_cores)"
-    else
-        log_info "CPU Cores: $cpu_cores"
-    }
+# Install Docker
+log_section "Installing Docker"
+./scripts/install_docker.sh
+update_progress
 
-    # Check RAM
-    total_ram=$(free -m | awk '/^Mem:/{print $2}')
-    if [ "$total_ram" -lt 4096 ]; then
-        log_warn "Recommended minimum: 4GB RAM (found: ${total_ram}MB)"
-    else
-        log_info "RAM: ${total_ram}MB"
-    }
+# Create directories
+log_section "Creating Directories"
+./scripts/create_directories.sh
+update_progress
 
-    # Check disk space
-    root_space=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
-    if [ "$root_space" -lt 20 ]; then
-        log_warn "Recommended minimum: 20GB free space (found: ${root_space}GB)"
-    else
-        log_info "Free Space: ${root_space}GB"
-    }
+# Run setup wizard
+log_section "Running Setup Wizard"
+./setup_wizard.sh
+update_progress
 
-    # Check internet connection
-    if ! ping -c 1 google.com &> /dev/null; then
-        log_error "Internet connection required"
-        exit 1
-    }
-    log_info "Internet Connection: OK"
-}
+# Configure services
+log_section "Configuring Services"
+./scripts/configure_settings.sh
+update_progress
 
-# Function to check for existing installations
-check_existing_installation() {
-    log_section "Checking for Existing Installation"
+# Launch services
+log_section "Launching Services"
+./scripts/launch_services.sh
+update_progress
 
-    if [ -f "./config.env" ]; then
-        log_warn "Existing configuration found (config.env)"
-        read -p "Do you want to proceed and overwrite existing configuration? [y/N] " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            log_error "Installation cancelled by user"
-            exit 1
-        fi
-    fi
+# Final checks
+log_section "Performing Final Checks"
+./scripts/post_install_check.sh --all
 
-    if docker ps &> /dev/null; then
-        log_warn "Docker is already installed and running"
-        log_warn "Existing containers may conflict with this installation"
-        read -p "Do you want to proceed? [y/N] " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            log_error "Installation cancelled by user"
-            exit 1
-        fi
-    fi
-}
+# Installation complete
+log_section "Installation Complete!"
+log_info "Your Monsterr Media Server has been installed successfully!"
+log_info "\nNext steps:"
+echo "1. Access your services at: http://localhost:8080"
+echo "2. Complete the initial configuration of each service"
+echo "3. Review the documentation at: docs/installation.md"
+echo
+log_info "To check the status of your services:"
+echo "sudo ./scripts/post_install_check.sh --all"
+echo
+log_info "To view the system dashboard:"
+echo "http://localhost:3000"
+echo
+log_info "If you need help, check the troubleshooting guide:"
+echo "docs/installation.md#troubleshooting"
 
-# Function to make scripts executable
-make_scripts_executable() {
-    log_section "Preparing Installation Scripts"
-    chmod +x scripts/*.sh
-    chmod +x setup_wizard.sh
-    chmod +x setup_media_server.sh
-    log_info "Made scripts executable"
-}
-
-# Main installation function
-main() {
-    log_section "Starting Monsterr Media Server Installation"
-
-    # Make sure we're running as root
-    if [ "$(id -u)" != "0" ]; then
-        log_error "This script must be run as root"
-        log_error "Try: sudo ./install_media_server.sh"
-        exit 1
-    }
-
-    # Perform checks
-    check_system_requirements
-    check_existing_installation
-    make_scripts_executable
-
-    # Install dependencies
-    log_section "Installing Dependencies"
-    ./scripts/install_dependencies.sh
-
-    # Install Docker
-    log_section "Installing Docker"
-    ./scripts/install_docker.sh
-
-    # Run setup wizard
-    log_section "Running Setup Wizard"
-    ./setup_wizard.sh
-
-    log_section "Installation Complete!"
-    log_info "Next steps:"
-    echo "1. Review your configuration in config.env"
-    echo "2. Start your services with: sudo ./setup_media_server.sh"
-    echo "3. Check service status with: sudo ./scripts/post_install_check.sh"
-}
-
-# Run main function
-main "$@"
+# Clean up error state if it exists
+rm -f "$SCRIPT_DIR/config.env.error"

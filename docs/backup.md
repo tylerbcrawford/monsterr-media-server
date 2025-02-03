@@ -1,281 +1,237 @@
-# Backup and Restore Guide
+# Backup System Design
 
-This guide covers backup and restore procedures for the Monsterr Media Server, ensuring data safety and system recovery capabilities.
+## Overview
+The Monsterr Media Server backup system is designed for home users, providing simple yet effective backup and recovery procedures for their media libraries and system configurations.
 
-## Table of Contents
-- [Backup Strategy](#backup-strategy)
-- [Automated Backups](#automated-backups)
-- [Manual Backups](#manual-backups)
-- [Restore Procedures](#restore-procedures)
-- [Disaster Recovery](#disaster-recovery)
-- [Best Practices](#best-practices)
+## Design Goals
+1. **Simplicity**
+   - Easy to configure and use
+   - Clear status reporting
+   - Straightforward recovery process
+   - Minimal user intervention
 
-## Backup Strategy
+2. **Reliability**
+   - Automated verification
+   - Corruption detection
+   - Space management
+   - Failure notifications
 
-### What to Backup
+3. **Efficiency**
+   - Incremental backups
+   - Compression
+   - Space optimization
+   - Resource-aware scheduling
 
-1. **Configuration Files**
-   - Docker Compose files
-   - Environment variables
-   - Service configurations
+## Backup Components
 
-2. **Application Data**
-   - Database files
-   - User preferences
-   - Service metadata
+### 1. System Configuration
+- Docker compose files
+- Environment variables
+- Service configurations
+- Nginx proxy settings
+- Authentication configs
 
-3. **Media Files** (Optional)
-   - Movies
-   - TV Shows
-   - Music
-   - Books
+### 2. Media Library
+- Movies directory
+- TV Shows directory
+- Music directory
+- Books directory
+- Audiobooks directory
 
-### Backup Hierarchy
+### 3. Application Data
+- Plex databases
+- *arr service databases
+- Download history
+- Watch history
+- User preferences
 
+## Implementation Plan
+
+### 1. Backup Script Features
+- Incremental backups using rsync
+- Configuration file backups
+- Database dumps
+- Space management
+- Verification checks
+- Status notifications
+
+### 2. Directory Structure
 ```
 /opt/media-server/backups/
-├── daily/
-│   ├── configs/
-│   ├── databases/
-│   └── logs/
-├── weekly/
-│   ├── configs/
-│   └── databases/
-└── monthly/
-    └── full-backup/
+├── config/
+│   ├── docker/
+│   ├── nginx/
+│   └── services/
+├── databases/
+│   ├── plex/
+│   ├── sonarr/
+│   └── radarr/
+└── media/
+    ├── movies/
+    ├── tv/
+    └── music/
 ```
 
-## Automated Backups
+### 3. Backup Schedule
+- Configuration: Daily
+- Databases: Daily
+- Media: Weekly (incremental)
+- Full backup: Monthly
 
-### Daily Backup Script
+## Recovery Procedures
 
+### 1. Configuration Recovery
 ```bash
-#!/bin/bash
-# /opt/media-server/scripts/backup.sh
-
-# Set backup directory
-BACKUP_DIR="/opt/media-server/backups/daily/$(date +%Y%m%d)"
-RETENTION_DAYS=7
-
-# Create backup directories
-mkdir -p "$BACKUP_DIR"/{configs,databases,logs}
-
-# Backup configurations
-tar -czf "$BACKUP_DIR/configs/docker-configs.tar.gz" \
-    ./*/config \
-    ./docker-compose.yml \
-    ./config.env
-
-# Backup databases
-for service in plex sonarr radarr; do
-    docker-compose exec -T $service \
-        sqlite3 /config/database.db ".backup '/config/backup.db'"
-    cp "./services/$service/config/backup.db" \
-        "$BACKUP_DIR/databases/$service.db"
-done
-
-# Cleanup old backups
-find /opt/media-server/backups/daily -type d -mtime +$RETENTION_DAYS -exec rm -rf {} +
+# Restore configuration files
+restore_config() {
+  - Verify backup integrity
+  - Stop affected services
+  - Restore configs
+  - Verify permissions
+  - Restart services
+}
 ```
 
-### Backup Schedule
-
-1. **Cron Configuration**
-   ```bash
-   # /etc/cron.d/media-server-backup
-   0 2 * * * root /opt/media-server/scripts/backup.sh
-   0 3 * * 0 root /opt/media-server/scripts/weekly-backup.sh
-   0 4 1 * * root /opt/media-server/scripts/monthly-backup.sh
-   ```
-
-2. **Retention Policy**
-   - Daily backups: 7 days
-   - Weekly backups: 4 weeks
-   - Monthly backups: 6 months
-
-## Manual Backups
-
-### Configuration Backup
-
+### 2. Database Recovery
 ```bash
-# Backup all configuration directories
-tar -czf configs_backup.tar.gz \
-    ./*/config \
-    ./docker-compose.yml \
-    ./config.env \
-    ./scripts
-
-# Backup specific service
-tar -czf plex_config.tar.gz ./plex/config
+# Restore service databases
+restore_database() {
+  - Stop service
+  - Import backup
+  - Verify integrity
+  - Start service
+}
 ```
 
-### Database Backup
-
+### 3. Media Recovery
 ```bash
-# Plex Database
-docker-compose exec plex \
-    sqlite3 /config/Library/Application\ Support/Plex\ Media\ Server/Plug-in\ Support/Databases/com.plexapp.plugins.library.db \
-    ".backup '/config/plexdb_backup.db'"
-
-# Sonarr Database
-docker-compose exec sonarr \
-    sqlite3 /config/sonarr.db ".backup '/config/sonarr_backup.db'"
+# Restore media files
+restore_media() {
+  - Verify backup
+  - Restore incrementally
+  - Update permissions
+  - Scan libraries
+}
 ```
 
-### Media Backup (Optional)
+## Space Management
 
+### 1. Retention Policy
+- Keep 7 daily backups
+- Keep 4 weekly backups
+- Keep 2 monthly backups
+- Auto-remove older backups
+
+### 2. Space Monitoring
+- Check available space before backup
+- Maintain minimum free space
+- Alert on space issues
+- Clean old backups as needed
+
+## Verification System
+
+### 1. Backup Verification
+- Checksum verification
+- File count comparison
+- Permission checks
+- Database integrity tests
+
+### 2. Recovery Testing
+- Test restore procedures
+- Verify file integrity
+- Check service functionality
+- Validate permissions
+
+## Notification System
+
+### 1. Status Updates
+- Backup completion status
+- Space usage alerts
+- Verification results
+- Error notifications
+
+### 2. Reporting
+- Daily backup summary
+- Weekly space usage
+- Monthly status report
+- Error logs
+
+## User Interface
+
+### 1. Command Line Tools
 ```bash
-# Backup media libraries
-rsync -av --progress /opt/media-server/media/ /backup/media/
-
-# Backup with exclusions
-rsync -av --progress \
-    --exclude='*.partial~' \
-    --exclude='.DS_Store' \
-    /opt/media-server/media/ /backup/media/
+# Basic commands
+backup start      # Start backup
+backup status     # Check status
+backup verify     # Verify backup
+backup restore    # Start restore
+backup clean      # Clean old backups
 ```
 
-## Restore Procedures
-
-### Full System Restore
-
-1. **Prerequisites**
-   ```bash
-   # Install required packages
-   apt update
-   apt install -y docker.io docker-compose
-   ```
-
-2. **Configuration Restore**
-   ```bash
-   # Extract configurations
-   tar -xzf configs_backup.tar.gz -C /opt/media-server/
-   
-   # Set permissions
-   chown -R $PUID:$PGID /opt/media-server
-   ```
-
-3. **Service Restoration**
-   ```bash
-   # Start services
-   cd /opt/media-server
-   docker-compose up -d
-   ```
-
-### Individual Service Restore
-
-1. **Plex Restore**
-   ```bash
-   # Stop Plex
-   docker-compose stop plex
-   
-   # Restore configuration
-   tar -xzf plex_config.tar.gz -C /opt/media-server/
-   
-   # Start Plex
-   docker-compose up -d plex
-   ```
-
-2. **Database Restore**
-   ```bash
-   # Restore Sonarr database
-   docker-compose stop sonarr
-   cp sonarr_backup.db /opt/media-server/sonarr/config/sonarr.db
-   docker-compose up -d sonarr
-   ```
-
-## Disaster Recovery
-
-### Recovery Plan
-
-1. **System Failure**
-   ```bash
-   # Quick recovery script
-   #!/bin/bash
-   
-   # Stop all services
-   docker-compose down
-   
-   # Restore latest backup
-   ./scripts/restore-latest.sh
-   
-   # Start services
-   docker-compose up -d
-   ```
-
-2. **Data Corruption**
-   ```bash
-   # Verify backup integrity
-   ./scripts/verify-backup.sh
-   
-   # Restore from last known good backup
-   ./scripts/restore-backup.sh --timestamp="YYYYMMDD"
-   ```
-
-### Verification Procedures
-
-1. **Backup Testing**
-   ```bash
-   # Test restore in isolated environment
-   docker-compose -f docker-compose.test.yml \
-       --env-file test.env \
-       up -d
-   ```
-
-2. **Integrity Checks**
-   ```bash
-   # Verify backup checksums
-   sha256sum -c backup_checksums.txt
-   
-   # Test database integrity
-   sqlite3 backup.db "PRAGMA integrity_check;"
-   ```
+### 2. Status Display
+- Progress indication
+- Space usage
+- Last backup status
+- Verification results
 
 ## Best Practices
 
-### Security
+### 1. Backup Strategy
+- Regular scheduling
+- Verification after backup
+- Space monitoring
+- Test restores periodically
 
-1. **Encryption**
-   ```bash
-   # Encrypt backup
-   gpg --symmetric --cipher-algo AES256 backup.tar.gz
-   
-   # Decrypt backup
-   gpg --decrypt backup.tar.gz.gpg > backup.tar.gz
-   ```
+### 2. Security
+- Encrypted backups option
+- Secure storage location
+- Access control
+- Audit logging
 
-2. **Access Control**
-   ```bash
-   # Set secure permissions
-   chmod 600 backup.tar.gz
-   chown root:root backup.tar.gz
-   ```
+### 3. Maintenance
+- Regular cleanup
+- Log rotation
+- Space optimization
+- Performance monitoring
 
-### Monitoring
+## Error Handling
 
-1. **Backup Status**
-   ```bash
-   # Check backup success
-   if [ $? -eq 0 ]; then
-       echo "Backup successful"
-       notify-admin "Backup completed successfully"
-   else
-       echo "Backup failed"
-       notify-admin "Backup failed - manual intervention required"
-   fi
-   ```
+### 1. Common Issues
+- Space exhaustion
+- Network failures
+- Permission errors
+- Corruption detection
 
-2. **Space Management**
-   ```bash
-   # Monitor backup space
-   df -h /opt/media-server/backups
-   
-   # Cleanup old backups if needed
-   ./scripts/cleanup-old-backups.sh
-   ```
+### 2. Recovery Steps
+- Automatic retry
+- Notification system
+- Manual intervention
+- Logging and tracking
 
-## Additional Resources
-- [Installation Guide](installation.md)
-- [Security Guide](security.md)
-- [Services Guide](services.md)
-- [Monitoring Guide](monitoring.md)
+## Documentation
+
+### 1. User Guide
+- Setup instructions
+- Usage examples
+- Recovery procedures
+- Troubleshooting
+
+### 2. Maintenance Guide
+- Scheduling backups
+- Space management
+- Verification procedures
+- Recovery testing
+
+## Future Enhancements
+
+### 1. Planned Features
+- Cloud backup integration
+- Automated recovery testing
+- Enhanced reporting
+- Web interface
+
+### 2. Optimization
+- Improved compression
+- Faster verification
+- Better space management
+- Enhanced notifications

@@ -1,0 +1,29 @@
+[Unit]
+Description=Monsterr Media Server Dashboard
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/media-server/web_config_interface
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/monsterr/dashboard.log
+StandardError=append:/var/log/monsterr/dashboard.log
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+# Security hardening
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

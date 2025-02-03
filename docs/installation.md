@@ -1,129 +1,40 @@
 # Installation Guide
 
-This guide provides detailed instructions for installing and configuring the Monsterr Media Server.
+## Overview
+This guide provides step-by-step instructions for installing Monsterr Media Server. For a quicker setup, see our [Quick Start Guide](quick-start.md).
 
 ## Table of Contents
-- [System Requirements](#system-requirements)
-- [Pre-installation Steps](#pre-installation-steps)
+- [Prerequisites](#prerequisites)
 - [Installation Methods](#installation-methods)
-- [Post-installation Setup](#post-installation-setup)
-- [Troubleshooting](#troubleshooting)
+- [Post-Installation Setup](#post-installation-setup)
+- [Verification](#verification)
+- [Next Steps](#next-steps)
 
-## System Requirements
+## Prerequisites
 
-### Minimum Hardware Requirements
+### Hardware Requirements
+See our [Hardware Guide](hardware.md) for detailed recommendations.
+
+Minimum Requirements:
 - CPU: 4 cores
 - RAM: 8GB
-- Storage: 20GB for base installation
-- Additional storage for media files
+- Storage: 20GB for system + storage for media
+- Network: 10Mbps+ internet connection
 
-### Recommended Hardware
-- CPU: 6+ cores
-- RAM: 16GB+
-- Storage: 
-  - SSD for system: 100GB+
-  - HDD for media: 4TB+
-- Network: Gigabit Ethernet
+### Network Requirements
+See our [Network Setup Guide](network-setup.md) for detailed instructions.
+
+Required Setup:
+- Domain name or DDNS hostname
+- Port forwarding capability
+- Router access for configuration
+- Static local IP or DHCP reservation
 
 ### Software Requirements
 - Operating System: Ubuntu 20.04+ or similar Linux distribution
-- Docker Engine
-- Docker Compose
+- Docker Engine (installed automatically)
+- Docker Compose (installed automatically)
 - Git (for installation)
-
-## Pre-installation Steps
-
-1. **Update System**
-   ```bash
-   sudo apt update
-   sudo apt upgrade -y
-   ```
-
-2. **Check System Resources**
-   ```bash
-   # Check CPU and Memory
-   lscpu
-   free -h
-   
-   # Check Storage
-   df -h
-   ```
-
-3. **Configure Network and Domain**
-
-   a. Network Setup
-   - Configure your network settings:
-     * Set up port forwarding for ports 80, 443, and 81
-     * Ensure your router allows these ports through the firewall
-     * Choose between static IP or dynamic IP (DDNS)
-   - For custom SSH port:
-     * The installer will prompt for custom SSH port configuration
-     * UFW will be automatically configured for your chosen port
-     * Important: If using a custom SSH port, ensure your router/ISP:
-       - Forwards the custom port to your server
-       - Allows the custom port through any ISP-level firewall
-       - Updates any existing port forwarding rules from port 22
-
-   - Security Considerations:
-     * During installation, you'll be asked if you want to enable:
-       - UFW (Uncomplicated Firewall)
-       - Fail2Ban (Intrusion Prevention)
-     * If you choose not to enable these security features:
-       - They will not be installed or configured
-       - You must implement alternative security measures
-       - Consider using:
-         * Hardware firewall
-         * Router-level security
-         * Cloud provider security groups
-         * Alternative intrusion prevention systems
-
-   b. Domain Setup
-   1. Static IP Setup:
-      - Log in to your domain registrar (e.g., Namecheap, Cloudflare)
-      - Create an A record pointing your domain to your server's IP
-      - Create CNAME records for subdomains (or a wildcard *.domain.com)
-      - During installation, choose 'n' when asked about DDNS
-      - Enter your domain when prompted
-
-   2. Dynamic IP Setup (DDNS):
-      - Sign up at a DDNS provider (e.g., Dynu)
-      - Create a dynamic DNS hostname (e.g., myhome.dynu.net)
-      - Get your API credentials from Dynu
-      - During installation, when prompted:
-        * Choose "y" when asked about using dynamic IP with DDNS
-        * Enter your Dynu hostname
-        * Enter your API key (Note: This will be stored in config.env. Consider using external secrets management for production)
-      - The installer will automatically:
-        * Configure automatic IP updates
-        * Set up a systemd service for updates
-        * Update your config.env with the DDNS hostname
-
-   c. Service Subdomains
-   The following table shows recommended subdomain configurations:
-
-   | Service            | Default Port | Suggested Subdomain         | Container Name       |
-   |-------------------|--------------|----------------------------|---------------------|
-   | Nginx Proxy Manager| 81          | npm.yourdomain.com        | nginx-proxy-manager |
-   | Plex              | 32400        | plex.yourdomain.com       | plex               |
-   | Sonarr            | 8989         | sonarr.yourdomain.com     | sonarr             |
-   | Radarr            | 7878         | radarr.yourdomain.com     | radarr             |
-   | Lidarr            | 8686         | lidarr.yourdomain.com     | lidarr             |
-   | Readarr           | 8787         | readarr.yourdomain.com    | readarr            |
-   | Bazarr            | 6767         | bazarr.yourdomain.com     | bazarr             |
-   | qBittorrent       | 8080         | qbittorrent.yourdomain.com| qbittorrentvpn     |
-   | Prowlarr          | 9696         | prowlarr.yourdomain.com   | prowlarr           |
-   | NZBGet            | 6789         | nzbget.yourdomain.com     | nzbget             |
-   | Overseerr         | 5055         | overseerr.yourdomain.com  | overseerr          |
-   | Tautulli          | 8181         | tautulli.yourdomain.com   | tautulli           |
-   | Portainer         | 9000         | portainer.yourdomain.com  | portainer          |
-   | Organizr          | 80           | organizr.yourdomain.com   | organizr           |
-   | Authelia          | 9091         | auth.yourdomain.com       | authelia           |
-
-   After installation, configure these in Nginx Proxy Manager:
-   1. Access NPM at http://<SERVER_IP>:81
-   2. Add a Proxy Host for each service
-   3. Point each subdomain to the corresponding container and port
-   4. Enable SSL certificates through Let's Encrypt
 
 ## Installation Methods
 
@@ -135,23 +46,24 @@ This guide provides detailed instructions for installing and configuring the Mon
    cd monsterr-media-server
    ```
 
-2. **Make Scripts Executable**
-   ```bash
-   chmod +x *.sh scripts/*.sh
-   ```
-
-3. **Run Installation Script**
+2. **Start Installation**
    ```bash
    sudo ./install_media_server.sh
    ```
 
-4. **Follow Setup Wizard**
-   - Choose between web-based or CLI configuration
-   - Enter required information when prompted:
-     * Domain configuration (static or DDNS)
-     * Custom media and downloads locations
-     * Security settings (SSH port, UFW, Fail2Ban)
-     * Service-specific settings
+   The installer will:
+   - Check system requirements
+   - Install dependencies
+   - Launch setup wizard
+   - Configure services
+   - Start the system
+
+3. **Follow Setup Wizard**
+   The web-based setup wizard will guide you through:
+   - Domain configuration
+   - Media storage locations
+   - Service settings
+   - Security options
 
 ### Method 2: Manual Installation
 
@@ -165,11 +77,15 @@ This guide provides detailed instructions for installing and configuring the Mon
    sudo ./scripts/install_docker.sh
    ```
 
-3. **Configure Environment**
+3. **Configure System**
    ```bash
+   # Copy sample configuration
    cp sample_config.env config.env
-   # Edit config.env with your settings
+   
+   # Edit configuration
+   nano config.env
    ```
+   See [Configuration Guide](configuration.md) for details.
 
 4. **Create Directories**
    ```bash
@@ -178,9 +94,7 @@ This guide provides detailed instructions for installing and configuring the Mon
 
 5. **Configure Services**
    ```bash
-   sudo ./scripts/configure_firewall.sh
-   sudo ./scripts/setup_authelia.sh
-   # Configure additional services as needed
+   sudo ./scripts/configure_settings.sh
    ```
 
 6. **Launch Services**
@@ -188,113 +102,126 @@ This guide provides detailed instructions for installing and configuring the Mon
    sudo ./scripts/launch_services.sh
    ```
 
-## Post-installation Setup
+## Post-Installation Setup
 
-1. **Access Services**
-   - Nginx Proxy Manager: https://npm.yourdomain.com
-   - Portainer: https://portainer.yourdomain.com
-   - Plex: http://localhost:32400/web
+### 1. Access Services
+After installation, access your services at:
+- Dashboard: https://dashboard.yourdomain.com
+- Plex: https://plex.yourdomain.com
+- Other services: See [Service Configuration](configuration.md#service-specific-configuration)
 
-2. **Configure Media Libraries**
-   During installation, you'll be prompted to specify custom locations for your media and downloads folders. This allows you to:
-   - Use an external drive (e.g., `/mnt/externaldrive/media`)
-   - Use a NAS mount (e.g., `/mnt/nas/media`)
-   - Use any custom location on your system
+### 2. Configure Media Libraries
+See [Configuration Guide](configuration.md#media-organization) for detailed media organization.
 
-   Default locations if not specified:
-   - Media: `/opt/media-server/media`
-   - Downloads: `/opt/media-server/downloads`
+Default Locations:
+```
+media/
+├── movies/
+├── tv/
+├── music/
+├── books/
+├── audiobooks/
+└── podcasts/
+```
 
-   Important considerations:
-   - Ensure the specified directories exist and are mounted before installation
-   - The paths must be accessible and writable
-   - For external drives, ensure they are mounted at boot (via /etc/fstab)
-   - Permissions will be set automatically using your PUID/PGID
+### 3. Security Setup
+See [Network Setup Guide](network-setup.md#security-configuration) for security configuration.
 
-   The following subdirectories will be created in your media location:
-   ```
-   media/
-   ├── movies/
-   ├── tv/
-   ├── music/
-   ├── books/
-   ├── audiobooks/
-   └── podcasts/
-   ```
+Required Steps:
+1. Configure Authelia
+2. Set up SSL certificates
+3. Configure Fail2Ban
+4. Review firewall rules
 
-   And in your downloads location:
-   ```
-   downloads/
-   ├── complete/
-   └── incomplete/
-   ```
+### 4. Configure Backup System
+See [Backup Guide](backup.md) for detailed backup configuration.
 
-3. **Security Setup**
-   - Configure Authelia
-   - Set up Fail2Ban
-   - Configure SSL certificates
-   - Review firewall rules:
-     ```bash
-     sudo ufw status numbered
-     ```
+Basic Setup:
+```bash
+# Set up backup system
+sudo ./scripts/setup_backup.sh
 
-4. **Configure Backup System**
-   ```bash
-   # Verify backup script
-   sudo ./scripts/setup_backups.sh
-   
-   # Test backup
-   sudo ./backup.sh
-   ```
+# Verify backup system
+sudo ./scripts/backup_system.sh --verify
+```
+
+## Verification
+
+### 1. System Health Check
+```bash
+# Full system check
+sudo ./scripts/post_install_check.sh --all
+
+# View specific checks
+sudo ./scripts/post_install_check.sh --help
+```
+
+### 2. Service Status
+```bash
+# Check container status
+docker-compose ps
+
+# View service logs
+docker-compose logs [service_name]
+```
+
+### 3. Network Verification
+```bash
+# Check network setup
+sudo ./scripts/post_install_check.sh --network
+
+# Test domain configuration
+sudo ./scripts/post_install_check.sh --domain
+```
 
 ## Troubleshooting
 
-### Common Issues
+If you encounter issues during installation:
 
-1. **Permission Errors**
+1. Check the error log:
    ```bash
-   # Fix permissions
-   sudo chown -R $PUID:$PGID /opt/media-server
+   tail -f /var/log/monsterr/error.log
    ```
 
-2. **Network Issues**
+2. Use the error handler:
    ```bash
-   # Check Docker network
-   docker network ls
-   docker network inspect proxy
+   sudo ./scripts/error_handler.sh --check-config
    ```
 
-3. **Service Failures**
+3. Collect debug information:
    ```bash
-   # Check service logs
-   docker-compose logs [service_name]
-   
-   # Restart service
-   docker-compose restart [service_name]
+   sudo ./scripts/collect_debug_info.sh
    ```
 
-4. **Database Issues**
-   ```bash
-   # Backup database
-   docker-compose exec [service] pg_dump -U [user] > backup.sql
-   
-   # Restore database
-   docker-compose exec -i [service] psql -U [user] < backup.sql
-   ```
-
-### Logs Location
-- Docker logs: `/var/log/docker/`
-- Service logs: `/opt/media-server/logs/`
-- Nginx logs: `/opt/media-server/npm/logs/`
-
-### Support Resources
-- GitHub Issues
-- Community Forums
-- Documentation Wiki
-- Support Email
+See [Troubleshooting Guide](troubleshooting.md) for detailed problem resolution.
 
 ## Next Steps
-- [Security Configuration](security.md)
-- [Service Configuration](services.md)
-- [Backup Configuration](backup.md)
-- [Monitoring Setup](monitoring.md)
+
+1. [Configure Services](configuration.md)
+   - Set up media libraries
+   - Configure automation
+   - Customize settings
+
+2. [Set Up Monitoring](monitoring.md)
+   - Configure alerts
+   - Set up dashboards
+   - Monitor system health
+
+3. [Configure Backups](backup.md)
+   - Set up backup schedule
+   - Configure retention
+   - Test recovery
+
+4. [Review Security](network-setup.md#security-configuration)
+   - Check SSL setup
+   - Review firewall rules
+   - Test authentication
+
+## Additional Resources
+- [Quick Start Guide](quick-start.md)
+- [Configuration Guide](configuration.md)
+- [Network Setup Guide](network-setup.md)
+- [Troubleshooting Guide](troubleshooting.md)
+- [Hardware Guide](hardware.md)
+- [Monitoring Guide](monitoring.md)
+- [Backup Guide](backup.md)

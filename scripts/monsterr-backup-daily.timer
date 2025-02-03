@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily backup timer for Monsterr Media Server
+Requires=monsterr-backup.service
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=1800
+
+[Install]
+WantedBy=timers.target

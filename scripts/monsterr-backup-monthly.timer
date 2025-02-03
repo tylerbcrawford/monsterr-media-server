@@ -1,0 +1,11 @@
+[Unit]
+Description=Monthly backup timer for Monsterr Media Server
+Requires=monsterr-backup.service
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+RandomizedDelaySec=7200
+
+[Install]
+WantedBy=timers.target

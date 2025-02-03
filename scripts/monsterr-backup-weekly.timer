@@ -1,0 +1,11 @@
+[Unit]
+Description=Weekly backup timer for Monsterr Media Server
+Requires=monsterr-backup.service
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+RandomizedDelaySec=3600
+
+[Install]
+WantedBy=timers.target

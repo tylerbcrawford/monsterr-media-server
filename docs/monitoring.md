@@ -1,307 +1,190 @@
-# Monitoring Guide
+# System Monitoring Guide
 
-This guide covers the monitoring and alerting setup for the Monsterr Media Server, including Prometheus, Grafana, and service-specific monitoring.
+## Overview
+The Monsterr Media Server monitoring system provides automated health checks and notifications for home users. It tracks system resources, container health, and network connectivity, alerting you when attention is needed.
 
-## Table of Contents
-- [Monitoring Architecture](#monitoring-architecture)
-- [Prometheus Setup](#prometheus-setup)
-- [Grafana Configuration](#grafana-configuration)
-- [Service-Specific Monitoring](#service-specific-monitoring)
-- [Alert Configuration](#alert-configuration)
-- [Dashboard Templates](#dashboard-templates)
+## Features
+- Disk space monitoring for media and system
+- Memory and CPU utilization tracking
+- Container health status checks
+- Network connectivity verification
+- Desktop notifications for issues
+- Daily health summaries
+- Automatic log rotation
 
-## Monitoring Architecture
+## Installation
 
-### Overview
-```
-Services → Prometheus → Grafana → Alerts
-                    ↓
-              Node Exporter
-                    ↓
-             System Metrics
+1. Run the setup script as root:
+```bash
+sudo ./scripts/setup_monitoring.sh
 ```
 
-### Components
-- Prometheus: Metrics collection
-- Grafana: Visualization
-- Node Exporter: System metrics
-- Service Exporters: Application metrics
-- Alert Manager: Notification system
+This will:
+- Create necessary log directories
+- Install required dependencies
+- Set up log rotation
+- Install and start the systemd service
+- Create default configuration
 
-## Prometheus Setup
-
-### Basic Configuration
-
-1. **prometheus.yml**
-   ```yaml
-   global:
-     scrape_interval: 15s
-     evaluation_interval: 15s
-
-   alerting:
-     alertmanagers:
-       - static_configs:
-           - targets: ['alertmanager:9093']
-
-   rule_files:
-     - "/etc/prometheus/rules/*.yml"
-
-   scrape_configs:
-     - job_name: 'prometheus'
-       static_configs:
-         - targets: ['localhost:9090']
-
-     - job_name: 'node'
-       static_configs:
-         - targets: ['node-exporter:9100']
-
-     - job_name: 'docker'
-       static_configs:
-         - targets: ['docker-exporter:9323']
-   ```
-
-2. **Alert Rules**
-   ```yaml
-   # /etc/prometheus/rules/alerts.yml
-   groups:
-     - name: basic_alerts
-       rules:
-         - alert: HighCPUUsage
-           expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
-           for: 5m
-           labels:
-             severity: warning
-           annotations:
-             summary: High CPU usage detected
-   ```
-
-### Node Exporter Setup
-
-```yaml
-node-exporter:
-  image: prom/node-exporter:latest
-  container_name: node-exporter
-  restart: unless-stopped
-  volumes:
-    - /proc:/host/proc:ro
-    - /sys:/host/sys:ro
-    - /:/rootfs:ro
-  command:
-    - '--path.procfs=/host/proc'
-    - '--path.sysfs=/host/sys'
-    - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+2. Verify the installation:
+```bash
+systemctl status monsterr-monitor
 ```
 
-## Grafana Configuration
+## Configuration
 
-### Initial Setup
+The monitoring system can be configured by editing `config.env`:
 
-1. **Basic Configuration**
-   ```yaml
-   grafana:
-     image: grafana/grafana:latest
-     environment:
-       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
-       - GF_USERS_ALLOW_SIGN_UP=false
-     volumes:
-       - ./grafana/data:/var/lib/grafana
-       - ./grafana/provisioning:/etc/grafana/provisioning
-   ```
-
-2. **Data Source Configuration**
-   ```yaml
-   # /etc/grafana/provisioning/datasources/prometheus.yml
-   apiVersion: 1
-   datasources:
-     - name: Prometheus
-       type: prometheus
-       access: proxy
-       url: http://prometheus:9090
-       isDefault: true
-   ```
-
-### Dashboard Setup
-
-1. **System Overview**
-   - CPU Usage
-   - Memory Usage
-   - Disk I/O
-   - Network Traffic
-
-2. **Docker Metrics**
-   - Container Status
-   - Resource Usage
-   - Network Stats
-
-3. **Service Health**
-   - Uptime
-   - Response Time
-   - Error Rates
-
-## Service-Specific Monitoring
-
-### Plex Monitoring (Tautulli)
-
-1. **Configuration**
-   ```yaml
-   tautulli:
-     image: lscr.io/linuxserver/tautulli:latest
-     volumes:
-       - ./tautulli/config:/config
-       - ./plex/config/Library/Application Support/Plex Media Server/Logs:/logs:ro
-   ```
-
-2. **Metrics Collection**
-   - Active Streams
-   - Bandwidth Usage
-   - User Statistics
-   - Library Stats
-
-### Download Clients
-
-1. **qBittorrent Metrics**
-   - Download Speed
-   - Upload Speed
-   - Active Torrents
-   - Queue Status
-
-2. **NZBGet Metrics**
-   - Download Speed
-   - Queue Size
-   - Disk Usage
-   - Article Health
-
-## Alert Configuration
-
-### Alert Manager Setup
-
-1. **Basic Configuration**
-   ```yaml
-   # alertmanager.yml
-   global:
-     smtp_smarthost: 'smtp.gmail.com:587'
-     smtp_from: 'alertmanager@example.com'
-     smtp_auth_username: 'your-email@gmail.com'
-     smtp_auth_password: 'your-password'
-
-   route:
-     group_by: ['alertname']
-     group_wait: 30s
-     group_interval: 5m
-     repeat_interval: 4h
-     receiver: 'email-notifications'
-
-   receivers:
-     - name: 'email-notifications'
-       email_configs:
-         - to: 'your-email@example.com'
-   ```
-
-2. **Notification Channels**
-   - Email
-   - Discord
-   - Slack
-   - Telegram
-
-### Alert Rules
-
-1. **System Alerts**
-   ```yaml
-   - alert: DiskSpaceLow
-     expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} * 100 < 10
-     for: 5m
-     labels:
-       severity: warning
-     annotations:
-       summary: Low disk space on root partition
-   ```
-
-2. **Service Alerts**
-   ```yaml
-   - alert: ServiceDown
-     expr: up == 0
-     for: 1m
-     labels:
-       severity: critical
-     annotations:
-       summary: Service {{ $labels.job }} is down
-   ```
-
-## Dashboard Templates
-
-### System Dashboard
-
-```json
-{
-  "dashboard": {
-    "title": "System Overview",
-    "panels": [
-      {
-        "title": "CPU Usage",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)"
-          }
-        ]
-      }
-    ]
-  }
-}
+```bash
+# Monitoring Configuration
+DISK_THRESHOLD=90    # Alert when disk usage exceeds 90%
+MEMORY_THRESHOLD=90  # Alert when memory usage exceeds 90%
+CPU_THRESHOLD=90     # Alert when CPU usage exceeds 90%
+CHECK_INTERVAL=5     # Check every 5 minutes
 ```
 
-### Media Server Dashboard
-
-```json
-{
-  "dashboard": {
-    "title": "Media Server Overview",
-    "panels": [
-      {
-        "title": "Active Streams",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "tautulli_current_streams"
-          }
-        ]
-      }
-    ]
-  }
-}
+After changing configuration:
+```bash
+sudo systemctl restart monsterr-monitor
 ```
+
+## Monitoring Components
+
+### System Health Checks
+- Disk space usage for media and system directories
+- Memory utilization
+- CPU load
+- Container status and health
+- Network connectivity
+
+### Notifications
+The system uses desktop notifications (`notify-send`) to alert you about:
+- High disk usage
+- High memory usage
+- High CPU usage
+- Container health issues
+- Network problems
+
+### Logging
+Logs are stored in `/var/log/monsterr/`:
+- `monitor.log`: Real-time monitoring events
+- `daily_summary.log`: Daily system status summary
+- `monitor-service.log`: Service-related logs
+
+Log rotation is configured to:
+- Rotate logs weekly
+- Keep 4 weeks of history
+- Automatically compress old logs
+
+## Usage
+
+### Viewing Logs
+```bash
+# View recent monitoring events
+tail -f /var/log/monsterr/monitor.log
+
+# View today's summary
+cat /var/log/monsterr/daily_summary.log
+
+# View service logs
+journalctl -u monsterr-monitor
+```
+
+### Managing the Service
+```bash
+# Stop monitoring
+sudo systemctl stop monsterr-monitor
+
+# Start monitoring
+sudo systemctl start monsterr-monitor
+
+# Restart monitoring
+sudo systemctl restart monsterr-monitor
+
+# Disable monitoring
+sudo systemctl disable monsterr-monitor
+
+# Enable monitoring
+sudo systemctl enable monsterr-monitor
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. Missing Notifications
+   - Ensure `libnotify-bin` is installed
+   - Check desktop environment is running
+   - Verify user permissions
+
+2. Service Not Starting
+   ```bash
+   # Check service status
+   systemctl status monsterr-monitor
+   
+   # View service logs
+   journalctl -u monsterr-monitor -n 50
+   ```
+
+3. High Resource Usage
+   - Adjust check interval in config.env
+   - Modify threshold values
+   - Check system resources
+
+### Log Analysis
+```bash
+# Find error events
+grep ERROR /var/log/monsterr/monitor.log
+
+# Find warning events
+grep WARNING /var/log/monsterr/monitor.log
+
+# View recent container issues
+grep "Container" /var/log/monsterr/monitor.log | tail -n 20
+```
+
+## Maintenance
+
+### Regular Tasks
+1. Review logs weekly
+2. Check daily summaries
+3. Verify notification settings
+4. Update thresholds if needed
+
+### Log Management
+- Logs are automatically rotated weekly
+- Old logs are compressed
+- Maintain 4 weeks of history
+
+### System Updates
+When updating the Monsterr Media Server:
+1. Stop the monitoring service
+2. Perform system updates
+3. Start the monitoring service
+4. Verify monitoring is working
 
 ## Best Practices
 
-### Data Retention
+1. Resource Management
+   - Act on storage warnings promptly
+   - Monitor trends in daily summaries
+   - Plan upgrades based on usage patterns
 
-1. **Prometheus**
-   ```yaml
-   prometheus:
-     command:
-       - '--storage.tsdb.retention.time=15d'
-       - '--storage.tsdb.retention.size=5GB'
-   ```
+2. Notification Management
+   - Keep thresholds appropriate for your system
+   - Review and act on warnings promptly
+   - Maintain log history for troubleshooting
 
-2. **Grafana**
-   - Dashboard backup
-   - Regular pruning
-   - Data source cleanup
+3. System Maintenance
+   - Check logs regularly
+   - Update configuration as needed
+   - Monitor backup success
 
-### Performance Optimization
+## Support
 
-1. **Scrape Intervals**
-   - Balance frequency vs. resource usage
-   - Adjust based on metrics importance
-   - Consider storage implications
-
-2. **Query Optimization**
-   - Use efficient PromQL
-   - Implement recording rules
-   - Cache dashboard results
-
-## Additional Resources
-- [Installation Guide](installation.md)
-- [Security Guide](security.md)
-- [Services Guide](services.md)
-- [Troubleshooting Guide](troubleshooting.md)
+If you encounter issues:
+1. Check the troubleshooting section
+2. Review recent logs
+3. Verify configuration
+4. Check system resources
+5. Consult the community forums

@@ -1,0 +1,26 @@
+[Unit]
+Description=Monsterr Media Server Monitoring Service
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/opt/media-server/scripts/monitor_system.sh
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/monsterr/monitor-service.log
+StandardError=append:/var/log/monsterr/monitor-service.log
+
+# Security hardening
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

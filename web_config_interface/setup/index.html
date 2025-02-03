@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monsterr Media Server Setup</title>
+    <link rel="stylesheet" href="setup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="setup-container">
+        <!-- Header -->
+        <header>
+            <h1><i class="fas fa-server"></i> Monsterr Media Server Setup</h1>
+            <div class="progress-bar">
+                <div class="progress" id="setup-progress"></div>
+            </div>
+        </header>
+
+        <!-- Setup Form -->
+        <form id="setup-form" class="setup-form">
+            <!-- Step 1: Basic Configuration -->
+            <div class="setup-step" data-step="1">
+                <h2>Basic Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="timezone">Timezone</label>
+                    <input type="text" id="timezone" name="TIMEZONE" required
+                           placeholder="e.g., America/Toronto">
+                    <div class="help-text">Your local timezone for correct scheduling</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="media-dir">Media Directory</label>
+                    <input type="text" id="media-dir" name="MEDIA_DIR" required
+                           placeholder="/opt/media-server/media">
+                    <div class="validation-status"></div>
+                    <div class="help-text">Directory for your media files</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="downloads-dir">Downloads Directory</label>
+                    <input type="text" id="downloads-dir" name="DOWNLOADS_DIR" required
+                           placeholder="/opt/media-server/downloads">
+                    <div class="validation-status"></div>
+                    <div class="help-text">Directory for downloaded content</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Domain Configuration -->
+            <div class="setup-step" data-step="2" style="display: none;">
+                <h2>Domain Configuration</h2>
+
+                <div class="form-group">
+                    <label>Domain Type</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="domain-type" value="static" checked>
+                            Static IP
+                        </label>
+                        <label>
+                            <input type="radio" name="domain-type" value="dynamic">
+                            Dynamic DNS (DDNS)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="static-domain-group">
+                    <label for="domain">Domain Name</label>
+                    <input type="text" id="domain" name="DOMAIN" required
+                           placeholder="example.com">
+                    <div class="validation-status"></div>
+                    <div class="help-text">Your domain name for accessing services</div>
+                </div>
+
+                <div class="form-group ddns-group" style="display: none;">
+                    <label for="dynu-hostname">Dynu Hostname</label>
+                    <input type="text" id="dynu-hostname" name="DYNU_HOSTNAME"
+                           placeholder="myhome.dynu.net">
+                    <div class="help-text">Your Dynu DDNS hostname</div>
+                </div>
+
+                <div class="form-group ddns-group" style="display: none;">
+                    <label for="dynu-api-key">Dynu API Key</label>
+                    <input type="password" id="dynu-api-key" name="DYNU_API_KEY"
+                           placeholder="Your Dynu API key">
+                    <div class="help-text">API key for automatic updates</div>
+                </div>
+            </div>
+
+            <!-- Step 3: Service Configuration -->
+            <div class="setup-step" data-step="3" style="display: none;">
+                <h2>Service Configuration</h2>
+
+                <div class="form-group">
+                    <label for="puid">PUID</label>
+                    <input type="number" id="puid" name="PUID" required
+                           placeholder="1000">
+                    <div class="help-text">User ID for service permissions</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pgid">PGID</label>
+                    <input type="number" id="pgid" name="PGID" required
+                           placeholder="1000">
+                    <div class="help-text">Group ID for service permissions</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="plex-claim">Plex Claim Token</label>
+                    <input type="text" id="plex-claim" name="PLEX_CLAIM_TOKEN"
+                           placeholder="claim-xxxxxxxx">
+                    <div class="help-text">Get your token at plex.tv/claim</div>
+                </div>
+            </div>
+
+            <!-- Step 4: Security Configuration -->
+            <div class="setup-step" data-step="4" style="display: none;">
+                <h2>Security Configuration</h2>
+
+                <div class="form-group">
+                    <label for="vpn-username">VPN Username</label>
+                    <input type="text" id="vpn-username" name="VPN_USERNAME" required
+                           placeholder="VPN username">
+                    <div class="help-text">Username for VPN service</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vpn-password">VPN Password</label>
+                    <input type="password" id="vpn-password" name="VPN_PASSWORD" required
+                           placeholder="VPN password">
+                    <div class="help-text">Password for VPN service</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="grafana-password">Grafana Admin Password</label>
+                    <input type="password" id="grafana-password" name="GRAFANA_ADMIN_PASSWORD" required
+                           placeholder="Grafana admin password">
+                    <div class="help-text">Password for Grafana dashboard</div>
+                </div>
+            </div>
+
+            <!-- Step 5: Email Configuration (Optional) -->
+            <div class="setup-step" data-step="5" style="display: none;">
+                <h2>Email Configuration (Optional)</h2>
+                <div class="optional-section">
+                    <label>
+                        <input type="checkbox" id="enable-email">
+                        Enable email notifications
+                    </label>
+                </div>
+
+                <div id="email-config" style="display: none;">
+                    <div class="form-group">
+                        <label for="smtp-host">SMTP Host</label>
+                        <input type="text" id="smtp-host" name="AUTHELIA_NOTIFIER_SMTP_HOST"
+                               placeholder="smtp.gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="smtp-port">SMTP Port</label>
+                        <input type="number" id="smtp-port" name="AUTHELIA_NOTIFIER_SMTP_PORT"
+                               placeholder="587">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="smtp-username">SMTP Username</label>
+                        <input type="text" id="smtp-username" name="AUTHELIA_NOTIFIER_SMTP_USERNAME"
+                               placeholder="your-email@gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="smtp-password">SMTP Password</label>
+                        <input type="password" id="smtp-password" name="AUTHELIA_NOTIFIER_SMTP_PASSWORD"
+                               placeholder="Your SMTP password or app password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="smtp-sender">Sender Email</label>
+                        <input type="email" id="smtp-sender" name="AUTHELIA_NOTIFIER_SMTP_SENDER"
+                               placeholder="your-email@gmail.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="form-navigation">
+                <button type="button" id="prev-btn" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button type="button" id="next-btn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+                <button type="submit" id="submit-btn" style="display: none;">
+                    Complete Setup <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Setup Complete Message -->
+        <div id="setup-complete" style="display: none;">
+            <h2><i class="fas fa-check-circle"></i> Setup Complete!</h2>
+            <p>Your Monsterr Media Server has been configured successfully.</p>
+            <div class="next-steps">
+                <h3>Next Steps:</h3>
+                <ol>
+                    <li>Review your configuration in config.env</li>
+                    <li>Start your services with: sudo ./setup_media_server.sh</li>
+                    <li>Check service status with: sudo ./scripts/post_install_check.sh</li>
+                </ol>
+            </div>
+            <button onclick="window.close()">Close Setup</button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <div class="loading-message">Processing...</div>
+    </div>
+
+    <script src="setup.js"></script>
+</body>
+</html>
