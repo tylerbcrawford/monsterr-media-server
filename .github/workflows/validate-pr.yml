@@ -1,0 +1,145 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Check Docker Compose files
+      run: |
+        for file in config/docker/docker-compose*.yml; do
+          docker-compose -f $file config > /dev/null
+        done
+    
+    - name: Validate shell scripts
+      run: |
+        find . -type f -name "*.sh" -exec shellcheck {} \;
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'src/web_interface/package.json'
+    
+    - name: Install web interface dependencies
+      working-directory: src/web_interface
+      run: npm ci
+    
+    - name: Run web interface tests
+      working-directory: src/web_interface
+      run: npm test
+    
+    - name: Check file structure
+      run: |
+        required_dirs=(
+          ".github/ISSUE_TEMPLATE"
+          ".github/workflows"
+          "config/authelia"
+          "config/docker"
+          "config/nginx"
+          "config/services"
+          "docs/assets"
+          "docs/guides"
+          "docs/api"
+          "scripts/install"
+          "scripts/maintenance"
+          "scripts/utils"
+          "src/web_interface/dashboard"
+          "src/web_interface/setup"
+          "src/web_interface/shared"
+          "tests/integration"
+          "tests/unit"
+          "tools"
+        )
+        
+        for dir in "${required_dirs[@]}"; do
+          if [ ! -d "$dir" ]; then
+            echo "Error: Required directory '$dir' is missing"
+            exit 1
+          fi
+        done
+    
+    - name: Validate documentation links
+      run: |
+        find docs -type f -name "*.md" -exec \
+          markdown-link-check {} \;
+    
+    - name: Check for sensitive information
+      run: |
+        if grep -r "API_KEY\|SECRET\|PASSWORD\|TOKEN" \
+          --exclude-dir={.git,node_modules} \
+          --exclude={\*.md,\*.example,\*.template} .; then
+          echo "Warning: Possible sensitive information found"
+          exit 1
+        fi
+    
+    - name: Run integration tests
+      run: |
+        if [ -f "tests/integration/run_tests.sh" ]; then
+          ./tests/integration/run_tests.sh
+        fi
+    
+    - name: Run unit tests
+      run: |
+        if [ -f "tests/unit/run_tests.sh" ]; then
+          ./tests/unit/run_tests.sh
+        fi
+    
+    - name: Validate configuration templates
+      run: |
+        for template in config/**/*.template; do
+          if [ -f "$template" ]; then
+            envsubst < "$template" > /dev/null
+          fi
+        done
+    
+    - name: Check script permissions
+      run: |
+        for script in $(find scripts -type f -name "*.sh"); do
+          if [ ! -x "$script" ]; then
+            echo "Error: Script '$script' is not executable"
+            exit 1
+          fi
+        done
+
+  notify:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Notify on failure
+      if: ${{ failure() }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ Validation failed. Please check the workflow logs for details.'
+          })
+    
+    - name: Notify on success
+      if: ${{ success() }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ All validation checks passed successfully!'
+          })

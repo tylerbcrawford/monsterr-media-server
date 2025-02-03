@@ -1,0 +1,93 @@
+{
+  "name": "monsterr-web-interface",
+  "version": "1.1.0",
+  "description": "Web interface for Monsterr Media Server",
+  "private": true,
+  "scripts": {
+    "start": "node shared/server.js",
+    "dev": "nodemon shared/server.js",
+    "setup": "node shared/setup_server.js",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write \"**/*.{js,css,html}\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "winston": "^3.11.0",
+    "socket.io": "^4.7.2",
+    "validator": "^13.11.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jest": "^27.6.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.1.1",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/node_modules/**",
+      "!coverage/**"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "jest": true,
+      "browser": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:jest/recommended",
+      "prettier"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022
+    },
+    "rules": {
+      "no-console": "warn",
+      "no-unused-vars": "warn"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 80,
+    "tabWidth": 2,
+    "semi": true
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules/*",
+      "coverage/*",
+      "tests/*"
+    ],
+    "delay": "1000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tylerbcrawford/monsterr-media-server.git"
+  },
+  "author": "Tyler Crawford",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tylerbcrawford/monsterr-media-server/issues"
+  },
+  "homepage": "https://github.com/tylerbcrawford/monsterr-media-server#readme"
+}

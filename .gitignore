@@ -1,11 +1,139 @@
-# Development files
-cline_docs/
+# Dependencies
+node_modules/
+vendor/
+package-lock.json
+yarn.lock
 
-# macOS system files
+# Environment files
+.env
+*.env
+config.env
+!sample_config.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+*.pyc
+__pycache__/
+*.o
+*.so
+
+# Logs and databases
+*.log
+logs/
+*.sqlite
+*.db
+*.db-*
+
+# Media files
+media/
+downloads/
+*.mp4
+*.mkv
+*.avi
+*.mp3
+*.m4a
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# System files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+*.code-workspace
+.history/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Debug files
+debug/
+*.debug
+*.dump
+
+# Test coverage
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.priv
+*.pub
+
+# Backup files
+*.backup
+*.bak
+*.old
+*.save
+backup/
+backups/
+
+# Generated files
+*.generated.*
+generated/
+auto-generated/
+
+# Dependency directories
+bower_components/
+jspm_packages/
+
+# Cache directories
+.cache/
+.npm/
+.yarn/
+
+# Local development
+*.local
+local/
+
+# Sensitive information
+*.secret
+secrets/
+private/
+
+# Monsterr specific
+monsterr-debug-*.tar.gz
+monsterr-backup-*.tar.gz
+authelia/users_database.yml
+authelia/configuration.yml
+!authelia/configuration.template.yml
+
+# Service specific
+plex/
+sonarr/
+radarr/
+lidarr/
+readarr/
+bazarr/
+prowlarr/
+overseerr/
+tautulli/
