@@ -3,11 +3,62 @@
 This guide provides detailed configuration instructions for all services included in the Monsterr Media Server.
 
 ## Table of Contents
+- [Core Infrastructure](#core-infrastructure)
 - [Media Management](#media-management)
 - [Download Management](#download-management)
+- [Media Request & Discovery](#media-request--discovery)
+- [Book & Audio Management](#book--audio-management)
 - [System Management](#system-management)
 - [Monitoring Services](#monitoring-services)
 - [Security Services](#security-services)
+
+## Core Infrastructure
+
+### Nginx Proxy Manager
+
+1. **Initial Access**
+   ```
+   URL: https://npm.yourdomain.com
+   Email: admin@example.com
+   Password: changeme
+   ```
+
+2. **Proxy Host Setup**
+   - SSL configuration
+   - Access control
+   - Custom locations
+
+3. **Configuration**
+   ```yaml
+   nginx-proxy-manager:
+     image: jc21/nginx-proxy-manager:latest
+     ports:
+       - '80:80'
+       - '443:443'
+       - '81:81'
+   ```
+
+### Authelia
+
+1. **Basic Configuration**
+   ```yaml
+   authelia:
+     image: authelia/authelia:latest
+     volumes:
+       - ./authelia:/config
+   ```
+
+2. **Integration**
+   - 2FA setup
+   - User database
+   - Access control rules
+
+3. **Redis Integration**
+   ```yaml
+   redis:
+     image: redis:latest
+     container_name: authelia-redis
+   ```
 
 ## Media Management
 
@@ -48,39 +99,6 @@ This guide provides detailed configuration instructions for all services include
    - Configure qBittorrent
    - Set up quality profiles
 
-### Watchlistarr (Watchlist Sync)
-
-1. **Configuration**
-   ```yaml
-   watchlistarr:
-     image: ghcr.io/nylonee/watchlistarr:latest
-     environment:
-       - SONARR_API_KEY=${SONARR_API_KEY}
-       - RADARR_API_KEY=${RADARR_API_KEY}
-       - TRAKT_CLIENT_ID=${TRAKT_CLIENT_ID}
-       - TRAKT_CLIENT_SECRET=${TRAKT_CLIENT_SECRET}
-       - IMDB_USER_ID=${IMDB_USER_ID}
-   ```
-
-2. **Setup Instructions**
-   - Get API keys from Sonarr/Radarr:
-     * Go to Settings -> General
-     * Copy the API Key
-   - Set up Trakt integration:
-     * Create an account at https://trakt.tv
-     * Go to https://trakt.tv/oauth/applications
-     * Create a new application
-     * Copy Client ID and Client Secret
-   - Set up IMDB integration:
-     * Get your IMDB user ID from your profile URL
-     * Format: urxxxxxxxx (e.g., ur12345678)
-
-3. **Features**
-   - Syncs Trakt watchlist to Sonarr/Radarr
-   - Syncs IMDB watchlist to Sonarr/Radarr
-   - Automatic periodic sync
-   - Manual sync via web interface
-
 ### Radarr (Movies)
 
 1. **Configuration**
@@ -112,6 +130,38 @@ This guide provides detailed configuration instructions for all services include
    - Artist monitoring
    - Quality profiles
    - Metadata agents
+
+### Bazarr (Subtitles)
+
+1. **Configuration**
+   ```yaml
+   bazarr:
+     image: lscr.io/linuxserver/bazarr:latest
+     volumes:
+       - ./bazarr/config:/config
+       - ./media/movies:/movies
+       - ./media/tv:/tv
+   ```
+
+2. **Integration**
+   - Connect to Sonarr/Radarr
+   - Language preferences
+   - Provider setup
+
+### Recyclarr
+
+1. **Configuration**
+   ```yaml
+   recyclarr:
+     image: requestrr/recyclarr:latest
+     volumes:
+       - ./recyclarr/config:/config
+   ```
+
+2. **Features**
+   - Automatic quality profile updates
+   - Custom formats synchronization
+   - Schedule configuration
 
 ## Download Management
 
@@ -146,36 +196,139 @@ This guide provides detailed configuration instructions for all services include
    - Configure categories
    - Set up API keys
 
-## System Management
-
-### Nginx Proxy Manager
-
-1. **Initial Access**
-   ```
-   URL: https://npm.yourdomain.com
-   Email: admin@example.com
-   Password: changeme
-   ```
-
-2. **Proxy Host Setup**
-   - SSL configuration
-   - Access control
-   - Custom locations
-
-### Portainer
+### NZBGet
 
 1. **Configuration**
    ```yaml
-   portainer:
-     image: portainer/portainer-ce:latest
+   nzbget:
+     image: lscr.io/linuxserver/nzbget:latest
      volumes:
-       - /var/run/docker.sock:/var/run/docker.sock
+       - ./nzbget/config:/config
+       - ./downloads:/downloads
    ```
 
-2. **Management Features**
-   - Container management
-   - Volume management
-   - Network configuration
+2. **Setup**
+   - Usenet server configuration
+   - Download categories
+   - Post-processing scripts
+
+### Unpackerr
+
+1. **Configuration**
+   ```yaml
+   unpackerr:
+     image: golift/unpackerr:latest
+     volumes:
+       - ./unpackerr/config:/config
+       - ./downloads:/downloads
+   ```
+
+2. **Features**
+   - Automatic extraction
+   - Clean-up rules
+   - Integration with *arr services
+
+## Media Request & Discovery
+
+### Overseerr
+
+1. **Configuration**
+   ```yaml
+   overseerr:
+     image: lscr.io/linuxserver/overseerr:latest
+     volumes:
+       - ./overseerr/config:/app/config
+   ```
+
+2. **Setup**
+   - Plex integration
+   - Sonarr/Radarr connection
+   - User management
+
+### Watchlist
+
+1. **Configuration**
+   ```yaml
+   watchlist:
+     image: ghcr.io/linuxserver/watchlist:latest
+     volumes:
+       - ./watchlist/config:/config
+   ```
+
+2. **Features**
+   - Media tracking
+   - Integration with media services
+   - Custom lists
+
+### Watchlistarr
+
+1. **Configuration**
+   ```yaml
+   watchlistarr:
+     image: ghcr.io/nylonee/watchlistarr:latest
+     environment:
+       - SONARR_API_KEY=${SONARR_API_KEY}
+       - RADARR_API_KEY=${RADARR_API_KEY}
+       - TRAKT_CLIENT_ID=${TRAKT_CLIENT_ID}
+       - TRAKT_CLIENT_SECRET=${TRAKT_CLIENT_SECRET}
+       - IMDB_USER_ID=${IMDB_USER_ID}
+   ```
+
+2. **Setup Instructions**
+   - Get API keys from Sonarr/Radarr
+   - Set up Trakt integration
+   - Configure IMDB watchlist
+
+## Book & Audio Management
+
+### Audiobookshelf
+
+1. **Configuration**
+   ```yaml
+   audiobookshelf:
+     image: ghcr.io/advplyr/audiobookshelf:latest
+     volumes:
+       - ./audiobookshelf/config:/config
+       - ./media/audiobooks:/audiobooks
+       - ./media/podcasts:/podcasts
+   ```
+
+2. **Features**
+   - Audiobook organization
+   - Podcast management
+   - Progress tracking
+
+### Calibre-Web
+
+1. **Configuration**
+   ```yaml
+   calibre-web:
+     image: lscr.io/linuxserver/calibre-web:latest
+     volumes:
+       - ./calibre-web/config:/config
+       - ./media/ebooks:/books
+   ```
+
+2. **Setup**
+   - Library configuration
+   - User management
+   - Format conversion
+
+### LazyLibrarian
+
+1. **Configuration**
+   ```yaml
+   lazylibrarian:
+     image: lscr.io/linuxserver/lazylibrarian:latest
+     volumes:
+       - ./lazylibrarian/config:/config
+       - ./media/ebooks:/books
+   ```
+
+2. **Features**
+   - Author monitoring
+   - Book discovery
+   - Automatic downloads
 
 ## Monitoring Services
 
@@ -183,15 +336,10 @@ This guide provides detailed configuration instructions for all services include
 
 1. **Basic Configuration**
    ```yaml
-   # prometheus.yml
-   global:
-     scrape_interval: 15s
-     evaluation_interval: 15s
-
-   scrape_configs:
-     - job_name: 'prometheus'
-       static_configs:
-         - targets: ['localhost:9090']
+   prometheus:
+     image: prom/prometheus:latest
+     volumes:
+       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
    ```
 
 2. **Service Monitoring**
@@ -229,22 +377,58 @@ This guide provides detailed configuration instructions for all services include
    - Library analytics
    - Notifications
 
-## Security Services
+### Monitorr
 
-### Authelia
-
-1. **Basic Configuration**
+1. **Configuration**
    ```yaml
-   authelia:
-     image: authelia/authelia:latest
+   monitorr:
+     image: monitorr/monitorr:latest
      volumes:
-       - ./authelia:/config
+       - ./monitorr/config:/var/www/html/assets/config
    ```
 
-2. **Integration**
-   - 2FA setup
-   - User database
-   - Access control rules
+2. **Features**
+   - Service status monitoring
+   - Uptime tracking
+   - Alert configuration
+
+## System Management
+
+### Portainer
+
+1. **Configuration**
+   ```yaml
+   portainer:
+     image: portainer/portainer-ce:latest
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+       - ./portainer/data:/data
+   ```
+
+2. **Management Features**
+   - Container management
+   - Volume management
+   - Network configuration
+
+### Watchtower
+
+1. **Configuration**
+   ```yaml
+   watchtower:
+     image: containrrr/watchtower:latest
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+     environment:
+       - WATCHTOWER_CLEANUP=true
+       - WATCHTOWER_POLL_INTERVAL=86400
+   ```
+
+2. **Features**
+   - Automatic updates
+   - Update scheduling
+   - Notification options
+
+## Security Services
 
 ### Fail2Ban
 
@@ -254,6 +438,7 @@ This guide provides detailed configuration instructions for all services include
      image: crazymax/fail2ban:latest
      volumes:
        - /var/log:/var/log:ro
+       - /var/run/docker.sock:/var/run/docker.sock
    ```
 
 2. **Jail Setup**
@@ -321,59 +506,6 @@ This guide provides detailed configuration instructions for all services include
    - Rotation policy
    - Storage limits
    - Analysis tools
-
-## FAQ & Troubleshooting
-
-### Watchlistarr
-
-1. **How do I add Watchlistarr after installation?**
-   ```bash
-   # 1. Edit config.env and add required API keys:
-   SONARR_API_KEY=your_sonarr_api_key
-   RADARR_API_KEY=your_radarr_api_key
-
-   # 2. For Trakt integration (optional), add:
-   TRAKT_CLIENT_ID=your_trakt_client_id
-   TRAKT_CLIENT_SECRET=your_trakt_client_secret
-
-   # 3. For IMDB integration (optional), add:
-   IMDB_USER_ID=your_imdb_user_id
-
-   # 4. Restart the service
-   docker-compose restart watchlistarr
-   ```
-
-2. **Can I use only one watchlist service?**
-   Yes! You can choose to use:
-   - Only Trakt: Add Trakt credentials only
-   - Only IMDB: Add IMDB user ID only
-   - Both: Add both Trakt and IMDB credentials
-
-3. **Where do I find the required API keys?**
-   - Required for any integration:
-     * Sonarr API Key: Settings -> General
-     * Radarr API Key: Settings -> General
-   - For Trakt integration:
-     * Create app at https://trakt.tv/oauth/applications
-     * Get Client ID and Client Secret
-   - For IMDB integration:
-     * Get user ID from your profile URL (format: ur12345678)
-     * Ensure your watchlist is public
-
-4. **Watchlistarr not syncing?**
-   - Check container logs: `docker-compose logs watchlistarr`
-   - Verify API keys are correct
-   - Ensure Sonarr/Radarr are accessible
-   - For Trakt: Check application credentials
-   - For IMDB: Verify watchlist is public
-   - Verify network connectivity between containers
-
-5. **Common Issues:**
-   - "Invalid API key": Double-check keys in Sonarr/Radarr settings
-   - "Connection refused": Ensure services are running and healthy
-   - "Rate limit exceeded": Wait and try again (Trakt API limits)
-   - "Invalid IMDB ID": Verify format is ur12345678
-   - "Watchlist not found": Check IMDB profile is public
 
 ## Additional Resources
 - [Installation Guide](installation.md)
