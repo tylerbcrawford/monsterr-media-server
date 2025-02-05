@@ -1,7 +1,16 @@
 version: '3.8'
 
+x-common-env: &common-env
+  PUID: ${PUID}
+  PGID: ${PGID}
+  TZ: ${TIMEZONE}
+
+x-common-networks: &common-networks
+  networks:
+    - proxy
+
 services:
-  # Nginx Proxy Manager
+  # Core Infrastructure (Always enabled)
   nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
@@ -15,10 +24,9 @@ services:
     volumes:
       - ./npm/data:/data
       - ./npm/letsencrypt:/etc/letsencrypt
-    networks:
-      - proxy
+    <<: *common-networks
+    profiles: ["core"]
 
-  # Authelia
   authelia:
     image: authelia/authelia:latest
     container_name: authelia
@@ -31,385 +39,16 @@ services:
       - TZ=${TIMEZONE}
     depends_on:
       - redis
-    networks:
-      - proxy
+    <<: *common-networks
+    profiles: ["core"]
 
-  # Redis for Authelia
   redis:
     image: redis:latest
     container_name: authelia-redis
     restart: unless-stopped
-    networks:
-      - proxy
+    <<: *common-networks
+    profiles: ["core"]
 
-  # Plex Media Server
-  plex:
-    image: lscr.io/linuxserver/plex:latest
-    container_name: plex
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - VERSION=docker
-      - TZ=${TIMEZONE}
-      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
-    volumes:
-      - ./plex/config:/config
-      - ./plex/transcode:/transcode
-      - ./media:/data
-    depends_on:
-      - qbittorrentvpn
-
-  # qBittorrent VPN
-  qbittorrentvpn:
-    image: ghcr.io/hotio/qbittorrent:latest
-    container_name: qbittorrentvpn
-    restart: unless-stopped
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-      - UMASK=002
-      - VPN_ENABLED=yes
-      - VPN_TYPE=custom
-      - VPN_PROV=custom
-      - VPN_CLIENT=openvpn
-      - VPN_CONFIG_FILE=/config/openvpn/client.ovpn
-      - VPN_USERNAME=${VPN_USERNAME}
-      - VPN_PASSWORD=${VPN_PASSWORD}
-      - LAN=192.168.1.0/24
-    volumes:
-      - ./qbittorrentvpn/config:/config
-      - ./downloads:/downloads
-    ports:
-      - '8080:8080'  # qBittorrent Web UI
-    networks:
-      - proxy
-
-  # Prowlarr
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:develop
-    container_name: prowlarr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./prowlarr/config:/config
-    networks:
-      - proxy
-
-  # Sonarr
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./sonarr/config:/config
-      - ./media/tv:/tv
-      - ./downloads:/downloads
-    networks:
-      - proxy
-    depends_on:
-      - qbittorrentvpn
-      - prowlarr
-
-  # Radarr
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./radarr/config:/config
-      - ./media/movies:/movies
-      - ./downloads:/downloads
-    networks:
-      - proxy
-    depends_on:
-      - qbittorrentvpn
-      - prowlarr
-
-  # Lidarr
-  lidarr:
-    image: lscr.io/linuxserver/lidarr:latest
-    container_name: lidarr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./lidarr/config:/config
-      - ./media/music:/music
-      - ./downloads:/downloads
-    networks:
-      - proxy
-    depends_on:
-      - qbittorrentvpn
-      - prowlarr
-
-  # Readarr
-  readarr:
-    image: lscr.io/linuxserver/readarr:latest
-    container_name: readarr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./readarr/config:/config
-      - ./media/books:/books
-      - ./downloads:/downloads
-    networks:
-      - proxy
-    depends_on:
-      - qbittorrentvpn
-      - prowlarr
-
-  # Bazarr
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./bazarr/config:/config
-      - ./media/movies:/movies
-      - ./media/tv:/tv
-    networks:
-      - proxy
-    depends_on:
-      - sonarr
-      - radarr
-
-  # Audiobookshelf
-  audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:latest
-    container_name: audiobookshelf
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./audiobookshelf/config:/config
-      - ./media/audiobooks:/audiobooks
-      - ./media/podcasts:/podcasts
-    ports:
-      - '13378:80'
-    networks:
-      - proxy
-
-  # Calibre-Web
-  calibre-web:
-    image: lscr.io/linuxserver/calibre-web:latest
-    container_name: calibre-web
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./calibre-web/config:/config
-      - ./media/ebooks:/books
-    networks:
-      - proxy
-
-  # LazyLibrarian
-  lazylibrarian:
-    image: lscr.io/linuxserver/lazylibrarian:latest
-    container_name: lazylibrarian
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./lazylibrarian/config:/config
-      - ./media/ebooks:/books
-      - ./downloads:/downloads
-    networks:
-      - proxy
-    depends_on:
-      - qbittorrentvpn
-
-  # Recyclarr
-  recyclarr:
-    image: requestrr/recyclarr:latest
-    container_name: recyclarr
-    restart: unless-stopped
-    environment:
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./recyclarr/config:/config
-    depends_on:
-      - sonarr
-      - radarr
-    networks:
-      - proxy
-
-  # Watchlist
-  watchlist:
-    image: ghcr.io/linuxserver/watchlist:latest
-    container_name: watchlist
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./watchlist/config:/config
-    networks:
-      - proxy
-
-  # Overseerr
-  overseerr:
-    image: lscr.io/linuxserver/overseerr:latest
-    container_name: overseerr
-    restart: unless-stopped
-    environment:
-      - LOG_LEVEL=info
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./overseerr/config:/app/config
-    networks:
-      - proxy
-    depends_on:
-      - plex
-
-  # Unpackerr
-  unpackerr:
-    image: golift/unpackerr:latest
-    container_name: unpackerr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./unpackerr/config:/config
-      - ./downloads:/downloads
-    networks:
-      - proxy
-    depends_on:
-      - sonarr
-      - radarr
-
-  # Tautulli
-  tautulli:
-    image: lscr.io/linuxserver/tautulli:latest
-    container_name: tautulli
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./tautulli/config:/config
-    networks:
-      - proxy
-    depends_on:
-      - plex
-
-  # Monitorr
-  monitorr:
-    image: monitorr/monitorr:latest
-    container_name: monitorr
-    restart: unless-stopped
-    ports:
-      - '8081:80'
-    volumes:
-      - ./monitorr/config:/var/www/html/assets/config
-    networks:
-      - proxy
-
-  # Organizr
-  organizr:
-    image: organizr/organizr:latest
-    container_name: organizr
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ./organizr/config:/config
-    networks:
-      - proxy
-
-  # Watchtower
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: watchtower
-    restart: unless-stopped
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_POLL_INTERVAL=86400
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - proxy
-
-  # Portainer
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    restart: unless-stopped
-    ports:
-      - '9000:9000'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./portainer/data:/data
-    networks:
-      - proxy
-
-  # Prometheus
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    restart: unless-stopped
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - '9090:9090'
-    networks:
-      - proxy
-
-  # Grafana
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: unless-stopped
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
-    volumes:
-      - ./grafana/data:/var/lib/grafana
-    ports:
-      - '3000:3000'
-    networks:
-      - proxy
-    depends_on:
-      - prometheus
-
-  # Fail2Ban
   fail2ban:
     image: crazymax/fail2ban:latest
     container_name: fail2ban
@@ -419,25 +58,141 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./fail2ban/data:/data
     network_mode: host
+    profiles: ["core"]
 
-  # NZBGet
+  # Media Services
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      <<: *common-env
+      VERSION: docker
+      PLEX_CLAIM: ${PLEX_CLAIM_TOKEN}
+    volumes:
+      - ./plex/config:/config
+      - ./plex/transcode:/transcode
+      - ./media:/data
+    profiles: ["media"]
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./sonarr/config:/config
+      - ./media/tv:/tv
+      - ./downloads:/downloads
+    <<: *common-networks
+    depends_on:
+      - qbittorrentvpn
+      - prowlarr
+    profiles: ["media"]
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./radarr/config:/config
+      - ./media/movies:/movies
+      - ./downloads:/downloads
+    <<: *common-networks
+    depends_on:
+      - qbittorrentvpn
+      - prowlarr
+    profiles: ["media"]
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./lidarr/config:/config
+      - ./media/music:/music
+      - ./downloads:/downloads
+    <<: *common-networks
+    depends_on:
+      - qbittorrentvpn
+      - prowlarr
+    profiles: ["media"]
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./bazarr/config:/config
+      - ./media/movies:/movies
+      - ./media/tv:/tv
+    <<: *common-networks
+    depends_on:
+      - sonarr
+      - radarr
+    profiles: ["media"]
+
+  # Download Management
+  qbittorrentvpn:
+    image: ghcr.io/hotio/qbittorrent:latest
+    container_name: qbittorrentvpn
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      <<: *common-env
+      UMASK: "002"
+      VPN_ENABLED: "yes"
+      VPN_TYPE: custom
+      VPN_PROV: custom
+      VPN_CLIENT: openvpn
+      VPN_CONFIG_FILE: /config/openvpn/client.ovpn
+      VPN_USERNAME: ${VPN_USERNAME}
+      VPN_PASSWORD: ${VPN_PASSWORD}
+      LAN: 192.168.1.0/24
+    volumes:
+      - ./qbittorrentvpn/config:/config
+      - ./downloads:/downloads
+    ports:
+      - '8080:8080'
+    <<: *common-networks
+    profiles: ["downloads"]
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./prowlarr/config:/config
+    <<: *common-networks
+    profiles: ["downloads"]
+
   nzbget:
     image: lscr.io/linuxserver/nzbget:latest
     container_name: nzbget
     restart: unless-stopped
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
+      <<: *common-env
     volumes:
       - ./nzbget/config:/config
       - ./downloads:/downloads
-    networks:
-      - proxy
+    <<: *common-networks
     depends_on:
       - vpn
+    profiles: ["downloads"]
 
-  # VPN Service
   vpn:
     image: dperson/openvpn-client
     container_name: vpn
@@ -451,8 +206,116 @@ services:
     volumes:
       - ./vpn/config:/vpn
     command: '-f "" -r 192.168.1.0/24 -d'
-    networks:
-      - proxy
+    <<: *common-networks
+    profiles: ["downloads"]
+
+  # Book Management
+  readarr:
+    image: lscr.io/linuxserver/readarr:latest
+    container_name: readarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./readarr/config:/config
+      - ./media/books:/books
+      - ./downloads:/downloads
+    <<: *common-networks
+    depends_on:
+      - qbittorrentvpn
+      - prowlarr
+    profiles: ["books"]
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./audiobookshelf/config:/config
+      - ./media/audiobooks:/audiobooks
+      - ./media/podcasts:/podcasts
+    ports:
+      - '13378:80'
+    <<: *common-networks
+    profiles: ["books"]
+
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./calibre-web/config:/config
+      - ./media/ebooks:/books
+    <<: *common-networks
+    profiles: ["books"]
+
+  # Monitoring & Management
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+    <<: *common-networks
+    profiles: ["monitoring"]
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    ports:
+      - '3000:3000'
+    <<: *common-networks
+    depends_on:
+      - prometheus
+    profiles: ["monitoring"]
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./tautulli/config:/config
+    <<: *common-networks
+    depends_on:
+      - plex
+    profiles: ["monitoring"]
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - '9000:9000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer/data:/data
+    <<: *common-networks
+    profiles: ["monitoring"]
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=86400
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    <<: *common-networks
+    profiles: ["monitoring"]
 
 networks:
   proxy:
