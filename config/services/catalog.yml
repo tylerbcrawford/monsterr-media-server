@@ -1,11 +1,11 @@
 # Monsterr Media Server Service Catalog
 
-version: "1.0"
+version: "2.0"
 
 # Service Groups define logical collections of related services
 service_groups:
   core:
-    name: "Core Services"
+    name: "Core Infrastructure"
     description: "Essential services required for basic functionality"
     required: true
     services:
@@ -21,11 +21,24 @@ service_groups:
       
       authelia:
         name: "Authelia"
-        description: "Authentication and authorization server"
+        description: "Two-factor authentication and SSO"
         image: "authelia/authelia:latest"
         required: true
         depends_on:
-          - nginx_proxy_manager
+          - redis
+      
+      redis:
+        name: "Redis"
+        description: "Session management for Authelia"
+        image: "redis:latest"
+        required: true
+      
+      fail2ban:
+        name: "Fail2Ban"
+        description: "Intrusion prevention system"
+        image: "crazymax/fail2ban:latest"
+        required: true
+        network_mode: "host"
 
   media:
     name: "Media Services"
@@ -37,8 +50,7 @@ service_groups:
         description: "Media streaming server"
         image: "lscr.io/linuxserver/plex:latest"
         required: false
-        ports:
-          - "32400:32400"
+        network_mode: "host"
       
       sonarr:
         name: "Sonarr"
@@ -46,7 +58,8 @@ service_groups:
         image: "lscr.io/linuxserver/sonarr:latest"
         required: false
         depends_on:
-          - plex
+          - qbittorrentvpn
+          - prowlarr
       
       radarr:
         name: "Radarr"
@@ -54,12 +67,22 @@ service_groups:
         image: "lscr.io/linuxserver/radarr:latest"
         required: false
         depends_on:
-          - plex
+          - qbittorrentvpn
+          - prowlarr
       
-      watchlistarr:
-        name: "Watchlistarr"
-        description: "Watchlist synchronization between Sonarr/Radarr and Trakt/IMDB"
-        image: "ghcr.io/nylonee/watchlistarr:latest"
+      lidarr:
+        name: "Lidarr"
+        description: "Music management"
+        image: "lscr.io/linuxserver/lidarr:latest"
+        required: false
+        depends_on:
+          - qbittorrentvpn
+          - prowlarr
+      
+      bazarr:
+        name: "Bazarr"
+        description: "Subtitle management"
+        image: "lscr.io/linuxserver/bazarr:latest"
         required: false
         depends_on:
           - sonarr
@@ -67,32 +90,108 @@ service_groups:
 
   downloads:
     name: "Download Services"
-    description: "Services for downloading content"
+    description: "Services for secure content downloading"
     required: false
     services:
-      qbittorrent:
-        name: "qBittorrent"
-        description: "Torrent client"
-        image: "lscr.io/linuxserver/qbittorrent:latest"
+      qbittorrentvpn:
+        name: "qBittorrent with VPN"
+        description: "Torrent client with VPN integration"
+        image: "ghcr.io/hotio/qbittorrent:latest"
         required: false
-        
+        cap_add:
+          - NET_ADMIN
+        devices:
+          - /dev/net/tun
+      
       prowlarr:
         name: "Prowlarr"
         description: "Indexer manager"
         image: "lscr.io/linuxserver/prowlarr:latest"
         required: false
       
-      sabnzbd:
-        name: "SABnzbd"
-        description: "Usenet client"
-        image: "lscr.io/linuxserver/sabnzbd:latest"
+      nzbget:
+        name: "NZBGet"
+        description: "Usenet downloader"
+        image: "lscr.io/linuxserver/nzbget:latest"
         required: false
+        depends_on:
+          - vpn
+      
+      vpn:
+        name: "VPN Service"
+        description: "OpenVPN client for secure downloads"
+        image: "dperson/openvpn-client"
+        required: false
+        cap_add:
+          - NET_ADMIN
+        devices:
+          - /dev/net/tun
 
-  extras:
-    name: "Extra Services"
-    description: "Additional utility services"
+  books:
+    name: "Book Services"
+    description: "Services for managing books and audiobooks"
     required: false
     services:
+      readarr:
+        name: "Readarr"
+        description: "Book management"
+        image: "lscr.io/linuxserver/readarr:latest"
+        required: false
+        depends_on:
+          - qbittorrentvpn
+          - prowlarr
+      
+      audiobookshelf:
+        name: "Audiobookshelf"
+        description: "Audiobook and podcast server"
+        image: "ghcr.io/advplyr/audiobookshelf:latest"
+        required: false
+      
+      calibre_web:
+        name: "Calibre-Web"
+        description: "Ebook management interface"
+        image: "lscr.io/linuxserver/calibre-web:latest"
+        required: false
+      
+      lazylibrarian:
+        name: "LazyLibrarian"
+        description: "Book download automation"
+        image: "lscr.io/linuxserver/lazylibrarian:latest"
+        required: false
+        depends_on:
+          - qbittorrentvpn
+
+  monitoring:
+    name: "Monitoring Services"
+    description: "System monitoring and management tools"
+    required: false
+    services:
+      prometheus:
+        name: "Prometheus"
+        description: "Metrics collection"
+        image: "prom/prometheus:latest"
+        required: false
+        ports:
+          - "9090:9090"
+      
+      grafana:
+        name: "Grafana"
+        description: "Metrics visualization"
+        image: "grafana/grafana:latest"
+        required: false
+        ports:
+          - "3000:3000"
+        depends_on:
+          - prometheus
+      
+      tautulli:
+        name: "Tautulli"
+        description: "Plex statistics and monitoring"
+        image: "lscr.io/linuxserver/tautulli:latest"
+        required: false
+        depends_on:
+          - plex
+      
       portainer:
         name: "Portainer"
         description: "Docker management interface"
@@ -101,16 +200,56 @@ service_groups:
         ports:
           - "9000:9000"
       
-      tautulli:
-        name: "Tautulli"
-        description: "Plex monitoring and statistics"
-        image: "lscr.io/linuxserver/tautulli:latest"
+      watchtower:
+        name: "Watchtower"
+        description: "Automatic container updates"
+        image: "containrrr/watchtower:latest"
         required: false
-        depends_on:
-          - plex
-      
+
+  interface:
+    name: "User Interface"
+    description: "Web interfaces and dashboards"
+    required: false
+    services:
       organizr:
         name: "Organizr"
         description: "Services dashboard"
         image: "organizr/organizr:latest"
         required: false
+      
+      overseerr:
+        name: "Overseerr"
+        description: "Media request management"
+        image: "lscr.io/linuxserver/overseerr:latest"
+        required: false
+        depends_on:
+          - plex
+      
+      watchlist:
+        name: "Watchlist"
+        description: "Media watchlist management"
+        image: "ghcr.io/linuxserver/watchlist:latest"
+        required: false
+
+  utilities:
+    name: "Utility Services"
+    description: "Additional utility services"
+    required: false
+    services:
+      recyclarr:
+        name: "Recyclarr"
+        description: "Configuration management"
+        image: "requestrr/recyclarr:latest"
+        required: false
+        depends_on:
+          - sonarr
+          - radarr
+      
+      unpackerr:
+        name: "Unpackerr"
+        description: "Automated extraction"
+        image: "golift/unpackerr:latest"
+        required: false
+        depends_on:
+          - sonarr
+          - radarr
