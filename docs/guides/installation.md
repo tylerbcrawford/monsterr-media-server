@@ -1,7 +1,7 @@
 # Installation Guide
 
 ## Overview
-This guide provides step-by-step instructions for installing Monsterr Media Server. For a quicker setup, see our [Quick Start Guide](quick-start.md).
+This guide provides step-by-step instructions for installing Monsterr Media Server using our enhanced React-based setup wizard. For a quicker setup, see our [Quick Start Guide](quick-start.md).
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -35,6 +35,8 @@ Required Setup:
 - Docker Engine (installed automatically)
 - Docker Compose (installed automatically)
 - Git (for installation)
+- Node.js 18.0.0+ (for setup wizard)
+- npm 9.0.0+ (installed with Node.js)
 
 ## Installation Methods
 
@@ -54,16 +56,48 @@ Required Setup:
    The installer will:
    - Check system requirements
    - Install dependencies
-   - Launch setup wizard
+   - Launch the React-based setup wizard
    - Configure services
    - Start the system
 
 3. **Follow Setup Wizard**
-   The web-based setup wizard will guide you through:
-   - Domain configuration
-   - Media storage locations
-   - Service settings
-   - Security options
+   The enhanced React-based setup wizard provides:
+
+   a. **System Requirements Check**
+   - Hardware validation
+   - Software dependency verification
+   - Network connectivity tests
+   - Real-time feedback
+
+   b. **Service Selection**
+   - Visual service dependency map
+   - Resource requirement estimates
+   - Automated dependency resolution
+   - Custom service combinations
+
+   c. **Storage Configuration**
+   - Path validation and creation
+   - Permission checks
+   - Space requirement calculation
+   - Automated directory structure
+
+   d. **Network Setup**
+   - Domain validation
+   - Port availability checking
+   - SSL certificate automation
+   - VPN configuration
+
+   e. **Security Configuration**
+   - Two-factor authentication setup
+   - Fail2Ban configuration
+   - Firewall rule management
+   - Access control setup
+
+   f. **Final Review & Deployment**
+   - Configuration summary
+   - Pre-deployment validation
+   - Progress tracking
+   - Error recovery
 
 ### Method 2: Manual Installation
 
@@ -178,9 +212,13 @@ sudo ./scripts/post_install_check.sh --domain
 
 If you encounter issues during installation:
 
-1. Check the error log:
+1. Check the setup wizard logs:
    ```bash
-   tail -f /var/log/monsterr/error.log
+   # View setup wizard logs
+   tail -f /var/log/monsterr/setup-wizard.log
+
+   # View API server logs
+   tail -f /var/log/monsterr/setup-api.log
    ```
 
 2. Use the error handler:
@@ -191,6 +229,15 @@ If you encounter issues during installation:
 3. Collect debug information:
    ```bash
    sudo ./scripts/collect_debug_info.sh
+   ```
+
+4. Check setup wizard status:
+   ```bash
+   # Check setup wizard process
+   sudo systemctl status monsterr-setup
+
+   # Check API server
+   sudo systemctl status monsterr-setup-api
    ```
 
 See [Troubleshooting Guide](troubleshooting.md) for detailed problem resolution.

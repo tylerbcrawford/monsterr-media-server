@@ -8,10 +8,14 @@ A comprehensive, Docker-based media server solution with automated management an
 - 🔒 Secure authentication with Authelia
 - 🔄 Automated content management
 - 📊 System monitoring and notifications
-- 🛠️ Easy setup wizard
+- 🛠️ Enhanced React-based setup wizard
 - 🚀 Docker-based deployment
 - 📱 Mobile-friendly interface
 - 🔐 VPN integration for downloads
+- ✨ Real-time system validation
+- 🔍 Service dependency management
+- 💾 Automated storage configuration
+- 🌐 Streamlined network setup
 
 ## Quick Start
 
@@ -26,11 +30,14 @@ cd monsterr-media-server
 sudo ./install_media_server.sh
 ```
 
-3. **Follow the setup wizard**
-- Configure your domain
-- Set up media locations
-- Choose services to install
-- Configure security settings
+3. **Access the Setup Wizard**
+The new React-based setup wizard will automatically launch in your browser, guiding you through:
+- System requirements validation
+- Service selection with dependency management
+- Storage path configuration and validation
+- Network and domain setup
+- Security configuration
+- Final review and deployment
 
 For detailed instructions, see our [Installation Guide](docs/guides/installation.md).
 
@@ -42,6 +49,7 @@ For detailed instructions, see our [Installation Guide](docs/guides/installation
 - Storage: 20GB + media storage
 - OS: Ubuntu 20.04+ or similar
 - Docker & Docker Compose
+- Node.js 18.0.0+ (for setup wizard)
 
 ### Recommended
 - CPU: 6+ cores
@@ -193,6 +201,9 @@ graph TD
     G[Authelia] -->|Auth| H[Nginx Proxy]
     H -->|Proxy| All[All Services]
     I[Prometheus] -->|Metrics| J[Grafana]
+    K[Setup Wizard] -->|Config| L[Docker Services]
+    K -->|Validation| M[System]
+    K -->|Security| G
 ```
 
 ## Environment Variables
@@ -261,6 +272,9 @@ See [Configuration Guide](docs/guides/configuration.md) for a complete list.
 │   └── utils/                # Utility scripts
 ├── src/                      # Source code
 │   └── web_interface/        # Web UI code
+│       ├── dashboard/        # Dashboard components
+│       ├── setup/           # Setup wizard components
+│       └── shared/          # Shared components
 ├── tests/                    # Test files
 │   ├── integration/         # Integration tests
 │   └── unit/               # Unit tests
@@ -285,7 +299,11 @@ npm install
 
 2. **Start development server**
 ```bash
+# Start the setup wizard development server
 npm run dev
+
+# Start the setup API server
+npm run setup
 ```
 
 3. **Run tests**
@@ -314,6 +332,7 @@ sudo ./scripts/utils/collect_debug_info.sh
 - Regular security updates via Watchtower
 - SSL/TLS encryption for all services
 - Network isolation for sensitive services
+- Real-time security configuration validation
 
 See [Security Guide](docs/guides/security.md) for details.
 
@@ -328,3 +347,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Docker](https://www.docker.com/) for containerization
 - [Plex](https://www.plex.tv/) for media streaming
 - [Authelia](https://www.authelia.com/) for authentication
+- [React](https://reactjs.org/) for the setup wizard interface
+- [Material-UI](https://mui.com/) for UI components
