@@ -12,6 +12,24 @@
 - **Container Management**: Portainer
 - **Updates**: Watchtower
 
+### Setup Wizard
+- **Frontend Framework**: React 18
+- **UI Library**: Material-UI v5
+- **State Management**: React Hooks
+- **Form Handling**: Formik + Yup
+- **HTTP Client**: Axios
+- **Build Tool**: Vite
+- **Testing**: Jest + React Testing Library
+
+### Backend Services
+- **Server**: Express.js
+- **API Documentation**: OpenAPI/Swagger
+- **Logging**: Winston
+- **Security**: Helmet
+- **Compression**: Compression middleware
+- **Docker API**: Dockerode
+- **Process Management**: Node.js child_process
+
 ### Media Services
 - **Media Server**: Plex
 - **TV Management**: Sonarr
@@ -121,8 +139,25 @@
 - Docker Engine
 - Docker Compose
 - Git
+- Node.js (≥18.0.0)
 - Basic system utilities
 - UFW (Uncomplicated Firewall)
+
+### Frontend Dependencies
+- React (^18.2.0)
+- React Router (^6.21.1)
+- Material-UI (^5.15.1)
+- Formik (^2.4.5)
+- Yup (^1.3.3)
+- Axios (^1.6.2)
+
+### Backend Dependencies
+- Express (^4.18.2)
+- Cors (^2.8.5)
+- Helmet (^7.1.0)
+- Winston (^3.11.0)
+- Socket.io (^4.7.2)
+- Dockerode (^4.0.0)
 
 ### Network Dependencies
 - Port forwarding capabilities
@@ -134,7 +169,7 @@
 
 ### Installation Methods
 1. Automated Installation (Recommended)
-   - Single script execution
+   - Setup wizard interface
    - Interactive configuration
    - Automated dependency installation
 
