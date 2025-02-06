@@ -468,6 +468,75 @@ services:
       retries: 3
     profiles: ["interface"]
 
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./overseerr/config:/config
+    ports:
+      - '5055:5055'
+    depends_on:
+      plex:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5055/api/v1/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
+    profiles: ["interface"]
+
+  # Utility Services
+  recyclarr:
+    image: recyclarr/recyclarr:latest
+    container_name: recyclarr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./recyclarr/config:/config
+      - ./sonarr/config:/sonarr
+      - ./radarr/config:/radarr
+    depends_on:
+      sonarr:
+        condition: service_healthy
+      radarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "recyclarr", "list-configs"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
+    profiles: ["utilities"]
+
+  unpackerr:
+    image: golift/unpackerr:latest
+    container_name: unpackerr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      UN_SONARR_0_URL: http://sonarr:8989
+      UN_RADARR_0_URL: http://radarr:7878
+    volumes:
+      - ./unpackerr/config:/config
+      - ./downloads:/downloads
+    depends_on:
+      sonarr:
+        condition: service_healthy
+      radarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "pgrep", "unpackerr"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
+    profiles: ["utilities"]
+
 networks:
   proxy:
     driver: bridge
