@@ -64,9 +64,9 @@
     - Image: `ghcr.io/advplyr/audiobookshelf:latest`
     - Description: Audiobook and podcast server
 
-16. **Calibre-Web**
-    - Image: `lscr.io/linuxserver/calibre-web:latest`
-    - Description: Ebook management interface
+16. **Calibre**
+     - Image: `lscr.io/linuxserver/calibre:latest`
+     - Description: Full-featured ebook management system and server
 
 17. **LazyLibrarian**
     - Image: `lscr.io/linuxserver/lazylibrarian:latest`

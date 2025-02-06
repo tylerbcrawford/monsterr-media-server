@@ -332,15 +332,25 @@ services:
     <<: *common-networks
     profiles: ["books"]
 
-  calibre-web:
-    image: lscr.io/linuxserver/calibre-web:latest
-    container_name: calibre-web
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
     restart: unless-stopped
     environment:
       <<: *common-env
+      GUAC_USER: ${GUAC_USER:-abc}
+      GUAC_PASS: ${GUAC_PASS:-abc}
     volumes:
-      - ./calibre-web/config:/config
+      - ./calibre/config:/config
       - ./media/ebooks:/books
+    ports:
+      - '8080:8080'  # Calibre library management
+      - '8081:8081'  # Calibre content server
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["books"]
 
