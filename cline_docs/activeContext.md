@@ -1,67 +1,70 @@
 # Active Context
 
 ## Current Task
-Implementing service improvements and updates.
+Planning comprehensive repository cleanup and reorganization.
 
 ## Recent Changes
-- Service Integration Updates
-  * Replaced Calibre-Web with full Calibre implementation
-  * Added missing services (Overseerr, Recyclarr, Unpackerr)
-  * Implemented comprehensive health checks
-  * Enhanced service dependency management
+- Repository Analysis
+  * Created detailed cleanup plan
+  * Identified areas for improvement
+  * Planned directory restructuring
+  * Established file naming conventions
 
-- Service Configuration
-  * Added Calibre library management (port 8080)
-  * Added Calibre content server (port 8081)
-  * Updated resource requirements
-  * Enhanced monitoring capabilities
+- Documentation Planning
+  * Planned docs consolidation
+  * Designed new documentation structure
+  * Created architecture documentation plan
+  * Organized memory bank structure
 
-- Documentation Updates
-  * Updated services_overview.md
-  * Updated docker-compose.yml
-  * Updated service selection UI
-  * Updated configuration documentation
+- Code Organization
+  * Planned source code restructuring
+  * Designed new directory layout
+  * Created TypeScript integration plan
+  * Improved test organization
 
 ## Current Focus
-Service improvements completed:
+Repository cleanup plan completed:
 
-1. Core Services (✓ COMPLETED)
-   - ✓ All services properly configured
-   - ✓ Health checks implemented
-   - ✓ Dependencies mapped
+1. Documentation Structure (✓ PLANNED)
+   - ✓ New documentation hierarchy
+   - ✓ Architecture documentation
+   - ✓ Memory bank organization
+   - ✓ Guide standardization
 
-2. Media Services (✓ COMPLETED)
-   - ✓ All services integrated
-   - ✓ Monitoring configured
-   - ✓ Dependencies resolved
+2. Source Code Organization (✓ PLANNED)
+   - ✓ Core functionality separation
+   - ✓ UI reorganization
+   - ✓ Service-specific code
+   - ✓ Type definitions
 
-3. Book Services (✓ COMPLETED)
-   - ✓ Calibre upgrade implemented
-   - ✓ Full library management
-   - ✓ Content server configured
-   - ✓ Integration with other services
+3. Configuration Management (✓ PLANNED)
+   - ✓ Template organization
+   - ✓ Default configurations
+   - ✓ Validation scripts
+   - ✓ Documentation updates
 
-4. Monitoring Services (✓ COMPLETED)
-   - ✓ Health checks added
-   - ✓ Resource monitoring
-   - ✓ Dependency tracking
+4. Script Organization (✓ PLANNED)
+   - ✓ Maintenance script consolidation
+   - ✓ Template creation
+   - ✓ Documentation headers
+   - ✓ Naming conventions
 
 ## Next Steps
 
 ### Immediate Actions
-1. Monitor Calibre performance
-2. Verify library management functionality
-3. Test content server access
-4. Review resource usage
+1. Create backup of current structure
+2. Set up temporary branch for changes
+3. Update CI/CD pipeline
+4. Create migration scripts
 
 ### Future Tasks
-1. Enhance monitoring metrics
-2. Optimize resource allocation
-3. Improve automated recovery
-4. Expand service analytics
+1. Implement directory restructuring
+2. Update import paths
+3. Add documentation
+4. Create templates
 
 ## Notes
-- Calibre provides more features than Calibre-Web
-- Full library management now available
-- Content server enables remote access
-- Resource requirements adjusted for new capabilities
+- Comprehensive cleanup plan created
+- Clear implementation phases defined
+- Success criteria established
+- Maintenance plan documented
