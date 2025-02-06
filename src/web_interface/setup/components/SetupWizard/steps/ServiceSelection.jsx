@@ -126,9 +126,9 @@ const serviceCategories = [
       },
       {
         id: 'calibre',
-        name: 'Calibre-Web',
-        description: 'Ebook management',
-        resources: { cpu: 1, memory: 512 },
+        name: 'Calibre',
+        description: 'Full-featured ebook management system and server',
+        resources: { cpu: 1, memory: 1024 },
       },
     ],
   },

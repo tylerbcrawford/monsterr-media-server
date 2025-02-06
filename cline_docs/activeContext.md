@@ -1,86 +1,67 @@
 # Active Context
 
 ## Current Task
-Implementing comprehensive service integration improvements and health monitoring.
+Implementing service improvements and updates.
 
 ## Recent Changes
-- Enhanced service integration
-  * Added missing services (LazyLibrarian, Organizr, Watchlist)
-  * Implemented health checks for all services
-  * Improved service dependency management
-  * Added proper error handling
+- Service Integration Updates
+  * Replaced Calibre-Web with full Calibre implementation
+  * Added missing services (Overseerr, Recyclarr, Unpackerr)
+  * Implemented comprehensive health checks
+  * Enhanced service dependency management
 
-- Service Health Monitoring
-  * Added health checks to core services
-  * Implemented monitoring for media services
-  * Enhanced download service monitoring
-  * Added book service health checks
-  * Improved monitoring service checks
+- Service Configuration
+  * Added Calibre library management (port 8080)
+  * Added Calibre content server (port 8081)
+  * Updated resource requirements
+  * Enhanced monitoring capabilities
 
-- Dependency Management
-  * Implemented service dependency chains
-  * Added health check conditions
-  * Enhanced startup order
-  * Improved error recovery
-
-- Security Enhancements
-  * Maintained network isolation
-  * Configured VPN dependencies
-  * Secured volume mappings
-  * Enhanced monitoring security
+- Documentation Updates
+  * Updated services_overview.md
+  * Updated docker-compose.yml
+  * Updated service selection UI
+  * Updated configuration documentation
 
 ## Current Focus
-Service integration improvements completed:
+Service improvements completed:
 
 1. Core Services (✓ COMPLETED)
-   - ✓ Nginx Proxy Manager health checks
-   - ✓ Authelia monitoring
-   - ✓ Redis health validation
-   - ✓ Fail2Ban integration
+   - ✓ All services properly configured
+   - ✓ Health checks implemented
+   - ✓ Dependencies mapped
 
 2. Media Services (✓ COMPLETED)
-   - ✓ Plex health monitoring
-   - ✓ Sonarr/Radarr checks
-   - ✓ Lidarr integration
-   - ✓ Bazarr monitoring
+   - ✓ All services integrated
+   - ✓ Monitoring configured
+   - ✓ Dependencies resolved
 
-3. Download Services (✓ COMPLETED)
-   - ✓ qBittorrent VPN checks
-   - ✓ Prowlarr health monitoring
-   - ✓ NZBGet integration
-   - ✓ VPN connectivity validation
+3. Book Services (✓ COMPLETED)
+   - ✓ Calibre upgrade implemented
+   - ✓ Full library management
+   - ✓ Content server configured
+   - ✓ Integration with other services
 
-4. Book Services (✓ COMPLETED)
-   - ✓ LazyLibrarian integration
-   - ✓ Readarr health checks
-   - ✓ Calibre-Web monitoring
-   - ✓ Audiobookshelf checks
-
-5. Monitoring Services (✓ COMPLETED)
-   - ✓ Prometheus health checks
-   - ✓ Grafana monitoring
-   - ✓ Tautulli integration
-   - ✓ Portainer health validation
+4. Monitoring Services (✓ COMPLETED)
+   - ✓ Health checks added
+   - ✓ Resource monitoring
+   - ✓ Dependency tracking
 
 ## Next Steps
 
 ### Immediate Actions
-1. Push service integration improvements to GitHub
-2. Update documentation with new health check details
-3. Create monitoring dashboards
-4. Test service recovery scenarios
-5. Monitor system stability
+1. Monitor Calibre performance
+2. Verify library management functionality
+3. Test content server access
+4. Review resource usage
 
 ### Future Tasks
 1. Enhance monitoring metrics
-2. Improve automated recovery
-3. Add service scaling capabilities
-4. Implement advanced health checks
-5. Develop service analytics
+2. Optimize resource allocation
+3. Improve automated recovery
+4. Expand service analytics
 
 ## Notes
-- All services properly integrated
-- Health monitoring implemented
-- Dependencies correctly mapped
-- Error handling improved
-- Ready for deployment testing
+- Calibre provides more features than Calibre-Web
+- Full library management now available
+- Content server enables remote access
+- Resource requirements adjusted for new capabilities

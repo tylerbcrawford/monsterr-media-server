@@ -31,10 +31,11 @@
 
 ### Book Services
 - ✓ Readarr integration
-- ✓ Calibre-Web server
+- ✓ Full Calibre system
 - ✓ Audiobookshelf
 - ✓ LazyLibrarian
 - ✓ Service monitoring
+- ✓ Library management
 
 ### Monitoring
 - ✓ Prometheus metrics
@@ -58,6 +59,7 @@
 - ✓ Service management
 - ✓ Configuration tools
 - ✓ Mobile responsiveness
+- ✓ Overseerr integration
 - ✓ Watchlist integration
 
 ### Documentation
@@ -115,11 +117,11 @@
 - □ Automated responses
 
 ## Recent Achievements
-1. Implemented comprehensive service health monitoring
-2. Added missing services (LazyLibrarian, Organizr, Watchlist)
+1. Upgraded to full Calibre system with library management
+2. Added missing services (Overseerr, Recyclarr, Unpackerr)
 3. Enhanced service dependency management
 4. Improved error handling and recovery
-5. Consolidated docker-compose configuration
+5. Consolidated service configurations
 
 ## Current Sprint
 1. Service template enhancements
