@@ -8,12 +8,20 @@
 3. Clear separation of installation and maintenance scripts
 4. Dedicated configuration directory
 
+### Critical Notes
+
+**IMPORTANT: DO NOT MOVE OR RENAME THE cline_docs DIRECTORY**
+- The cline_docs directory is a critical part of Cline's memory system
+- Its location and name must remain unchanged
+- All memory bank files must stay within this directory
+- Other documentation can be reorganized, but cline_docs must remain intact
+
 ### Areas for Improvement
 
-1. **Documentation Consolidation**
-   - Move cline_docs/ content to docs/
+1. **Documentation Organization**
+   - Keep cline_docs/ directory unchanged
    - Create docs/architecture/ for system design docs
-   - Create docs/memory-bank/ for Cline's memory files
+   - Improve documentation cross-referencing
    - Standardize documentation format
 
 2. **Configuration Management**
@@ -44,11 +52,15 @@
 
 ```
 monsterr-media-server/
+├── cline_docs/               # CRITICAL: Do not move or rename
+│   ├── activeContext.md      # Current state and focus
+│   ├── progress.md          # Project progress tracking
+│   ├── systemPatterns.md    # System architecture patterns
+│   └── other memory files   # Cline's memory system
 ├── docs/
-│   ├── api/
-│   ├── architecture/          # System design documentation
-│   ├── guides/
-│   └── memory-bank/          # Cline's memory files
+│   ├── api/                 # API documentation
+│   ├── architecture/        # System design documentation
+│   └── guides/             # User and development guides
 ├── config/
 │   ├── defaults/             # Default configurations
 │   ├── templates/            # Configuration templates
