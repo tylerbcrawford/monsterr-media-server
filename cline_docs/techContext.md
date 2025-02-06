@@ -66,6 +66,27 @@
   - Storage: 100GB SSD + 4TB+ HDD
   - Network: Gigabit Ethernet
 
+### Software Requirements
+- **Runtime**: Node.js 18.0.0+
+- **Package Manager**: npm 9.0.0+
+- **Version Control**: Git
+- **Container Runtime**: Docker 24.0.0+
+- **Container Orchestration**: Docker Compose v2
+- **Build Tools**: Vite, TypeScript
+
+### Development Tools
+- **IDE**: VS Code (recommended)
+- **Extensions**:
+  - ESLint
+  - Prettier
+  - Docker
+  - React Developer Tools
+- **Testing Tools**:
+  - Jest
+  - React Testing Library
+  - Supertest
+  - Coverage reporting
+
 ### Network Configuration
 - Required Ports:
   - 80: HTTP
@@ -105,6 +126,9 @@
 - VPN requirement for download services
 - Regular security updates via Watchtower
 - Intrusion prevention with Fail2Ban
+- CSRF protection
+- Rate limiting
+- Input validation
 
 ### Performance Considerations
 - Media transcoding capabilities
@@ -112,6 +136,8 @@
 - Storage I/O performance
 - Memory allocation for services
 - CPU scheduling for concurrent operations
+- React application optimization
+- API response times
 
 ### Scalability Limits
 - Container resource allocation
@@ -119,6 +145,8 @@
 - Network bandwidth constraints
 - Backup storage requirements
 - Database size limitations
+- Concurrent user sessions
+- API rate limits
 
 ### Maintenance Requirements
 - Regular database backups
@@ -126,52 +154,59 @@
 - Storage cleanup procedures
 - Configuration version control
 - Update management procedures
+- Test suite maintenance
+- Documentation updates
 
 ## Dependencies
+
+### Frontend Dependencies
+- React 18.2.0+
+- Material-UI 5.15.0+
+- React Router 6.21.0+
+- Formik 2.4.0+
+- Yup 1.3.0+
+- Axios 1.6.0+
+
+### Backend Dependencies
+- Express 4.18.0+
+- Cors 2.8.0+
+- Helmet 7.1.0+
+- Winston 3.11.0+
+- Dockerode 4.0.0+
+- Body Parser 1.20.0+
+
+### Development Dependencies
+- Vite 5.0.0+
+- Jest 29.7.0+
+- React Testing Library 14.1.0+
+- ESLint 8.56.0+
+- Prettier 3.1.0+
+- TypeScript 5.0.0+
+
+### System Dependencies
+- Docker Engine
+- Docker Compose
+- Git
+- Node.js
+- Basic system utilities
+- UFW (Uncomplicated Firewall)
 
 ### External Services
 - Domain registrar
 - DDNS provider (optional)
 - VPN service provider
 - SSL certificate provider (Let's Encrypt)
-
-### System Dependencies
-- Docker Engine
-- Docker Compose
-- Git
-- Node.js (≥18.0.0)
-- Basic system utilities
-- UFW (Uncomplicated Firewall)
-
-### Frontend Dependencies
-- React (^18.2.0)
-- React Router (^6.21.1)
-- Material-UI (^5.15.1)
-- Formik (^2.4.5)
-- Yup (^1.3.3)
-- Axios (^1.6.2)
-
-### Backend Dependencies
-- Express (^4.18.2)
-- Cors (^2.8.5)
-- Helmet (^7.1.0)
-- Winston (^3.11.0)
-- Socket.io (^4.7.2)
-- Dockerode (^4.0.0)
-
-### Network Dependencies
-- Port forwarding capabilities
-- DNS resolution
-- VPN connectivity
-- Internet bandwidth
+- Package registries (npm)
+- Container registries
 
 ## Deployment Process
 
 ### Installation Methods
 1. Automated Installation (Recommended)
-   - Setup wizard interface
+   - React setup wizard
    - Interactive configuration
    - Automated dependency installation
+   - Real-time validation
 
 2. Manual Installation
    - Step-by-step service setup
@@ -184,6 +219,7 @@
 - Network settings
 - Storage locations
 - Security parameters
+- Test configurations
 
 ### Monitoring & Logging
 - Centralized logging
@@ -191,3 +227,5 @@
 - Service health checks
 - Resource utilization
 - Error tracking
+- Test coverage reporting
+- Build status monitoring

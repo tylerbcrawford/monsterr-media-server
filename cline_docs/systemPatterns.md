@@ -14,7 +14,7 @@
   - Material-UI component library
   - Step-based wizard pattern
   - Real-time validation
-  - State management for configuration
+  - State management with React hooks
 
 - **Backend Layer**
   - Express.js API server
@@ -32,8 +32,9 @@
 
 - **Download Security**
   - VPN integration for secure downloads
-  - Separate VPN container for NZBGet
   - Network isolation for sensitive services
+  - Kill switch protection
+  - IP leak prevention
 
 ### 4. Data Management
 - **Volume Management**
@@ -43,60 +44,79 @@
   - Consistent PUID/PGID across services
 
 - **Media Organization**
-  - Hierarchical media structure (movies, tv, music, books)
-  - Automated media sorting and categorization
+  - Hierarchical media structure
+  - Automated media sorting
   - Centralized download management
+  - Metadata management
 
-### 5. Monitoring & Maintenance
+### 5. Service Organization
+- **Profile-based Deployment**
+  - Core infrastructure profile
+  - Media services profile
+  - Download management profile
+  - Book services profile
+  - Monitoring profile
+
+- **Dependency Management**
+  - Automated dependency resolution
+  - Service startup ordering
+  - Health check integration
+  - Failure recovery
+
+### 6. Monitoring & Maintenance
 - **System Monitoring**
-  - Prometheus for metrics collection
-  - Grafana for visualization
-  - Tautulli for Plex statistics
-  - Monitorr for service health monitoring
+  - Prometheus metrics collection
+  - Grafana visualization
+  - Service health monitoring
+  - Resource usage tracking
 
 - **Automated Maintenance**
-  - Watchtower for automatic updates
-  - Recyclarr for configuration management
-  - Unpackerr for automated extraction
+  - Watchtower for updates
+  - Automated backups
+  - Log rotation
+  - Health checks
 
 ## Technical Decisions
 
-### 1. Setup Wizard Implementation
-- React for dynamic user interface
+### 1. Frontend Implementation
+- React for dynamic UI
 - Material-UI for consistent design
-- Express.js for backend API
-- Real-time validation pattern
-- Progressive configuration flow
+- Vite for build tooling
+- Jest for testing
+- Real-time validation
 
-### 2. Container Orchestration
-- Docker Compose for service orchestration
-- Bridge network for internal communication
-- Host network mode for specific services
-- Automatic container restart policies
+### 2. Backend Implementation
+- Express.js for API server
+- Docker API integration
+- WebSocket for real-time updates
+- JWT for authentication
+- Rate limiting
 
-### 3. Service Dependencies
-- Clearly defined service dependencies
-- Proper startup order management
-- Shared resource access control
-- Automated dependency resolution
+### 3. Container Orchestration
+- Docker Compose with profiles
+- Bridge network for communication
+- Host network for specific services
+- Automatic container recovery
 
 ### 4. Configuration Management
-- Environment variables for sensitive data
-- External configuration files
-- Consistent configuration structure
-- Version-controlled service definitions
+- Environment variables
+- External config files
+- Service templates
+- Version control
 
-### 5. Network Architecture
-- Isolated proxy network
-- VPN integration for download services
-- Port mapping for required services
-- Internal service discovery
+### 5. Testing Strategy
+- Component testing
+- API integration testing
+- End-to-end testing
+- Security scanning
+- Performance testing
 
-### 6. Resource Management
-- Volume mapping for persistence
-- Shared resource access
-- Consistent environment variables
-- Unified user/group management
+### 6. CI/CD Pipeline
+- GitHub Actions
+- Automated testing
+- Security scanning
+- Docker builds
+- Automated releases
 
 ## Design Principles
 
@@ -105,68 +125,72 @@
 - VPN for sensitive traffic
 - Intrusion prevention
 - Secure proxy management
+- Regular security updates
 
 ### 2. User Experience
 - Intuitive setup process
-- Clear error messages
 - Real-time feedback
 - Progressive disclosure
+- Error prevention
 - Guided configuration
 
 ### 3. Modularity
-- Independent service scaling
+- Independent services
 - Pluggable components
-- Clear service boundaries
-- Minimal inter-service dependencies
+- Clear boundaries
+- Minimal dependencies
+- Profile-based deployment
 
 ### 4. Maintainability
 - Automated updates
 - Centralized monitoring
 - Consistent configuration
-- Health checks and logging
+- Health checks
+- Documentation
 
 ### 5. Scalability
-- Independent service scaling
+- Independent scaling
 - Resource isolation
-- Efficient resource sharing
 - Load management
+- Performance monitoring
+- Resource optimization
 
-### 6. Error Handling
-- Graceful degradation
-- Clear error messages
-- Recovery procedures
-- Validation feedback
-- User guidance
+### 6. Reliability
+- Health monitoring
+- Automated recovery
+- Backup systems
+- Error handling
+- Logging
 
 ## Implementation Patterns
 
 ### 1. Frontend Patterns
-- Step wizard pattern
-- Form validation pattern
-- Real-time feedback pattern
-- Progressive disclosure
+- Component composition
+- Custom hooks
+- Form validation
+- Error boundaries
 - Responsive design
 
 ### 2. Backend Patterns
 - RESTful API design
-- Middleware pattern
-- Service layer pattern
-- Repository pattern
-- Error handling middleware
+- Middleware layers
+- Service abstraction
+- Error handling
+- Rate limiting
 
-### 3. Deployment Patterns
+### 3. Testing Patterns
+- Component testing
+- Integration testing
+- Mock services
+- Test fixtures
+- Coverage reporting
+
+### 4. Deployment Patterns
 - Rolling updates
 - Health checks
-- Automatic recovery
+- Backup verification
 - Configuration validation
-- Dependency management
-
-### 4. Testing Patterns
-- Unit testing
-- Integration testing
-- End-to-end testing
-- Component testing
-- API testing
+- Dependency resolution
 
 ### 5. Security Patterns
 - Authentication middleware
@@ -174,3 +198,10 @@
 - Input validation
 - Rate limiting
 - Secure communication
+
+### 6. Monitoring Patterns
+- Metric collection
+- Alert management
+- Log aggregation
+- Performance tracking
+- Health checking
