@@ -1,139 +1,81 @@
 # Dependencies
 node_modules/
-vendor/
-package-lock.json
-yarn.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
 
 # Environment files
 .env
-*.env
-config.env
-!sample_config.env
 .env.local
 .env.*.local
-
-# Build output
-dist/
-build/
-*.pyc
-__pycache__/
-*.o
-*.so
-
-# Logs and databases
-*.log
-logs/
-*.sqlite
-*.db
-*.db-*
-
-# Media files
-media/
-downloads/
-*.mp4
-*.mkv
-*.avi
-*.mp3
-*.m4a
-*.jpg
-*.jpeg
-*.png
-*.gif
-
-# System files
-.DS_Store
-Thumbs.db
-desktop.ini
-*.swp
-*.swo
-*~
+!sample_config.env
 
 # IDE and editor files
 .idea/
 .vscode/
-*.sublime-project
-*.sublime-workspace
-.project
-.settings/
-*.code-workspace
-.history/
+*.swp
+*.swo
+*~
 
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.temp
-*.bak
+# Operating System
+.DS_Store
+Thumbs.db
 
-# Docker
-.docker/
-docker-compose.override.yml
+# Service specific
+/plex/
+/sonarr/
+/radarr/
+/lidarr/
+/bazarr/
+/readarr/
+/calibre/
+/qbittorrentvpn/
+/prowlarr/
+/nzbget/
+/vpn/
+/audiobookshelf/
+/lazylibrarian/
+/prometheus/
+/grafana/
+/tautulli/
+/portainer/
+/organizr/
+/overseerr/
+/watchlist/
+/recyclarr/
+/unpackerr/
 
-# Debug files
-debug/
-*.debug
-*.dump
+# Service data and configs
+*/config/
+*/data/
+*/downloads/
+*/media/
+*/transcode/
+*/logs/
 
-# Test coverage
-coverage/
-.nyc_output/
-.coverage
-htmlcov/
-
-# Certificates and keys
+# SSL and security
 *.pem
 *.key
 *.crt
-*.cer
-*.der
-*.priv
-*.pub
+*.cert
+*.p12
+*.pfx
 
-# Backup files
-*.backup
-*.bak
-*.old
-*.save
-backup/
-backups/
+# Logs
+logs/
+*.log
+npm-debug.log*
 
-# Generated files
-*.generated.*
-generated/
-auto-generated/
+# Testing
+coverage/
+.nyc_output/
 
-# Dependency directories
-bower_components/
-jspm_packages/
-
-# Cache directories
+# Temporary files
+*.tmp
+*.temp
 .cache/
-.npm/
-.yarn/
-
-# Local development
-*.local
-local/
-
-# Sensitive information
-*.secret
-secrets/
-private/
-
-# Monsterr specific
-monsterr-debug-*.tar.gz
-monsterr-backup-*.tar.gz
-authelia/users_database.yml
-authelia/configuration.yml
-!authelia/configuration.template.yml
-
-# Service specific
-plex/
-sonarr/
-radarr/
-lidarr/
-readarr/
-bazarr/
-prowlarr/
-overseerr/
-tautulli/
