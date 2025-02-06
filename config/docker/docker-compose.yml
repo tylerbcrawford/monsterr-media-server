@@ -24,6 +24,11 @@ services:
     volumes:
       - ./npm/data:/data
       - ./npm/letsencrypt:/etc/letsencrypt
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:81/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["core"]
 
@@ -39,6 +44,11 @@ services:
       - TZ=${TIMEZONE}
     depends_on:
       - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["core"]
 
@@ -46,6 +56,11 @@ services:
     image: redis:latest
     container_name: authelia-redis
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["core"]
 
@@ -74,6 +89,11 @@ services:
       - ./plex/config:/config
       - ./plex/transcode:/transcode
       - ./media:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:32400/web/index.html"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles: ["media"]
 
   sonarr:
@@ -88,8 +108,15 @@ services:
       - ./downloads:/downloads
     <<: *common-networks
     depends_on:
-      - qbittorrentvpn
-      - prowlarr
+      qbittorrentvpn:
+        condition: service_healthy
+      prowlarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989/api/v3/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles: ["media"]
 
   radarr:
@@ -104,8 +131,15 @@ services:
       - ./downloads:/downloads
     <<: *common-networks
     depends_on:
-      - qbittorrentvpn
-      - prowlarr
+      qbittorrentvpn:
+        condition: service_healthy
+      prowlarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878/api/v3/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles: ["media"]
 
   lidarr:
@@ -120,8 +154,15 @@ services:
       - ./downloads:/downloads
     <<: *common-networks
     depends_on:
-      - qbittorrentvpn
-      - prowlarr
+      qbittorrentvpn:
+        condition: service_healthy
+      prowlarr:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8686/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles: ["media"]
 
   bazarr:
@@ -165,6 +206,14 @@ services:
       - ./downloads:/downloads
     ports:
       - '8080:8080'
+    depends_on:
+      vpn:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["downloads"]
 
@@ -176,6 +225,11 @@ services:
       <<: *common-env
     volumes:
       - ./prowlarr/config:/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9696/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["downloads"]
 
@@ -188,9 +242,15 @@ services:
     volumes:
       - ./nzbget/config:/config
       - ./downloads:/downloads
-    <<: *common-networks
     depends_on:
-      - vpn
+      vpn:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6789"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
     profiles: ["downloads"]
 
   vpn:
@@ -206,6 +266,12 @@ services:
     volumes:
       - ./vpn/config:/vpn
     command: '-f "" -r 192.168.1.0/24 -d'
+    healthcheck:
+      test: ["CMD", "ping", "-c", "1", "1.1.1.1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     <<: *common-networks
     profiles: ["downloads"]
 
@@ -224,6 +290,31 @@ services:
     depends_on:
       - qbittorrentvpn
       - prowlarr
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8787/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles: ["books"]
+
+  lazylibrarian:
+    image: lscr.io/linuxserver/lazylibrarian:latest
+    container_name: lazylibrarian
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./lazylibrarian/config:/config
+      - ./media/books:/books
+      - ./downloads:/downloads
+    <<: *common-networks
+    depends_on:
+      - qbittorrentvpn
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5299/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles: ["books"]
 
   audiobookshelf:
@@ -262,6 +353,11 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - '9090:9090'
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["monitoring"]
 
@@ -275,9 +371,15 @@ services:
       - ./grafana/data:/var/lib/grafana
     ports:
       - '3000:3000'
-    <<: *common-networks
     depends_on:
-      - prometheus
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
     profiles: ["monitoring"]
 
   tautulli:
@@ -288,9 +390,15 @@ services:
       <<: *common-env
     volumes:
       - ./tautulli/config:/config
-    <<: *common-networks
     depends_on:
-      - plex
+      plex:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
     profiles: ["monitoring"]
 
   portainer:
@@ -302,6 +410,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer/data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     <<: *common-networks
     profiles: ["monitoring"]
 
@@ -315,7 +428,45 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     <<: *common-networks
+    healthcheck:
+      test: ["CMD", "pgrep", "watchtower"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles: ["monitoring"]
+
+  # User Interface Services
+  organizr:
+    image: organizr/organizr:latest
+    container_name: organizr
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./organizr/config:/config
+    <<: *common-networks
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles: ["interface"]
+
+  watchlist:
+    image: ghcr.io/linuxserver/watchlist:latest
+    container_name: watchlist
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+    volumes:
+      - ./watchlist/config:/config
+    <<: *common-networks
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles: ["interface"]
 
 networks:
   proxy:
