@@ -158,6 +158,28 @@ const serviceCategories = [
       },
     ],
   },
+  {
+    name: 'Remote Access',
+    description: 'Secure remote desktop access',
+    services: [
+      {
+        id: 'novnc',
+        name: 'noVNC',
+        description: 'Web-based VNC client with secure proxy',
+        resources: { cpu: 1, memory: 256 },
+        dependencies: ['vnc', 'nginx', 'authelia'],
+        securityNotes: 'Protected by 2FA and SSL encryption',
+      },
+      {
+        id: 'vnc',
+        name: 'VNC Server',
+        description: 'Remote desktop server with KDE environment',
+        resources: { cpu: 2, memory: 2048 },
+        dependencies: ['nginx', 'authelia'],
+        securityNotes: 'Protected by 2FA and Fail2Ban',
+      },
+    ],
+  },
 ];
 
 const ServiceSelection = ({ onNext }) => {
@@ -312,6 +334,16 @@ const ServiceSelection = ({ onNext }) => {
                               <Chip
                                 label="Has Dependencies"
                                 size="small"
+                                sx={{ ml: 1 }}
+                              />
+                            </Tooltip>
+                          )}
+                          {service.securityNotes && (
+                            <Tooltip title={service.securityNotes}>
+                              <Chip
+                                label="Security Info"
+                                size="small"
+                                color="success"
                                 sx={{ ml: 1 }}
                               />
                             </Tooltip>

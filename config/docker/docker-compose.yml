@@ -547,6 +547,51 @@ services:
     <<: *common-networks
     profiles: ["utilities"]
 
+  # VNC Access
+  novnc:
+    image: ghcr.io/linuxserver/novnc:latest
+    container_name: novnc
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      DISPLAY_WIDTH: 1920
+      DISPLAY_HEIGHT: 1080
+      NOVNC_PORT: 6080
+      VNC_HOST: vnc
+      VNC_PORT: 5901
+    volumes:
+      - ./novnc/config:/config
+    depends_on:
+      vnc:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
+    profiles: ["remote"]
+
+  vnc:
+    image: ghcr.io/linuxserver/webtop:ubuntu-kde
+    container_name: vnc
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      KEYBOARD: en-us-qwerty
+      VNC_PASSWORD: ${VNC_PASSWORD}
+      CUSTOM_PORT: 5901
+      CUSTOM_USER: ${VNC_USER:-abc}
+    volumes:
+      - ./vnc/config:/config
+    healthcheck:
+      test: ["CMD", "pgrep", "Xvfb"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    <<: *common-networks
+    profiles: ["remote"]
+
 networks:
   proxy:
     driver: bridge

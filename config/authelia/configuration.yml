@@ -1,0 +1,72 @@
+---
+server:
+  host: 0.0.0.0
+  port: 9091
+
+log:
+  level: info
+  format: text
+  file_path: /config/authelia.log
+
+jwt_secret: ${JWT_SECRET}
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+    password:
+      algorithm: argon2id
+      iterations: 1
+      salt_length: 16
+      parallelism: 8
+      memory: 64
+
+access_control:
+  default_policy: deny
+  rules:
+    # VNC Access - Require 2FA
+    - domain: vnc.*
+      policy: two_factor
+      subject: ["group:admin", "group:remote"]
+
+    # Media Services - Require 2FA
+    - domain: 
+        - "sonarr.*"
+        - "radarr.*"
+        - "lidarr.*"
+        - "prowlarr.*"
+      policy: two_factor
+      subject: ["group:admin", "group:media"]
+
+    # Monitoring Services - Require 2FA
+    - domain:
+        - "grafana.*"
+        - "prometheus.*"
+        - "tautulli.*"
+      policy: two_factor
+      subject: ["group:admin", "group:monitoring"]
+
+session:
+  name: authelia_session
+  secret: ${SESSION_SECRET}
+  expiration: 3600  # 1 hour
+  inactivity: 300   # 5 minutes
+  domain: ${DOMAIN}  # Should match your root domain
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  encryption_key: ${STORAGE_ENCRYPTION_KEY}
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt
+
+totp:
+  issuer: monsterr-media-server
+  period: 30
+  skew: 1
