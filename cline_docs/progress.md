@@ -127,18 +127,18 @@
 - □ Storage management
 
 ## Recent Achievements
-1. Implemented Radarr service integration
-2. Created comprehensive API types
-3. Enhanced error handling
-4. Added configuration validation
-5. Completed media service trio
+1. Implemented test infrastructure
+2. Created comprehensive test utilities
+3. Added PlexService test suite
+4. Set up Jest configuration
+5. Enhanced type safety in tests
 
 ## Current Sprint
-1. Create service integration tests
-2. Implement Docker container management
-3. Add service logging infrastructure
-4. Create monitoring dashboard
-5. Add system-wide error handling
+1. Implement Sonarr service tests
+2. Create Radarr service tests
+3. Add integration test suite
+4. Implement Docker container tests
+5. Add system-wide test coverage
 
 ## Next Sprint
 1. Implement centralized logging
