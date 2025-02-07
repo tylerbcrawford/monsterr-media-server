@@ -127,18 +127,18 @@
 - □ Storage management
 
 ## Recent Achievements
-1. Implemented test infrastructure
-2. Created comprehensive test utilities
-3. Added PlexService test suite
-4. Set up Jest configuration
-5. Enhanced type safety in tests
+1. Implemented Sonarr service tests
+2. Added configuration verification tests
+3. Enhanced API mocking utilities
+4. Improved test coverage
+5. Added error handling tests
 
 ## Current Sprint
-1. Implement Sonarr service tests
-2. Create Radarr service tests
-3. Add integration test suite
-4. Implement Docker container tests
-5. Add system-wide test coverage
+1. Implement Radarr service tests
+2. Add integration test suite
+3. Create Docker container tests
+4. Implement system-wide testing
+5. Add performance test coverage
 
 ## Next Sprint
 1. Implement centralized logging
