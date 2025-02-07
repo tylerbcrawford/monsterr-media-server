@@ -184,34 +184,65 @@ Replace `your.domain.com` with your actual domain:
 
 #### A. Add DNS Records
 1. Log into your domain registrar's DNS management
-2. Add A record for main domain:
-   ```
-   # A Record - Point your domain to your server
-   @ IN A your.server.ip.address
-   ```
+2. Understanding DNS Record Types:
 
-3. Add CNAME records for all services:
-   ```
-   # CNAME Records for all services
-   auth        IN CNAME your.domain.com
-   proxy       IN CNAME your.domain.com
-   plex        IN CNAME your.domain.com
-   sonarr      IN CNAME your.domain.com
-   radarr      IN CNAME your.domain.com
-   lidarr      IN CNAME your.domain.com
-   bazarr      IN CNAME your.domain.com
-   prowlarr    IN CNAME your.domain.com
-   qbit        IN CNAME your.domain.com
-   nzb         IN CNAME your.domain.com
-   readarr     IN CNAME your.domain.com
-   calibre     IN CNAME your.domain.com
-   audiobooks  IN CNAME your.domain.com
-   grafana     IN CNAME your.domain.com
-   prometheus  IN CNAME your.domain.com
-   tautulli    IN CNAME your.domain.com
-   dash        IN CNAME your.domain.com
-   request     IN CNAME your.domain.com
-   ```
+   A. A Record (Address Record):
+      - Points your main domain directly to your server's IP address
+      - Example if your domain is example.com and server IP is 192.168.1.100:
+        ```
+        Type: A
+        Name: @ (represents main domain)
+        Value: 192.168.1.100
+        ```
+
+   B. CNAME Record (Canonical Name):
+      - Points a subdomain to your main domain
+      - Used for all services (auth, plex, etc.)
+      - Example for auth.example.com:
+        ```
+        Type: CNAME
+        Name: auth
+        Value: example.com
+        ```
+
+3. Add the following records in your domain registrar's DNS settings:
+
+   A. Main Domain (A Record):
+      ```
+      Type: A
+      Name: @ (or leave blank)
+      Value: your.server.ip.address
+      ```
+
+   B. Service Subdomains (CNAME Records):
+      ```
+      Type: CNAME
+      Name: auth
+      Value: your.domain.com
+      ```
+      (Repeat for each service with these settings)
+
+   Full list of required CNAME records:
+   | Name       | Type  | Value            |
+   |------------|-------|------------------|
+   | auth       | CNAME | your.domain.com  |
+   | proxy      | CNAME | your.domain.com  |
+   | plex       | CNAME | your.domain.com  |
+   | sonarr     | CNAME | your.domain.com  |
+   | radarr     | CNAME | your.domain.com  |
+   | lidarr     | CNAME | your.domain.com  |
+   | bazarr     | CNAME | your.domain.com  |
+   | prowlarr   | CNAME | your.domain.com  |
+   | qbit       | CNAME | your.domain.com  |
+   | nzb        | CNAME | your.domain.com  |
+   | readarr    | CNAME | your.domain.com  |
+   | calibre    | CNAME | your.domain.com  |
+   | audiobooks | CNAME | your.domain.com  |
+   | grafana    | CNAME | your.domain.com  |
+   | prometheus | CNAME | your.domain.com  |
+   | tautulli   | CNAME | your.domain.com  |
+   | dash       | CNAME | your.domain.com  |
+   | request    | CNAME | your.domain.com  |
 
    Alternatively, use a wildcard record:
    ```
