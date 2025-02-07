@@ -20,13 +20,184 @@ This guide provides step-by-step instructions for configuring your domain with M
    # A Record - Point your domain to your server
    @ IN A your.server.ip.address
 
-   # CNAME Records - Set up subdomains for services
-   plex     IN CNAME your.domain.com
-   sonarr   IN CNAME your.domain.com
-   radarr   IN CNAME your.domain.com
-   lidarr   IN CNAME your.domain.com
-   bazarr   IN CNAME your.domain.com
-   readarr  IN CNAME your.domain.com
+## Required Subdomains
+
+### Core Infrastructure
+1. **auth** - Authentication Portal
+   - Purpose: Authelia 2FA and SSO
+   - DNS: `auth IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Must be set up first as other services depend on it
+   - Access Pattern: All services redirect here for authentication
+
+2. **proxy** - Nginx Proxy Manager
+   - Purpose: Admin interface for proxy management
+   - DNS: `proxy IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: None
+   - Access Pattern: Admin access only
+
+### Media Services
+1. **plex** - Plex Media Server
+   - Purpose: Media streaming interface
+   - DNS: `plex IN CNAME your.domain.com`
+   - SSL: Required (custom certificate possible)
+   - Dependencies: None
+   - Access Pattern: Direct user access
+   - Note: Also needs port 32400 forwarded for remote access
+
+2. **sonarr** - TV Show Management
+   - Purpose: TV series management interface
+   - DNS: `sonarr IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, prowlarr
+   - Access Pattern: Admin access through auth
+
+3. **radarr** - Movie Management
+   - Purpose: Movie management interface
+   - DNS: `radarr IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, prowlarr
+   - Access Pattern: Admin access through auth
+
+4. **lidarr** - Music Management
+   - Purpose: Music management interface
+   - DNS: `lidarr IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, prowlarr
+   - Access Pattern: Admin access through auth
+
+5. **bazarr** - Subtitle Management
+   - Purpose: Subtitle management interface
+   - DNS: `bazarr IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, sonarr, radarr
+   - Access Pattern: Admin access through auth
+
+### Download Management
+1. **prowlarr** - Indexer Management
+   - Purpose: Indexer configuration interface
+   - DNS: `prowlarr IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth
+   - Access Pattern: Admin access through auth
+
+2. **qbit** - qBittorrent Interface
+   - Purpose: Torrent client interface
+   - DNS: `qbit IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, VPN
+   - Access Pattern: Admin access through auth
+   - Note: Must be behind VPN
+
+3. **nzb** - NZBGet Interface
+   - Purpose: Usenet client interface
+   - DNS: `nzb IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth
+   - Access Pattern: Admin access through auth
+
+### Book Management
+1. **readarr** - Book Management
+   - Purpose: Book management interface
+   - DNS: `readarr IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, prowlarr
+   - Access Pattern: Admin access through auth
+
+2. **calibre** - E-book Library
+   - Purpose: E-book management interface
+   - DNS: `calibre IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth
+   - Access Pattern: User/Admin access through auth
+
+3. **audiobooks** - Audiobookshelf
+   - Purpose: Audiobook streaming interface
+   - DNS: `audiobooks IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth
+   - Access Pattern: User access through auth
+
+### Monitoring & Management
+1. **grafana** - Monitoring Dashboard
+   - Purpose: System monitoring interface
+   - DNS: `grafana IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, prometheus
+   - Access Pattern: Admin access through auth
+
+2. **prometheus** - Metrics Collection
+   - Purpose: Metrics endpoint (internal)
+   - DNS: `prometheus IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth
+   - Access Pattern: Internal access only
+
+3. **tautulli** - Plex Monitoring
+   - Purpose: Plex statistics and monitoring
+   - DNS: `tautulli IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, plex
+   - Access Pattern: Admin access through auth
+
+### User Interface
+1. **dash** - Organizr Dashboard
+   - Purpose: Main user dashboard
+   - DNS: `dash IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth
+   - Access Pattern: User access through auth
+
+2. **request** - Overseerr
+   - Purpose: Media request interface
+   - DNS: `request IN CNAME your.domain.com`
+   - SSL: Required (handled by NPM)
+   - Dependencies: Requires auth, plex
+   - Access Pattern: User access through auth
+
+### Implementation Order
+1. Core Infrastructure (auth, proxy)
+2. Media Services (plex first, then others)
+3. Download Management
+4. Book Management
+5. Monitoring & Management
+6. User Interface
+
+### SSL Certificate Management
+- All subdomains use Let's Encrypt certificates managed by NPM
+- Certificates are automatically renewed
+- Plex can use its own certificate if preferred
+- Wildcard certificate option available for simpler management
+
+### DNS Configuration Example
+```
+# A Record for main domain
+@ IN A your.server.ip.address
+
+# CNAME Records for all services
+auth        IN CNAME your.domain.com
+proxy       IN CNAME your.domain.com
+plex        IN CNAME your.domain.com
+sonarr      IN CNAME your.domain.com
+radarr      IN CNAME your.domain.com
+lidarr      IN CNAME your.domain.com
+bazarr      IN CNAME your.domain.com
+prowlarr    IN CNAME your.domain.com
+qbit        IN CNAME your.domain.com
+nzb         IN CNAME your.domain.com
+readarr     IN CNAME your.domain.com
+calibre     IN CNAME your.domain.com
+audiobooks  IN CNAME your.domain.com
+grafana     IN CNAME your.domain.com
+prometheus  IN CNAME your.domain.com
+tautulli    IN CNAME your.domain.com
+dash        IN CNAME your.domain.com
+request     IN CNAME your.domain.com
+
+# Alternative: Wildcard Record (covers all subdomains)
+* IN CNAME your.domain.com
+```
    ```
 
    Alternatively, you can use a wildcard record:
