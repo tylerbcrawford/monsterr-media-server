@@ -11,6 +11,39 @@ This guide provides step-by-step instructions for configuring your domain with M
 
 ## Required Subdomains
 
+### Quick Reference List
+Replace `your.domain.com` with your actual domain:
+
+1. Core Infrastructure:
+   - auth.your.domain.com
+   - proxy.your.domain.com
+
+2. Media Services:
+   - plex.your.domain.com
+   - sonarr.your.domain.com
+   - radarr.your.domain.com
+   - lidarr.your.domain.com
+   - bazarr.your.domain.com
+
+3. Download Management:
+   - prowlarr.your.domain.com
+   - qbit.your.domain.com
+   - nzb.your.domain.com
+
+4. Book Management:
+   - readarr.your.domain.com
+   - calibre.your.domain.com
+   - audiobooks.your.domain.com
+
+5. Monitoring & Management:
+   - grafana.your.domain.com
+   - prometheus.your.domain.com
+   - tautulli.your.domain.com
+
+6. User Interface:
+   - dash.your.domain.com
+   - request.your.domain.com
+
 ### Core Infrastructure
 1. **auth** - Authentication Portal
    - Purpose: Authelia 2FA and SSO
