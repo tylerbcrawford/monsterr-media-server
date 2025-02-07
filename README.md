@@ -16,6 +16,12 @@ A comprehensive, Docker-based media server solution with automated management an
 - 🔍 Service dependency management
 - 💾 Automated storage configuration
 - 🌐 Streamlined network setup
+- 🖥️ Secure remote desktop access (VNC)
+- 📋 Unified dashboard with Organizr
+- 🎯 Media request management with Overseerr
+- 📝 Watchlist integration
+- ⚙️ Advanced configuration tools (Recyclarr)
+- 📦 Automated extraction (Unpackerr)
 
 ## Quick Start
 
@@ -187,6 +193,60 @@ See [Hardware Guide](docs/guides/hardware.md) for detailed recommendations.
 - **Configuration**: `/config/calibre-web/`
 - **Media Path**: `/media/ebooks`
 
+### UI Services
+
+#### Organizr
+- **Purpose**: Unified service dashboard
+- **Dependencies**: None
+- **Port**: Internal only
+- **Configuration**: `/config/organizr/`
+- **Key Features**:
+  * Service organization
+  * Tab-based interface
+  * Custom theming
+
+#### Overseerr
+- **Purpose**: Media request management
+- **Dependencies**: Plex
+- **Port**: Internal only
+- **Configuration**: `/config/overseerr/`
+- **Key Features**:
+  * Request tracking
+  * User management
+  * Automatic routing to Sonarr/Radarr
+
+#### Watchlist
+- **Purpose**: Media watchlist management
+- **Dependencies**: None
+- **Port**: Internal only
+- **Configuration**: `/config/watchlist/`
+- **Key Features**:
+  * Personal watchlists
+  * Integration with request system
+  * Progress tracking
+
+### Utility Services
+
+#### Recyclarr
+- **Purpose**: Configuration management
+- **Dependencies**: Radarr, Sonarr
+- **Port**: Internal only
+- **Configuration**: `/config/recyclarr/`
+- **Key Features**:
+  * Automated configuration
+  * Profile management
+  * Quality settings sync
+
+#### Unpackerr
+- **Purpose**: Automated extraction
+- **Dependencies**: None
+- **Port**: Internal only
+- **Configuration**: `/config/unpackerr/`
+- **Key Features**:
+  * Archive extraction
+  * Cleanup operations
+  * Error handling
+
 ## Service Interactions
 
 ```mermaid
@@ -204,6 +264,13 @@ graph TD
     K[Setup Wizard] -->|Config| L[Docker Services]
     K -->|Validation| M[System]
     K -->|Security| G
+    N[Organizr] -->|Dashboard| All
+    O[Watchlist] -->|Tracking| F
+    P[Recyclarr] -->|Config| B
+    P -->|Config| C
+    Q[Unpackerr] -->|Extract| D
+    R[noVNC] -->|Remote Access| S[VNC Server]
+    G -->|Auth| R
 ```
 
 ## Environment Variables
