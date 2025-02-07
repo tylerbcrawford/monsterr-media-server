@@ -9,17 +9,6 @@ This guide provides step-by-step instructions for configuring your domain with M
 - Your server's IP address
 - Router access for port forwarding
 
-## Step-by-Step Setup
-
-### 1. DNS Configuration
-
-#### A. Add DNS Records
-1. Log into your domain registrar's DNS management
-2. Add the following records:
-   ```
-   # A Record - Point your domain to your server
-   @ IN A your.server.ip.address
-
 ## Required Subdomains
 
 ### Core Infrastructure
@@ -156,53 +145,44 @@ This guide provides step-by-step instructions for configuring your domain with M
    - Dependencies: Requires auth, plex
    - Access Pattern: User access through auth
 
-### Implementation Order
-1. Core Infrastructure (auth, proxy)
-2. Media Services (plex first, then others)
-3. Download Management
-4. Book Management
-5. Monitoring & Management
-6. User Interface
+## Step-by-Step Setup
 
-### SSL Certificate Management
-- All subdomains use Let's Encrypt certificates managed by NPM
-- Certificates are automatically renewed
-- Plex can use its own certificate if preferred
-- Wildcard certificate option available for simpler management
+### 1. DNS Configuration
 
-### DNS Configuration Example
-```
-# A Record for main domain
-@ IN A your.server.ip.address
-
-# CNAME Records for all services
-auth        IN CNAME your.domain.com
-proxy       IN CNAME your.domain.com
-plex        IN CNAME your.domain.com
-sonarr      IN CNAME your.domain.com
-radarr      IN CNAME your.domain.com
-lidarr      IN CNAME your.domain.com
-bazarr      IN CNAME your.domain.com
-prowlarr    IN CNAME your.domain.com
-qbit        IN CNAME your.domain.com
-nzb         IN CNAME your.domain.com
-readarr     IN CNAME your.domain.com
-calibre     IN CNAME your.domain.com
-audiobooks  IN CNAME your.domain.com
-grafana     IN CNAME your.domain.com
-prometheus  IN CNAME your.domain.com
-tautulli    IN CNAME your.domain.com
-dash        IN CNAME your.domain.com
-request     IN CNAME your.domain.com
-
-# Alternative: Wildcard Record (covers all subdomains)
-* IN CNAME your.domain.com
-```
+#### A. Add DNS Records
+1. Log into your domain registrar's DNS management
+2. Add A record for main domain:
+   ```
+   # A Record - Point your domain to your server
+   @ IN A your.server.ip.address
    ```
 
-   Alternatively, you can use a wildcard record:
+3. Add CNAME records for all services:
    ```
-   # Wildcard CNAME
+   # CNAME Records for all services
+   auth        IN CNAME your.domain.com
+   proxy       IN CNAME your.domain.com
+   plex        IN CNAME your.domain.com
+   sonarr      IN CNAME your.domain.com
+   radarr      IN CNAME your.domain.com
+   lidarr      IN CNAME your.domain.com
+   bazarr      IN CNAME your.domain.com
+   prowlarr    IN CNAME your.domain.com
+   qbit        IN CNAME your.domain.com
+   nzb         IN CNAME your.domain.com
+   readarr     IN CNAME your.domain.com
+   calibre     IN CNAME your.domain.com
+   audiobooks  IN CNAME your.domain.com
+   grafana     IN CNAME your.domain.com
+   prometheus  IN CNAME your.domain.com
+   tautulli    IN CNAME your.domain.com
+   dash        IN CNAME your.domain.com
+   request     IN CNAME your.domain.com
+   ```
+
+   Alternatively, use a wildcard record:
+   ```
+   # Wildcard CNAME (covers all subdomains)
    * IN CNAME your.domain.com
    ```
 
