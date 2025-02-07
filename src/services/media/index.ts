@@ -1,6 +1,7 @@
 import { PlexService } from './PlexService';
 import { SonarrService } from './SonarrService';
-import { MediaService, PlexConfig, SonarrConfig } from '../../types/services';
+import { RadarrService } from './RadarrService';
+import { MediaService, PlexConfig, SonarrConfig, RadarrConfig } from '../../types/services';
 
 // Factory function to create media services
 export const createMediaService = (type: string, config: any): MediaService | null => {
@@ -9,9 +10,8 @@ export const createMediaService = (type: string, config: any): MediaService | nu
       return new PlexService(config as PlexConfig);
     case 'sonarr':
       return new SonarrService(config as SonarrConfig);
-    // Add other media services here as they are implemented
-    // case 'radarr':
-    //   return new RadarrService(config as RadarrConfig);
+    case 'radarr':
+      return new RadarrService(config as RadarrConfig);
     default:
       return null;
   }
@@ -19,12 +19,14 @@ export const createMediaService = (type: string, config: any): MediaService | nu
 
 export {
   PlexService,
-  SonarrService
+  SonarrService,
+  RadarrService
 };
 
 // Re-export types
 export type {
   MediaService,
   PlexConfig,
-  SonarrConfig
+  SonarrConfig,
+  RadarrConfig
 };
