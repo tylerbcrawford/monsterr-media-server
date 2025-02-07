@@ -1,7 +1,7 @@
 import { SystemService } from '../../core/system/SystemService';
 import { ConfigService } from '../../core/config/ConfigService';
 import { createTestServices } from '../integration/setup';
-import { ServiceStatus, SystemResources, HealthStatus } from '../../types/system';
+import { ServiceStatus, SystemResources, HealthStatus } from '../../types/system/index';
 
 // Initialize services
 export const configService = new ConfigService();
@@ -72,7 +72,7 @@ export const generateMockServiceStatus = (
   name: string,
   status: 'running' | 'stopped' | 'error' = 'running',
   health: HealthStatus['status'] = 'healthy'
-) => ({
+): ServiceStatus => ({
   name,
   status,
   health: {
@@ -89,6 +89,7 @@ export const generateMockServiceStatus = (
 beforeAll(async () => {
   // Initialize services
   await createTestServices();
+  systemService.startMonitoring();
 });
 
 // Clean up after tests
@@ -97,7 +98,8 @@ afterAll(async () => {
   jest.resetAllMocks();
 });
 
-// Reset mocks between tests
+// Reset mocks and cleanup intervals between tests
 afterEach(() => {
   jest.clearAllMocks();
+  systemService.stopMonitoring();
 });

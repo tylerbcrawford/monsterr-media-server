@@ -124,8 +124,8 @@ describe('System Monitoring Tests', () => {
     it('should generate alerts for service issues', async () => {
       const services = [
         generateMockServiceStatus('service1', 'running', 'healthy'),
-        generateMockServiceStatus('service2', 'error', 'unhealthy'),
-        generateMockServiceStatus('service3', 'stopped', 'unknown')
+        generateMockServiceStatus('service2', 'error', 'unknown'),
+        generateMockServiceStatus('service3', 'running', 'unhealthy')
       ];
 
       const alerts = await systemService.checkServiceAlerts(services);
@@ -145,15 +145,20 @@ describe('System Monitoring Tests', () => {
     });
 
     it('should track metric history', async () => {
-      // Collect multiple metrics
+      // Clear existing metrics
+      (systemService as any).metricHistory = [];
+      
+      // Collect multiple metrics with delays to ensure different timestamps
       await systemService.collectSystemMetrics();
+      await new Promise(resolve => setTimeout(resolve, 10));
       await systemService.collectSystemMetrics();
+      await new Promise(resolve => setTimeout(resolve, 20));
       await systemService.collectSystemMetrics();
 
       const history = await systemService.getMetricHistory();
       expect(history).toHaveLength(3);
-      expect(history[0].timestamp).toBeLessThan(history[1].timestamp);
-      expect(history[1].timestamp).toBeLessThan(history[2].timestamp);
+      expect(history[0].timestamp.getTime()).toBeLessThan(history[1].timestamp.getTime());
+      expect(history[1].timestamp.getTime()).toBeLessThan(history[2].timestamp.getTime());
     });
   });
 });

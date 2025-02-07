@@ -1,9 +1,9 @@
 import { BaseService as IBaseService, ServiceStatus, ServiceConfig } from '../types/services';
 import { HealthStatus } from '../types/system';
-import { systemService } from '../core';
 
 export abstract class BaseService implements IBaseService {
   private _status: ServiceStatus = 'stopped';
+  private healthCheckInterval?: NodeJS.Timeout;
   protected healthStatus: HealthStatus = {
     status: 'unknown',
     lastCheck: new Date(),
@@ -67,7 +67,6 @@ this._status = 'running';
 return true;
 } catch (error) {
 this._status = 'error';
-      this.status = 'error';
       this.healthStatus = {
         status: 'unhealthy',
         lastCheck: new Date(),
@@ -83,6 +82,13 @@ this._status = 'error';
   async stop(): Promise<boolean> {
     try {
       this._status = 'stopping';
+      
+      // Clear health check interval
+      if (this.healthCheckInterval) {
+        clearInterval(this.healthCheckInterval);
+        this.healthCheckInterval = undefined;
+      }
+      
       await this.stopService();
       this._status = 'stopped';
 
@@ -129,8 +135,13 @@ this._status = 'error';
    * Start health check monitoring
    */
   protected startHealthCheck(): void {
+    // Clear any existing interval
+    if (this.healthCheckInterval) {
+      clearInterval(this.healthCheckInterval);
+    }
+    
     // Perform health check every 30 seconds
-    setInterval(async () => {
+    this.healthCheckInterval = setInterval(async () => {
       try {
         const health = await this.checkHealth();
         this.healthStatus = {

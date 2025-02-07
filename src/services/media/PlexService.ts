@@ -68,7 +68,7 @@ export class PlexService extends BaseService implements MediaService {
       const plexConfig = this.config as PlexConfig;
       
       // Trigger scan for each library section
-      for (const libraryPath of Object.values(plexConfig.libraries)) {
+      for (const _ of Object.values(plexConfig.libraries)) {
         await axios.get(`${this.apiBaseUrl}/library/sections/all/refresh`, {
           headers: {
             'X-Plex-Token': plexConfig.apiKey
@@ -85,7 +85,7 @@ export class PlexService extends BaseService implements MediaService {
    */
   async getLibraryStats(): Promise<LibraryStats> {
     try {
-      const response = await axios.get(`${this.apiBaseUrl}/library/sections`, {
+      await axios.get(`${this.apiBaseUrl}/library/sections`, {
         headers: {
           'X-Plex-Token': (this.config as PlexConfig).apiKey
         }
@@ -143,7 +143,7 @@ export class PlexService extends BaseService implements MediaService {
    */
   private async verifyLibraries(): Promise<void> {
     try {
-      const response = await axios.get(`${this.apiBaseUrl}/library/sections`, {
+      await axios.get(`${this.apiBaseUrl}/library/sections`, {
         headers: {
           'X-Plex-Token': (this.config as PlexConfig).apiKey
         }

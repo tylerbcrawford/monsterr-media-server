@@ -13,6 +13,12 @@ export class SystemService {
   private status: SystemStatus;
   private events: SystemEvent[] = [];
   private tasks: SystemTask[] = [];
+  private metricHistory: Array<{ timestamp: Date; resources: SystemResources }> = [];
+  private intervals: {
+    metrics?: NodeJS.Timeout;
+    health?: NodeJS.Timeout;
+    uptime?: NodeJS.Timeout;
+  } = {};
 
   constructor() {
     this.status = {
@@ -23,9 +29,6 @@ export class SystemService {
       services: [],
       resources: this.getInitialResources()
     };
-
-    // Start system monitoring
-    this.startMonitoring();
   }
 
   /**
@@ -62,21 +65,39 @@ export class SystemService {
   /**
    * Start system monitoring
    */
-  private startMonitoring(): void {
+  public startMonitoring(): void {
+    // Clear any existing intervals
+    this.stopMonitoring();
+
     // Update system metrics every 60 seconds
-    setInterval(() => {
+    this.intervals.metrics = setInterval(() => {
       this.updateSystemMetrics();
     }, 60000);
 
     // Update service health every 30 seconds
-    setInterval(() => {
+    this.intervals.health = setInterval(() => {
       this.checkServicesHealth();
     }, 30000);
 
     // Update uptime every second
-    setInterval(() => {
+    this.intervals.uptime = setInterval(() => {
       this.status.uptime += 1;
     }, 1000);
+  }
+
+  public stopMonitoring(): void {
+    if (this.intervals.metrics) {
+      clearInterval(this.intervals.metrics);
+      this.intervals.metrics = undefined;
+    }
+    if (this.intervals.health) {
+      clearInterval(this.intervals.health);
+      this.intervals.health = undefined;
+    }
+    if (this.intervals.uptime) {
+      clearInterval(this.intervals.uptime);
+      this.intervals.uptime = undefined;
+    }
   }
 
   /**
@@ -154,6 +175,140 @@ export class SystemService {
         });
       }
     }
+  }
+
+  /**
+   * Check resource health status
+   */
+  async checkResourceHealth(resources: SystemResources): Promise<{
+    cpu: { status: string };
+    memory: { status: string };
+    disk: { status: string };
+  }> {
+    const status = {
+      cpu: { status: 'healthy' },
+      memory: { status: 'healthy' },
+      disk: { status: 'healthy' }
+    };
+
+    // CPU check
+    if (resources.cpu.usage > 90) {
+      status.cpu.status = 'critical';
+    } else if (resources.cpu.usage > 70) {
+      status.cpu.status = 'warning';
+    }
+
+    // Memory check
+    const memoryUsagePercent = (resources.memory.used / resources.memory.total) * 100;
+    if (memoryUsagePercent > 90) {
+      status.memory.status = 'critical';
+    } else if (memoryUsagePercent > 70) {
+      status.memory.status = 'warning';
+    }
+
+    // Disk check
+    const diskUsagePercent = (resources.disk.used / resources.disk.total) * 100;
+    if (diskUsagePercent > 90) {
+      status.disk.status = 'critical';
+    } else if (diskUsagePercent > 70) {
+      status.disk.status = 'warning';
+    }
+
+    return status;
+  }
+
+  /**
+   * Check service health status
+   */
+  async checkServiceHealth(service: ServiceStatus): Promise<{ status: string }> {
+    if (service.status === 'stopped') {
+      return { status: 'unknown' };
+    }
+    return { status: service.health?.status || 'unknown' };
+  }
+
+  /**
+   * Get aggregate health status for all services
+   */
+  async getAggregateHealth(services: ServiceStatus[]): Promise<{
+    status: string;
+    details: { totalServices: number; healthyServices: number };
+  }> {
+    const healthyServices = services.filter(
+      service => service.health?.status === 'healthy'
+    ).length;
+
+    const details = {
+      totalServices: services.length,
+      healthyServices
+    };
+
+    const status = healthyServices === services.length ? 'healthy' : 'degraded';
+
+    return { status, details };
+  }
+
+  /**
+   * Check for resource alerts
+   */
+  async checkResourceAlerts(resources: SystemResources): Promise<Array<{ severity: string }>> {
+    const alerts: Array<{ severity: string }> = [];
+
+    if (resources.cpu.usage > 90) {
+      alerts.push({ severity: 'critical' });
+    }
+    if (resources.memory.used / resources.memory.total > 0.9) {
+      alerts.push({ severity: 'critical' });
+    }
+
+    return alerts;
+  }
+
+  /**
+   * Check for service alerts
+   */
+  async checkServiceAlerts(services: ServiceStatus[]): Promise<Array<{ severity: string }>> {
+    const alerts: Array<{ severity: string }> = [];
+
+    for (const service of services) {
+      if (service.status === 'error') {
+        alerts.push({ severity: 'error' });
+      }
+      if (service.health?.status === 'unhealthy') {
+        alerts.push({ severity: 'warning' });
+      }
+    }
+
+    return alerts;
+  }
+
+  /**
+   * Collect system metrics
+   */
+  async collectSystemMetrics(): Promise<{
+    timestamp: Date;
+    resources: SystemResources;
+    services: ServiceStatus[];
+  }> {
+    const metrics = {
+      timestamp: new Date(),
+      resources: this.status.resources,
+      services: this.status.services
+    };
+
+    this.metricHistory.push({
+      timestamp: metrics.timestamp,
+      resources: { ...metrics.resources }
+    });
+
+    return metrics;
+  }
+
+  /**
+   * Get metric history
+   */
+  async getMetricHistory(): Promise<Array<{ timestamp: Date; resources: SystemResources }>> {
+    return this.metricHistory;
   }
 
   /**
