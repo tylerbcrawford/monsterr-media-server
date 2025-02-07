@@ -48,6 +48,13 @@ const serviceCategories = [
         required: true,
         resources: { cpu: 1, memory: 256 },
       },
+      {
+        id: 'fail2ban',
+        name: 'Fail2Ban',
+        description: 'Intrusion prevention system',
+        required: true,
+        resources: { cpu: 1, memory: 256 },
+      },
     ],
   },
   {
@@ -80,6 +87,13 @@ const serviceCategories = [
         description: 'Music management',
         resources: { cpu: 1, memory: 512 },
         dependencies: ['qbittorrent'],
+      },
+      {
+        id: 'bazarr',
+        name: 'Bazarr',
+        description: 'Subtitle management',
+        resources: { cpu: 1, memory: 512 },
+        dependencies: ['sonarr', 'radarr'],
       },
     ],
   },
@@ -130,6 +144,13 @@ const serviceCategories = [
         description: 'Full-featured ebook management system and server',
         resources: { cpu: 1, memory: 1024 },
       },
+      {
+        id: 'lazylibrarian',
+        name: 'LazyLibrarian',
+        description: 'Book download automation',
+        resources: { cpu: 1, memory: 512 },
+        dependencies: ['qbittorrent'],
+      },
     ],
   },
   {
@@ -156,6 +177,43 @@ const serviceCategories = [
         resources: { cpu: 1, memory: 256 },
         dependencies: ['plex'],
       },
+      {
+        id: 'portainer',
+        name: 'Portainer',
+        description: 'Docker management interface',
+        resources: { cpu: 1, memory: 256 },
+      },
+      {
+        id: 'watchtower',
+        name: 'Watchtower',
+        description: 'Automatic container updates',
+        resources: { cpu: 1, memory: 256 },
+      },
+    ],
+  },
+  {
+    name: 'UI Services',
+    description: 'User interface and request management',
+    services: [
+      {
+        id: 'organizr',
+        name: 'Organizr',
+        description: 'Services dashboard',
+        resources: { cpu: 1, memory: 256 },
+      },
+      {
+        id: 'overseerr',
+        name: 'Overseerr',
+        description: 'Media request management',
+        resources: { cpu: 1, memory: 512 },
+        dependencies: ['plex'],
+      },
+      {
+        id: 'watchlist',
+        name: 'Watchlist',
+        description: 'Media watchlist management',
+        resources: { cpu: 1, memory: 256 },
+      },
     ],
   },
   {
@@ -177,6 +235,25 @@ const serviceCategories = [
         resources: { cpu: 2, memory: 2048 },
         dependencies: ['nginx', 'authelia'],
         securityNotes: 'Protected by 2FA and Fail2Ban',
+      },
+    ],
+  },
+  {
+    name: 'Utility Services',
+    description: 'Additional utility and automation tools',
+    services: [
+      {
+        id: 'recyclarr',
+        name: 'Recyclarr',
+        description: 'Configuration management',
+        resources: { cpu: 1, memory: 256 },
+        dependencies: ['radarr', 'sonarr'],
+      },
+      {
+        id: 'unpackerr',
+        name: 'Unpackerr',
+        description: 'Automated extraction',
+        resources: { cpu: 1, memory: 256 },
       },
     ],
   },

@@ -130,18 +130,18 @@
 - □ Storage management
 
 ## Recent Achievements
-1. Integrated VNC remote access
-2. Enhanced setup wizard with VNC options
-3. Added VNC security measures
-4. Created VNC documentation
-5. Updated system architecture
+1. Completed service integration in setup wizard
+2. Added UI Services category with Organizr, Overseerr, and Watchlist
+3. Added Utility Services category with Recyclarr and Unpackerr
+4. Updated all service dependencies and resources
+5. Verified documentation accuracy
 
 ## Current Sprint
-1. Test VNC integration
-2. Monitor VNC performance
-3. Gather user feedback
-4. Optimize resource usage
-5. Enhance security measures
+1. Monitor service integration feedback
+2. Test new service dependencies
+3. Verify resource calculations
+4. Gather user feedback on UI
+5. Review security configurations
 
 ## Next Sprint
 1. Implement centralized logging
