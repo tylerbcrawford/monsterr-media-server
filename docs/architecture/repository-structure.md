@@ -16,7 +16,12 @@ monsterr-media-server/
 │   ├── defaults/           # Default configurations
 │   ├── templates/          # Configuration templates
 │   ├── docker/            # Docker configurations
-│   └── services/          # Service-specific configs
+│   ├── services/          # Service-specific configs
+│   ├── nginx/            # NGINX configurations
+│   ├── fail2ban/         # Fail2Ban configurations
+│   │   ├── filter.d/     # Custom Fail2Ban filters
+│   │   └── jail.d/       # Fail2Ban jail configurations
+│   └── vnc/              # VNC service configurations
 ├── src/                    # Source code
 │   ├── core/              # Core system functionality
 │   ├── ui/                # Web interface components

@@ -84,7 +84,14 @@ Internet → Firewall → Nginx Proxy → Authelia → Services
    - Configure managed users
    - Set up sharing permissions
 
-2. **Other Services**
+2. **VNC Access**
+   - Two-factor authentication required
+   - VNC password protection
+   - Session timeout configuration
+   - IP-based access restrictions
+   - Websocket security measures
+
+3. **Other Services**
    - Individual service credentials
    - API key management
    - Role-based access
@@ -171,6 +178,25 @@ Internet → Firewall → Nginx Proxy → Authelia → Services
    logpath = /opt/media-server/npm/logs/proxy-host-*_access.log
    maxretry = 3
    bantime = 86400
+
+   [vnc]
+   enabled = true
+   port = 6080,5901
+   filter = vnc
+   logpath = /var/log/auth.log
+   maxretry = 3
+   findtime = 600
+   bantime = 3600
+   ```
+
+2. **VNC Filter**
+   ```ini
+   # /etc/fail2ban/filter.d/vnc.conf
+   [Definition]
+   failregex = ^.*authentication failed from <HOST>.*$
+               ^.*failed login attempt from <HOST>.*$
+               ^.*invalid password from <HOST>.*$
+   ignoreregex =
    ```
 
 2. **Alert Configuration**

@@ -74,6 +74,10 @@ Required Setup:
    - Resource requirement estimates
    - Automated dependency resolution
    - Custom service combinations
+   - Optional remote access (VNC)
+     * Can be enabled/disabled during installation
+     * Part of the "remote" service profile
+     * Not required for basic media server functionality
 
    c. **Storage Configuration**
    - Path validation and creation
@@ -142,7 +146,16 @@ Required Setup:
 After installation, access your services at:
 - Dashboard: https://dashboard.yourdomain.com
 - Plex: https://plex.yourdomain.com
+- Remote Desktop: https://vnc.yourdomain.com (if enabled)
 - Other services: See [Service Configuration](configuration.md#service-specific-configuration)
+
+### 2. Remote Access Setup
+If you enabled VNC during installation:
+1. Access VNC interface at https://vnc.yourdomain.com
+2. Complete two-factor authentication
+3. Set up VNC password in settings
+4. Configure desktop environment preferences
+See [VNC Access Guide](guides/vnc-access.md) for detailed setup and usage.
 
 ### 2. Configure Media Libraries
 See [Configuration Guide](configuration.md#media-organization) for detailed media organization.
