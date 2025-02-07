@@ -4,12 +4,19 @@
 Completing service integration in setup wizard interface.
 
 ## Recent Changes
+- DDNS Integration
+  * Added Dynu DDNS support
+  * Implemented dynamic/static IP selection
+  * Added automatic DDNS client setup
+  * Added IP change monitoring
+  * Integrated with setup wizard
+
 - Setup Wizard Enhancement
-  * Added all missing services to wizard interface
-  * Added new UI Services category
-  * Added new Utility Services category
-  * Updated resource calculations for new services
-  * Enhanced dependency management
+  * Added DDNS configuration UI
+  * Added IP type selection toggle
+  * Added update interval configuration
+  * Added credential validation
+  * Enhanced network configuration
 
 - Service Integration
   * Added Fail2Ban to Core Services

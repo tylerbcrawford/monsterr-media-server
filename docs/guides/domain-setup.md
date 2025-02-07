@@ -281,13 +281,36 @@ Note: DNS changes can take up to 48 hours to propagate fully.
 
 ### 3. Initial Configuration
 
-#### A. Set Domain in Configuration
+#### A. Dynamic DNS (DDNS) Setup
+1. **Overview**
+   - DDNS keeps your domain pointing to your server even when your IP changes
+   - Supported provider: Dynu DNS
+   - Automatic IP monitoring and updates
+
+2. **Dynu DNS Setup**
+   1. Create a Dynu account at https://www.dynu.com
+   2. Add your domain to Dynu DNS
+   3. Note your username and password for configuration
+
+3. **Configuration Options**
+   - Dynamic IP (recommended): Automatically detects IP changes
+   - Static IP: Manually set IP updates
+   - Update Interval: How often to check for IP changes (minimum 60 seconds)
+
+#### B. Set Domain Configuration
 1. Edit your config.env file:
-   ```bash
-   # Set your domain
-   DOMAIN=your.domain.com
-   USE_DDNS=no
-   ```
+    ```bash
+    # Basic Domain Settings
+    DOMAIN=your.domain.com
+    
+    # DDNS Configuration
+    USE_DDNS=yes  # Set to 'no' if not using DDNS
+    DDNS_PROVIDER=dynu
+    DDNS_USERNAME=your_username
+    DDNS_PASSWORD=your_password
+    DDNS_UPDATE_INTERVAL=300  # In seconds (5 minutes)
+    DDNS_IP_TYPE=dynamic  # or 'static'
+    ```
 
 #### B. Apply Configuration
 ```bash
@@ -365,7 +388,37 @@ curl -vI https://your.domain.com
 curl -vI https://plex.your.domain.com
 ```
 
-#### B. Verify SSL Certificates
+#### B. Verify DDNS Configuration
+```bash
+# Check DDNS service status
+docker-compose logs ddns-updater
+
+# Verify current IP
+curl -s https://api.ipify.org
+cat /opt/media-server/config/ddns.json | grep currentIP
+
+# Test domain resolution
+dig +short your.domain.com
+```
+
+#### C. Monitor DDNS Updates
+1. Check update logs:
+   ```bash
+   docker-compose logs -f ddns-updater
+   ```
+
+2. Verify IP changes are detected:
+   ```bash
+   # View recent IP updates
+   grep "IP changed" /opt/media-server/logs/ddns.log
+   ```
+
+3. Test Dynu API connectivity:
+   ```bash
+   curl -I https://api.dynu.com/v2/dns
+   ```
+
+#### D. Verify SSL Certificates
 In Nginx Proxy Manager:
 1. Go to SSL Certificates
 2. Check status and expiry dates
@@ -387,18 +440,50 @@ In Nginx Proxy Manager:
 ### Common Issues
 
 1. DNS Not Resolving
-   ```bash
-   # Check DNS propagation
-   dig your.domain.com
-   ```
+    ```bash
+    # Check DNS propagation
+    dig your.domain.com
+    ```
 
-2. SSL Certificate Errors
-   ```bash
-   # Verify certificate
-   openssl s_client -connect your.domain.com:443
-   ```
+2. DDNS Service Issues
+    Common problems and solutions:
+    
+    a. Service not updating:
+    ```bash
+    # Check service status
+    docker-compose ps ddns-updater
+    docker-compose logs --tail=100 ddns-updater
+    ```
+    
+    b. Authentication failures:
+    ```bash
+    # Verify credentials
+    cat /opt/media-server/config/ddns.json
+    # Ensure password is correct and not URL-encoded
+    ```
+    
+    c. IP detection issues:
+    ```bash
+    # Test IP detection
+    curl -s https://api.ipify.org
+    # Compare with current DDNS IP
+    cat /opt/media-server/config/ddns.json | grep currentIP
+    ```
+    
+    d. Update interval problems:
+    ```bash
+    # Check update frequency
+    grep "Updating DNS" /opt/media-server/logs/ddns.log
+    # Should see updates at your configured interval
+    ```
 
-3. Port Forwarding Issues
+3. SSL Certificate Errors
+    ```bash
+    # Verify certificate
+    openssl s_client -connect your.domain.com:443
+    ```
+
+4. Port Forwarding Issues
    ```bash
    # Check if ports are open
    nc -zv your.server.ip.address 80

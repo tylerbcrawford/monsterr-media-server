@@ -5,6 +5,28 @@ export interface SystemStatus {
   lastUpdate: Date;
   services: ServiceStatus[];
   resources: SystemResources;
+  ddns?: DDNSStatus;
+}
+
+export interface DDNSStatus {
+  enabled: boolean;
+  provider: 'dynu';
+  currentIP: string;
+  lastUpdate: Date;
+  domain: string;
+  updateInterval: number;
+  status: 'active' | 'error' | 'disabled';
+  lastError?: string;
+}
+
+export interface DDNSConfig {
+  enabled: boolean;
+  provider: 'dynu';
+  domain: string;
+  username: string;
+  password: string;
+  updateInterval: number; // in seconds
+  ipType: 'dynamic' | 'static';
 }
 
 export interface ServiceStatus {

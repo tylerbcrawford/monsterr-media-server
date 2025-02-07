@@ -65,6 +65,32 @@ const NetworkConfig = ({ onNext }) => {
       valid: false,
       error: '',
     },
+    useDDNS: false,
+    ddnsProvider: {
+      value: 'dynu',
+      valid: true,
+      error: '',
+    },
+    ddnsUsername: {
+      value: '',
+      valid: false,
+      error: '',
+    },
+    ddnsPassword: {
+      value: '',
+      valid: false,
+      error: '',
+    },
+    ddnsUpdateInterval: {
+      value: 300,
+      valid: true,
+      error: '',
+    },
+    ddnsIpType: {
+      value: 'dynamic',
+      valid: true,
+      error: '',
+    },
   });
 
   const [checking, setChecking] = useState(false);
@@ -195,6 +221,79 @@ const NetworkConfig = ({ onNext }) => {
     }));
   };
 
+  const validateDDNSCredentials = async (username, password) => {
+    try {
+      const response = await fetch('/api/setup/validate-ddns', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          provider: 'dynu',
+          username,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+      return {
+        valid: data.valid,
+        error: data.error || '',
+      };
+    } catch (error) {
+      return {
+        valid: false,
+        error: 'Failed to validate DDNS credentials',
+      };
+    }
+  };
+
+  const handleDDNSCredentialsChange = async (field, value) => {
+    setConfig((prev) => ({
+      ...prev,
+      [field]: {
+        ...prev[field],
+        value,
+        checking: true,
+      },
+    }));
+
+    if (field === 'ddnsUsername' || field === 'ddnsPassword') {
+      const username = field === 'ddnsUsername' ? value : config.ddnsUsername.value;
+      const password = field === 'ddnsPassword' ? value : config.ddnsPassword.value;
+
+      if (username && password) {
+        const result = await validateDDNSCredentials(username, password);
+        setConfig((prev) => ({
+          ...prev,
+          ddnsUsername: {
+            ...prev.ddnsUsername,
+            valid: result.valid,
+            error: field === 'ddnsUsername' ? result.error : prev.ddnsUsername.error,
+            checking: false,
+          },
+          ddnsPassword: {
+            ...prev.ddnsPassword,
+            valid: result.valid,
+            error: field === 'ddnsPassword' ? result.error : prev.ddnsPassword.error,
+            checking: false,
+          },
+        }));
+      } else {
+        setConfig((prev) => ({
+          ...prev,
+          [field]: {
+            ...prev[field],
+            value,
+            valid: false,
+            error: 'Required field',
+            checking: false,
+          },
+        }));
+      }
+    }
+  };
+
   useEffect(() => {
     const checkAllPorts = async () => {
       setChecking(true);
@@ -228,7 +327,8 @@ const NetworkConfig = ({ onNext }) => {
       config.domain.valid &&
       (!config.useSsl || config.email.valid) &&
       Object.values(config.ports).every((port) => port.available) &&
-      (!config.useVpn || (config.vpnProvider.valid && config.vpnConfig.valid));
+      (!config.useVpn || (config.vpnProvider.valid && config.vpnConfig.valid)) &&
+      (!config.useDDNS || (config.ddnsUsername.valid && config.ddnsPassword.valid));
 
     setCanProceed(isValid);
   }, [config]);
@@ -339,7 +439,7 @@ const NetworkConfig = ({ onNext }) => {
             </Grid>
           </Paper>
 
-          <Paper variant="outlined" sx={{ p: 2 }}>
+          <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
             <Typography variant="subtitle1" gutterBottom>
               VPN Configuration
             </Typography>
@@ -390,6 +490,114 @@ const NetworkConfig = ({ onNext }) => {
               />
             </Collapse>
           </Paper>
+
+          <Paper variant="outlined" sx={{ p: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              DDNS Configuration
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={config.useDDNS}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      useDDNS: e.target.checked,
+                    }))
+                  }
+                />
+              }
+              label="Enable Dynamic DNS (DDNS)"
+            />
+
+            <Collapse in={config.useDDNS}>
+              <TextField
+                fullWidth
+                label="DDNS Username"
+                value={config.ddnsUsername.value}
+                onChange={(e) => handleDDNSCredentialsChange('ddnsUsername', e.target.value)}
+                error={!!config.ddnsUsername.error}
+                helperText={config.ddnsUsername.error}
+                sx={{ mt: 2, mb: 2 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {config.ddnsUsername.checking ? (
+                        <CircularProgress size={20} />
+                      ) : config.ddnsUsername.valid ? (
+                        <CheckIcon color="success" />
+                      ) : (
+                        config.ddnsUsername.error && <ErrorIcon color="error" />
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <TextField
+                fullWidth
+                type="password"
+                label="DDNS Password"
+                value={config.ddnsPassword.value}
+                onChange={(e) => handleDDNSCredentialsChange('ddnsPassword', e.target.value)}
+                error={!!config.ddnsPassword.error}
+                helperText={config.ddnsPassword.error}
+                sx={{ mb: 2 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {config.ddnsPassword.checking ? (
+                        <CircularProgress size={20} />
+                      ) : config.ddnsPassword.valid ? (
+                        <CheckIcon color="success" />
+                      ) : (
+                        config.ddnsPassword.error && <ErrorIcon color="error" />
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <TextField
+                fullWidth
+                type="number"
+                label="Update Interval (seconds)"
+                value={config.ddnsUpdateInterval.value}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    ddnsUpdateInterval: {
+                      value: parseInt(e.target.value, 10),
+                      valid: parseInt(e.target.value, 10) >= 60,
+                      error: parseInt(e.target.value, 10) >= 60 ? '' : 'Minimum interval is 60 seconds',
+                    },
+                  }))
+                }
+                error={!!config.ddnsUpdateInterval.error}
+                helperText={config.ddnsUpdateInterval.error}
+                sx={{ mb: 2 }}
+              />
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={config.ddnsIpType.value === 'dynamic'}
+                    onChange={(e) =>
+                      setConfig((prev) => ({
+                        ...prev,
+                        ddnsIpType: {
+                          value: e.target.checked ? 'dynamic' : 'static',
+                          valid: true,
+                          error: '',
+                        },
+                      }))
+                    }
+                  />
+                }
+                label="Use Dynamic IP"
+              />
+            </Collapse>
+          </Paper>
         </Grid>
 
         <Grid item xs={12} md={4}>
@@ -415,6 +623,9 @@ const NetworkConfig = ({ onNext }) => {
               </Typography>
               <Typography variant="body2">
                 • VPN provider compatible with OpenVPN
+              </Typography>
+              <Typography variant="body2">
+                • DDNS provider account (if using DDNS)
               </Typography>
             </Box>
 

@@ -146,6 +146,9 @@ app.post('/api/setup/validate-path', async (req, res) => {
   }
 });
 
+// Import axios for API requests
+import axios from 'axios';
+
 // Validate domain endpoint
 app.post('/api/setup/validate-domain', async (req, res) => {
   try {
@@ -167,6 +170,55 @@ app.post('/api/setup/validate-domain', async (req, res) => {
     res.json({
       valid: false,
       error: error.message,
+    });
+  }
+});
+
+// Validate DDNS credentials endpoint
+app.post('/api/setup/validate-ddns', async (req, res) => {
+  try {
+    const { provider, username, password } = req.body;
+
+    if (provider !== 'dynu') {
+      throw new Error('Only Dynu DDNS is supported');
+    }
+
+    if (!username || !password) {
+      throw new Error('Username and password are required');
+    }
+
+    // Test credentials with Dynu API
+    const auth = Buffer.from(`${username}:${password}`).toString('base64');
+    try {
+      const response = await axios.get('https://api.dynu.com/v2/dns', {
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'User-Agent': 'monsterr-media-server/1.0'
+        }
+      });
+
+      if (response.status === 200) {
+        res.json({
+          valid: true,
+          message: 'DDNS credentials validated successfully'
+        });
+      } else {
+        throw new Error('Invalid response from DDNS provider');
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        res.json({
+          valid: false,
+          error: 'Invalid DDNS credentials'
+        });
+      } else {
+        throw new Error('Failed to connect to DDNS provider');
+      }
+    }
+  } catch (error) {
+    res.json({
+      valid: false,
+      error: error.message
     });
   }
 });
@@ -247,7 +299,62 @@ app.post('/api/setup/deploy', async (req, res) => {
   try {
     const { config } = req.body;
 
-    // Generate docker-compose.yml
+    // Create config directory if it doesn't exist
+    await fs.mkdir('/opt/media-server/config', { recursive: true });
+
+    // Save DDNS configuration if enabled
+    if (config.useDDNS) {
+      const ddnsConfig = {
+        enabled: true,
+        provider: 'dynu',
+        domain: config.domain.value,
+        username: config.ddnsUsername.value,
+        password: config.ddnsPassword.value,
+        updateInterval: config.ddnsUpdateInterval.value,
+        ipType: config.ddnsIpType.value
+      };
+
+      // Save DDNS configuration to file
+      await fs.writeFile(
+        '/opt/media-server/config/ddns.json',
+        JSON.stringify(ddnsConfig, null, 2)
+      );
+
+      // Set proper permissions
+      await execAsync('chmod 600 /opt/media-server/config/ddns.json');
+
+      logger.info('DDNS configuration saved successfully');
+    }
+
+    // Generate docker-compose.yml with DDNS service if enabled
+    const composeConfig = {
+      version: '3',
+      services: {
+        // ... other services ...
+      }
+    };
+
+    if (config.useDDNS) {
+      composeConfig.services.ddns = {
+        image: 'ghcr.io/hotio/ddns-updater:latest',
+        container_name: 'ddns-updater',
+        environment: [
+          'PUID=1000',
+          'PGID=1000',
+          'TZ=Etc/UTC',
+          'DDNS_PROVIDER=dynu',
+          `DDNS_DOMAIN=${config.domain.value}`,
+          `DDNS_USERNAME=${config.ddnsUsername.value}`,
+          `DDNS_PASSWORD=${config.ddnsPassword.value}`,
+          `UPDATE_INTERVAL=${config.ddnsUpdateInterval.value}`
+        ],
+        restart: 'unless-stopped',
+        volumes: [
+          '/opt/media-server/config/ddns.json:/config/ddns.json:ro'
+        ]
+      };
+    }
+
     // Generate environment variables
     // Start services
     // Configure security
@@ -255,6 +362,7 @@ app.post('/api/setup/deploy', async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
+    logger.error('Deployment error:', error);
     next(error);
   }
 });

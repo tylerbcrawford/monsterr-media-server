@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * IP-based access restrictions
   - Emergency SSH tunnel access option
   - Detailed VNC access documentation
+- Enhanced DDNS Integration
+  - Dynamic/static IP selection toggle
+  - Dynu DDNS provider integration
+  - Automatic DDNS client setup
+  - IP change monitoring and updates
+  - Secure credential management
+  - Real-time status monitoring
+  - Configurable update intervals
+  - Comprehensive documentation
 - Enhanced Setup Wizard
   - Added new UI Services category:
     * Organizr dashboard integration

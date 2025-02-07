@@ -6,8 +6,11 @@ import {
   SystemEventType,
   SystemTask,
   SystemActionResult,
-  HealthStatus
+  HealthStatus,
+  DDNSConfig,
+  DDNSStatus
 } from '../../types/system';
+import axios from 'axios';
 
 export class SystemService {
   private status: SystemStatus;
@@ -18,7 +21,11 @@ export class SystemService {
     metrics?: NodeJS.Timeout;
     health?: NodeJS.Timeout;
     uptime?: NodeJS.Timeout;
+    ddns?: NodeJS.Timeout;
   } = {};
+
+  private ddnsConfig?: DDNSConfig;
+  private lastKnownIP?: string;
 
   constructor() {
     this.status = {
@@ -27,8 +34,158 @@ export class SystemService {
       version: '1.0.0',
       lastUpdate: new Date(),
       services: [],
-      resources: this.getInitialResources()
+      resources: this.getInitialResources(),
+      ddns: {
+        enabled: false,
+        provider: 'dynu',
+        currentIP: '',
+        lastUpdate: new Date(),
+        domain: '',
+        updateInterval: 300,
+        status: 'disabled'
+      }
     };
+  }
+
+  /**
+   * Configure DDNS settings
+   */
+  async configureDDNS(config: DDNSConfig): Promise<SystemActionResult> {
+    try {
+      this.ddnsConfig = config;
+      
+      if (config.enabled) {
+        // Stop existing interval if any
+        if (this.intervals.ddns) {
+          clearInterval(this.intervals.ddns);
+        }
+
+        // Initial update
+        await this.updateDDNS();
+
+        // Start monitoring
+        this.intervals.ddns = setInterval(
+          () => this.updateDDNS(),
+          config.updateInterval * 1000
+        );
+
+        this.status.ddns = {
+          enabled: true,
+          provider: 'dynu',
+          currentIP: this.lastKnownIP || '',
+          lastUpdate: new Date(),
+          domain: config.domain,
+          updateInterval: config.updateInterval,
+          status: 'active'
+        };
+
+        return {
+          success: true,
+          message: 'DDNS configuration updated and service started'
+        };
+      } else {
+        // Stop DDNS updates
+        if (this.intervals.ddns) {
+          clearInterval(this.intervals.ddns);
+          this.intervals.ddns = undefined;
+        }
+
+        this.status.ddns = {
+          enabled: false,
+          provider: 'dynu',
+          currentIP: this.lastKnownIP || '',
+          lastUpdate: new Date(),
+          domain: config.domain,
+          updateInterval: config.updateInterval,
+          status: 'disabled'
+        };
+
+        return {
+          success: true,
+          message: 'DDNS service stopped'
+        };
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (this.status.ddns) {
+        this.status.ddns.status = 'error';
+        this.status.ddns.lastError = errorMessage;
+      }
+      return {
+        success: false,
+        message: `Failed to configure DDNS: ${errorMessage}`,
+        error: error as Error
+      };
+    }
+  }
+
+  /**
+   * Update DDNS record
+   */
+  private async updateDDNS(): Promise<void> {
+    if (!this.ddnsConfig?.enabled) return;
+
+    try {
+      // Get current IP
+      interface IpifyResponse {
+        ip: string;
+      }
+      const ipResponse = await axios.get<IpifyResponse>('https://api.ipify.org?format=json');
+      const currentIP = ipResponse.data.ip;
+
+      // Only update if IP has changed
+      if (currentIP !== this.lastKnownIP) {
+        const dynuUrl = `https://api.dynu.com/nic/update`;
+        const params = new URLSearchParams({
+          hostname: this.ddnsConfig.domain,
+          myip: currentIP,
+        });
+
+        const auth = Buffer.from(
+          `${this.ddnsConfig.username}:${this.ddnsConfig.password}`
+        ).toString('base64');
+
+        await axios.get(dynuUrl, {
+          params,
+          headers: {
+            'User-Agent': 'monsterr-media-server/1.0',
+            'Authorization': `Basic ${auth}`
+          }
+        });
+
+        this.lastKnownIP = currentIP;
+        if (this.status.ddns) {
+          this.status.ddns.currentIP = currentIP;
+          this.status.ddns.lastUpdate = new Date();
+          this.status.ddns.status = 'active';
+          this.status.ddns.lastError = undefined;
+        }
+
+        this.emitEvent({
+          id: Date.now().toString(),
+          type: SystemEventType.UPDATE_EVENT,
+          severity: 'info',
+          timestamp: new Date(),
+          source: 'ddns',
+          message: `DDNS record updated for ${this.ddnsConfig.domain} to ${currentIP}`
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (this.status.ddns) {
+        this.status.ddns.status = 'error';
+        this.status.ddns.lastError = errorMessage;
+      }
+
+      this.emitEvent({
+        id: Date.now().toString(),
+        type: SystemEventType.UPDATE_EVENT,
+        severity: 'error',
+        timestamp: new Date(),
+        source: 'ddns',
+        message: `Failed to update DDNS record: ${errorMessage}`
+      });
+    }
   }
 
   /**
@@ -97,6 +254,24 @@ export class SystemService {
     if (this.intervals.uptime) {
       clearInterval(this.intervals.uptime);
       this.intervals.uptime = undefined;
+    }
+    if (this.intervals.ddns) {
+      clearInterval(this.intervals.ddns);
+      this.intervals.ddns = undefined;
+
+      // Update DDNS status if it was running
+      if (this.status.ddns?.status === 'active') {
+        this.status.ddns.status = 'disabled';
+        this.status.ddns.lastUpdate = new Date();
+        this.emitEvent({
+          id: Date.now().toString(),
+          type: SystemEventType.SERVICE_STATE_CHANGE,
+          severity: 'info',
+          timestamp: new Date(),
+          source: 'ddns',
+          message: 'DDNS service stopped'
+        });
+      }
     }
   }
 

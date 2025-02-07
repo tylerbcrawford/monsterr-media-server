@@ -104,7 +104,22 @@
   - Health check integration
   - Failure recovery
 
-### 6. Monitoring & Maintenance
+### 6. Network Management
+- **DDNS Integration**
+  - Dynamic DNS provider integration (Dynu)
+  - Automatic IP detection and updates
+  - Configurable update intervals
+  - IP type selection (dynamic/static)
+  - Secure credential management
+
+- **Network Monitoring**
+  - IP change detection
+  - Update status tracking
+  - Connection health monitoring
+  - DNS resolution verification
+  - SSL certificate management
+
+### 7. Monitoring & Maintenance
 - **System Monitoring**
   - Prometheus metrics collection
   - Grafana visualization
