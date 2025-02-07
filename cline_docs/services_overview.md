@@ -1,6 +1,15 @@
 # Services Overview
 
-## 1. Core Infrastructure
+## 1. Remote Access
+1. **noVNC**
+   - Image: `ghcr.io/linuxserver/novnc:latest`
+   - Description: Web-based VNC client with secure proxy
+
+2. **VNC Server**
+   - Image: `ghcr.io/linuxserver/webtop:ubuntu-kde`
+   - Description: Remote desktop server with KDE environment
+
+## 2. Core Infrastructure
 1. **Nginx Proxy Manager**
    - Image: `jc21/nginx-proxy-manager:latest`
    - Description: Reverse proxy for managing access to services
@@ -17,100 +26,100 @@
    - Image: `crazymax/fail2ban:latest`
    - Description: Intrusion prevention system
 
-## 2. Media Services
-5. **Plex Media Server**
+## 3. Media Services
+3. **Plex Media Server**
    - Image: `lscr.io/linuxserver/plex:latest`
    - Description: Media streaming server
 
-6. **Sonarr**
+4. **Sonarr**
    - Image: `lscr.io/linuxserver/sonarr:latest`
    - Description: TV series management
 
-7. **Radarr**
+5. **Radarr**
    - Image: `lscr.io/linuxserver/radarr:latest`
    - Description: Movie management
 
-8. **Lidarr**
+6. **Lidarr**
    - Image: `lscr.io/linuxserver/lidarr:latest`
    - Description: Music management
 
-9. **Bazarr**
+7. **Bazarr**
    - Image: `lscr.io/linuxserver/bazarr:latest`
    - Description: Subtitle management
 
-## 3. Download Management
-10. **qBittorrent with VPN**
-    - Image: `ghcr.io/hotio/qbittorrent:latest`
-    - Description: Torrent client with VPN integration
+## 4. Download Management
+8. **qBittorrent with VPN**
+   - Image: `ghcr.io/hotio/qbittorrent:latest`
+   - Description: Torrent client with VPN integration
 
-11. **Prowlarr**
-    - Image: `lscr.io/linuxserver/prowlarr:latest`
-    - Description: Indexer manager
+9. **Prowlarr**
+   - Image: `lscr.io/linuxserver/prowlarr:latest`
+   - Description: Indexer manager
 
-12. **NZBGet**
+10. **NZBGet**
     - Image: `lscr.io/linuxserver/nzbget:latest`
     - Description: Usenet downloader
 
-13. **VPN Service**
+11. **VPN Service**
     - Image: `dperson/openvpn-client`
     - Description: OpenVPN client for secure downloads
 
-## 4. Book Services
-14. **Readarr**
+## 5. Book Services
+12. **Readarr**
     - Image: `lscr.io/linuxserver/readarr:latest`
     - Description: Book management
 
-15. **Audiobookshelf**
+13. **Audiobookshelf**
     - Image: `ghcr.io/advplyr/audiobookshelf:latest`
     - Description: Audiobook and podcast server
 
-16. **Calibre**
-     - Image: `lscr.io/linuxserver/calibre:latest`
-     - Description: Full-featured ebook management system and server
+14. **Calibre**
+    - Image: `lscr.io/linuxserver/calibre:latest`
+    - Description: Full-featured ebook management system and server
 
-17. **LazyLibrarian**
+15. **LazyLibrarian**
     - Image: `lscr.io/linuxserver/lazylibrarian:latest`
     - Description: Book download automation
 
-## 5. Monitoring Services
-18. **Prometheus**
+## 6. Monitoring Services
+16. **Prometheus**
     - Image: `prom/prometheus:latest`
     - Description: Metrics collection
 
-19. **Grafana**
+17. **Grafana**
     - Image: `grafana/grafana:latest`
     - Description: Metrics visualization
 
-20. **Tautulli**
+18. **Tautulli**
     - Image: `lscr.io/linuxserver/tautulli:latest`
     - Description: Plex statistics and monitoring
 
-21. **Portainer**
+19. **Portainer**
     - Image: `portainer/portainer-ce:latest`
     - Description: Docker management interface
 
-22. **Watchtower**
+20. **Watchtower**
     - Image: `containrrr/watchtower:latest`
     - Description: Automatic container updates
 
-## 6. User Interface Services
-23. **Organizr**
+## 7. User Interface Services
+21. **Organizr**
     - Image: `organizr/organizr:latest`
     - Description: Services dashboard
 
-24. **Overseerr**
+22. **Overseerr**
     - Image: `lscr.io/linuxserver/overseerr:latest`
     - Description: Media request management
 
-25. **Watchlist**
+23. **Watchlist**
     - Image: `ghcr.io/linuxserver/watchlist:latest`
     - Description: Media watchlist management
 
-## 7. Utility Services
-26. **Recyclarr**
+## 8. Utility Services
+24. **Recyclarr**
     - Image: `requestrr/recyclarr:latest`
     - Description: Configuration management
 
-27. **Unpackerr**
+25. **Unpackerr**
     - Image: `golift/unpackerr:latest`
     - Description: Automated extraction

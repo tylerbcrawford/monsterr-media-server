@@ -4,6 +4,7 @@
 
 ### Complete Implementations
 - Core Infrastructure services (nginx-proxy-manager, authelia, redis, fail2ban) are properly configured in docker-compose.yml with correct dependencies and network settings
+- Remote Access services (noVNC, VNC server) are integrated with security infrastructure
 - Media Services (plex, sonarr, radarr, lidarr, bazarr) have appropriate volume mappings and dependencies
 - Download Management services have proper VPN integration and security configurations
 - Book Services (readarr, calibre, audiobookshelf, lazylibrarian) are fully integrated
@@ -105,7 +106,11 @@
    - Redis
    - Fail2Ban
 
-2. Media Services:
+2. Remote Access:
+   - noVNC (Web-based VNC client)
+   - VNC Server (KDE desktop environment)
+
+3. Media Services:
    - Plex
    - Sonarr
    - Radarr
