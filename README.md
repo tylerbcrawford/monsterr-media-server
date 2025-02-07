@@ -21,7 +21,7 @@ A comprehensive, Docker-based media server solution with automated management an
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/tylerbcrawford/monsterr-media-server.git
+git clone [repository-url]
 cd monsterr-media-server
 ```
 
@@ -254,9 +254,6 @@ See [Configuration Guide](docs/guides/configuration.md) for a complete list.
 
 ```
 /
-├── .github/                    # GitHub specific files
-│   ├── ISSUE_TEMPLATE/        # Issue templates
-│   └── workflows/             # GitHub Actions
 ├── config/                    # Configuration files
 │   ├── authelia/             # Authelia config
 │   ├── docker/               # Docker compose files
@@ -322,7 +319,7 @@ If you encounter any issues:
 ```bash
 sudo ./scripts/utils/collect_debug_info.sh
 ```
-3. [Open an issue](../../issues/new/choose) with the debug information
+3. Contact the project maintainers with the debug information
 
 ## Security
 

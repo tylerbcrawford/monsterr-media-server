@@ -77,7 +77,6 @@
 - ✓ Component tests
 - ✓ API integration tests
 - ✓ Test infrastructure
-- ✓ CI/CD pipeline
 - ✓ Security testing
 - ✓ Health check validation
 

@@ -10,7 +10,7 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the [issue list](../../issues) as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+When reporting bugs, please include as many details as possible:
 
 * Use a clear and descriptive title
 * Describe the exact steps to reproduce the problem
@@ -21,34 +21,26 @@ Before creating bug reports, please check the [issue list](../../issues) as you 
 
 ### Suggesting Enhancements
 
-Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
+When suggesting enhancements, please include:
 
 * A clear and descriptive title
 * A detailed description of the proposed functionality
 * Any possible implementation details you have in mind
 * Why this enhancement would be useful to most users
 
-### Pull Requests
-
-* Fill in the required template
-* Follow the style guides
-* Include appropriate tests
-* Update documentation as needed
-* End all files with a newline
-
-## Development Process
+### Development Process
 
 1. Fork the repository
 2. Create a new branch for your feature
 3. Make your changes
 4. Run tests and linting
-5. Submit a pull request
+5. Submit your changes
 
 ### Setting Up Development Environment
 
 ```bash
-# Clone your fork
-git clone https://github.com/your-username/monsterr-media-server.git
+# Clone the repository
+git clone [repository-url]
 cd monsterr-media-server
 
 # Install dependencies
@@ -63,7 +55,6 @@ npm install
 
 ```
 /
-├── .github/                    # GitHub specific files
 ├── config/                    # Configuration files
 ├── docs/                      # Documentation
 ├── scripts/                   # Shell scripts
@@ -79,7 +70,6 @@ npm install
 * Use the present tense ("Add feature" not "Added feature")
 * Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
 * Limit the first line to 72 characters or less
-* Reference issues and pull requests liberally after the first line
 * Consider starting the commit message with an applicable emoji:
     * 🎨 `:art:` when improving the format/structure of the code
     * 🐛 `:bug:` when fixing a bug
@@ -114,7 +104,7 @@ npm install
 ### Testing
 
 * Write unit tests for new features
-* Ensure all tests pass before submitting PR
+* Ensure all tests pass before submitting changes
 * Include integration tests when appropriate
 * Test on multiple platforms if possible
 
@@ -135,32 +125,10 @@ cd tests/integration
 * Include inline code documentation
 * Update guides as necessary
 
-## Project Management
-
-### Issue Labels
-
-* `bug` - Something isn't working
-* `enhancement` - New feature or request
-* `documentation` - Documentation improvements
-* `good first issue` - Good for newcomers
-* `help wanted` - Extra attention needed
-* `security` - Security-related issues
-
-### Development Workflow
-
-1. **Pick an issue** to work on or create a new one
-2. **Create a branch** from main
-3. **Make changes** and commit them
-4. **Run tests** and ensure they pass
-5. **Submit PR** for review
-6. **Address feedback** if any
-7. **Merge** once approved
-
 ## Questions?
 
 * Check the [Troubleshooting Guide](docs/guides/troubleshooting.md)
 * Join our [Discord community](https://discord.gg/your-server)
-* Create a [GitHub Discussion](../../discussions)
 
 ## License
 
