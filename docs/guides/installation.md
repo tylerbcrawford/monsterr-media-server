@@ -159,7 +159,7 @@ media/
 ```
 
 ### 3. Security Setup
-See [Network Setup Guide](network-setup.md#security-configuration) for security configuration.
+See [Domain Setup Guide](domain-setup.md) for detailed domain configuration and [Network Setup Guide](network-setup.md#security-configuration) for security configuration.
 
 Required Steps:
 1. Configure Authelia

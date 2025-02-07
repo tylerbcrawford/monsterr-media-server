@@ -240,6 +240,7 @@ See [Configuration Guide](docs/guides/configuration.md) for a complete list.
 - [Quick Start Guide](docs/guides/quick-start.md)
 - [Installation Guide](docs/guides/installation.md)
 - [Configuration Guide](docs/guides/configuration.md)
+- [Domain Setup Guide](docs/guides/domain-setup.md)
 - [Network Setup Guide](docs/guides/network-setup.md)
 - [Troubleshooting Guide](docs/guides/troubleshooting.md)
 
