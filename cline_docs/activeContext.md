@@ -1,22 +1,20 @@
 # Active Context
 
 ## Current Task
-Completing service integration in setup wizard interface.
+Repository cleanup and documentation enhancement with security focus.
 
 ## Recent Changes
-- DDNS Integration
-  * Added Dynu DDNS support
-  * Implemented dynamic/static IP selection
-  * Added automatic DDNS client setup
-  * Added IP change monitoring
-  * Integrated with setup wizard
+- Repository Cleanup
+  * Merged feature/repository-cleanup into main
+  * Cleaned up repository structure
+  * Enhanced documentation organization
+  * Improved code organization
 
-- Setup Wizard Enhancement
-  * Added DDNS configuration UI
-  * Added IP type selection toggle
-  * Added update interval configuration
-  * Added credential validation
-  * Enhanced network configuration
+- Documentation Enhancement
+  * Updated README with security-focused introduction
+  * Emphasized privacy and data control aspects
+  * Refined project description
+  * Maintained comprehensive service documentation
 
 - Service Integration
   * Added Fail2Ban to Core Services
@@ -30,6 +28,7 @@ Completing service integration in setup wizard interface.
   * Verified service documentation accuracy
   * Ensured all services properly represented
   * Maintained consistency between docs and implementation
+  * Enhanced security and privacy documentation
 
 ## Current Focus
 Documentation and repository structure maintained:
