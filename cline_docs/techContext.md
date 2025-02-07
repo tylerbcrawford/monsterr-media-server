@@ -98,7 +98,33 @@
   - Dynamic DNS (DDNS) support
 - VPN integration for secure downloads
 
-### File System Structure
+### Repository Structure
+```
+monsterr-media-server/
+├── cline_docs/               # System memory and documentation
+├── src/                     # Source code
+│   ├── core/               # Core system functionality
+│   ├── ui/                 # Web interface components
+│   ├── services/          # Service-specific code
+│   ├── types/             # TypeScript definitions
+│   └── tests/             # Test files
+├── docs/                   # Project documentation
+│   ├── api/               # API documentation
+│   ├── architecture/      # System design docs
+│   └── guides/           # User and development guides
+├── config/                # Configuration management
+│   ├── defaults/         # Default configurations
+│   ├── templates/        # Configuration templates
+│   ├── docker/          # Docker configurations
+│   └── services/        # Service-specific configs
+└── scripts/              # Automation scripts
+    ├── install/         # Installation scripts
+    ├── maintenance/     # System maintenance
+    ├── templates/       # Script templates
+    └── utils/          # Utility scripts
+```
+
+### Media File System Structure
 ```
 /opt/media-server/
 ├── media/

@@ -1,5 +1,46 @@
 # System Patterns
 
+## Repository Organization Patterns
+
+### 1. Directory Structure
+- Modular organization:
+  * src/ - All source code and tests
+    - core/ - Core system functionality
+    - ui/ - Web interface components
+    - services/ - Service-specific code
+    - types/ - TypeScript definitions
+    - tests/ - All test files
+  * docs/ - Project documentation
+    - api/ - API documentation
+    - architecture/ - System design docs
+    - guides/ - User and development guides
+  * config/ - Configuration management
+    - defaults/ - Default configurations
+    - templates/ - Configuration templates
+    - docker/ - Docker configurations
+    - services/ - Service-specific configs
+  * scripts/ - Automation scripts
+    - install/ - Installation scripts
+    - maintenance/ - System maintenance
+    - templates/ - Script templates
+    - utils/ - Utility scripts
+
+### 2. File Organization
+- Consistent naming conventions:
+  * Documentation: kebab-case with category prefixes
+  * Source Code: PascalCase for components, camelCase for utilities
+  * Scripts: kebab-case with category prefixes
+  * Configuration: kebab-case with .template suffix for templates
+
+### 3. Critical Components
+- cline_docs/ directory (system memory)
+  * Must remain unchanged
+  * Contains critical memory bank files
+  * Protected from reorganization
+- Tests located with corresponding source code
+- Configuration templates separate from actual configs
+- Clear separation of concerns in directory structure
+
 ## Architectural Patterns
 
 ### 1. Microservices Architecture
