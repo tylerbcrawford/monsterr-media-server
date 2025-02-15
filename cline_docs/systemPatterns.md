@@ -19,6 +19,7 @@
     - templates/ - Configuration templates
     - docker/ - Docker configurations
     - services/ - Service-specific configs
+    - examples/ - Example configurations
   * scripts/ - Automation scripts
     - install/ - Installation scripts
     - maintenance/ - System maintenance
@@ -49,7 +50,29 @@
 - Services communicate over a shared Docker network
 - Clear separation of concerns between media management, security, and monitoring
 
-### 2. Setup Wizard Architecture
+### 2. Domain Management
+- **Configuration Layer**
+  - Type-safe domain configuration
+  - Flexible subdomain management
+  - SSL certificate automation
+  - DDNS integration
+  - Service URL generation
+
+- **Security Layer**
+  - SSL/TLS enforcement
+  - Automated certificate renewal
+  - CORS origin management
+  - Security header configuration
+  - Rate limiting per domain
+
+- **Proxy Layer**
+  - Nginx Proxy Manager integration
+  - Dynamic proxy configuration
+  - WebSocket support
+  - Custom header management
+  - Health check integration
+
+### 3. Setup Wizard Architecture
 - **Frontend Layer**
   - React-based single-page application
   - Material-UI component library
@@ -64,12 +87,13 @@
   - Docker orchestration
   - Deployment automation
 
-### 3. Security Layer
+### 4. Security Layer
 - **Frontend Security**
   - Nginx Proxy Manager for reverse proxy
   - Authelia for two-factor authentication
   - Redis for session management
   - Fail2Ban for intrusion prevention
+  - Domain-based access control
 
 - **Download Security**
   - Built-in VPN support in qBittorrent
@@ -78,7 +102,7 @@
   - IP leak prevention
   - Direct VPN configuration in download clients
 
-### 4. Data Management
+### 5. Data Management
 - **Volume Management**
   - Persistent storage for configurations
   - Shared media volumes between related services
@@ -91,7 +115,7 @@
   - Centralized download management
   - Metadata management
 
-### 5. Service Organization
+### 6. Service Organization
 - **Core Infrastructure (Required)**
   - Nginx Proxy Manager
   - Authelia authentication
@@ -112,13 +136,20 @@
   - Health check integration
   - Failure recovery
 
-### 6. Network Management
+### 7. Network Management
 - **DDNS Integration**
-  - Dynamic DNS provider integration (Dynu)
+  - Multi-provider DDNS support
   - Automatic IP detection and updates
   - Configurable update intervals
   - IP type selection (dynamic/static)
   - Secure credential management
+
+- **Domain Management**
+  - Automated DNS verification
+  - SSL certificate management
+  - Subdomain configuration
+  - Proxy rule generation
+  - Domain health monitoring
 
 - **Network Monitoring**
   - IP change detection
@@ -127,7 +158,7 @@
   - DNS resolution verification
   - SSL certificate management
 
-### 7. Monitoring & Maintenance
+### 8. Monitoring & Maintenance
 - **System Monitoring**
   - Prometheus metrics collection
   - Grafana visualization
@@ -140,6 +171,7 @@
   - Automated backups
   - Log rotation
   - Health checks
+  - Certificate renewal
 
 ## Technical Decisions
 
@@ -170,6 +202,7 @@
 - Service templates
 - Version control
 - Centralized management interface
+- Domain configuration validation
 
 ### 5. Testing Strategy
 - Component testing
@@ -177,6 +210,7 @@
 - End-to-end testing
 - Security scanning
 - Performance testing
+- Domain configuration testing
 
 ### 6. CI/CD Pipeline
 - GitHub Actions
@@ -193,6 +227,7 @@
 - Intrusion prevention
 - Secure proxy management
 - Regular security updates
+- Domain-based security
 
 ### 2. User Experience
 - Intuitive setup process
@@ -200,6 +235,7 @@
 - Progressive disclosure
 - Error prevention
 - Guided configuration
+- Domain management UI
 
 ### 3. Modularity
 - Independent services
@@ -214,6 +250,7 @@
 - Consistent configuration
 - Health checks
 - Documentation
+- Domain monitoring
 
 ### 5. Scalability
 - Independent scaling
@@ -228,6 +265,7 @@
 - Backup systems
 - Error handling
 - Logging
+- Domain resilience
 
 ## Implementation Patterns
 
@@ -237,6 +275,7 @@
 - Form validation
 - Error boundaries
 - Responsive design
+- Domain configuration UI
 
 ### 2. Backend Patterns
 - RESTful API design
@@ -244,6 +283,7 @@
 - Service abstraction
 - Error handling
 - Rate limiting
+- Domain validation
 
 ### 3. Testing Patterns
 - Component testing
@@ -251,6 +291,7 @@
 - Mock services
 - Test fixtures
 - Coverage reporting
+- Domain configuration testing
 
 ### 4. Deployment Patterns
 - Rolling updates
@@ -258,6 +299,7 @@
 - Backup verification
 - Configuration validation
 - Dependency resolution
+- Domain verification
 
 ### 5. Security Patterns
 - Authentication middleware
@@ -265,6 +307,7 @@
 - Input validation
 - Rate limiting
 - Secure communication
+- Domain-based security
 
 ### 6. Monitoring Patterns
 - Metric collection
@@ -272,3 +315,4 @@
 - Log aggregation
 - Performance tracking
 - Health checking
+- Domain monitoring

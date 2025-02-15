@@ -1,0 +1,122 @@
+# Domain Configuration Example
+# Copy this file to config/domain.yml and modify as needed
+
+domain:
+  enabled: true
+  primaryDomain: "your-domain.com"
+  
+  # SSL Configuration
+  ssl:
+    enabled: true
+    provider: "letsencrypt"  # or "custom"
+    email: "admin@your-domain.com"  # Required for Let's Encrypt
+    autoRenew: true
+    forceSSL: true
+    # For custom SSL provider:
+    # cert: "/path/to/certificate.pem"
+    # key: "/path/to/private.key"
+  
+  # Dynamic DNS Configuration (Optional)
+  ddns:
+    enabled: false
+    provider: "dynu"  # or "cloudflare", "duckdns"
+    username: "your-username"  # Required for Dynu
+    password: "your-password"  # Required for Dynu
+    # token: "your-token"  # Required for Cloudflare/DuckDNS
+    updateInterval: 300  # seconds
+    ipType: "dynamic"  # or "static"
+  
+  # Subdomain Configuration
+  subdomains:
+    # Core Infrastructure
+    - name: "auth"
+      service: "authelia"
+      enabled: true
+      
+    - name: "proxy"
+      service: "nginx-proxy-manager"
+      enabled: true
+      
+    # Media Services
+    - name: "plex"
+      service: "plex"
+      enabled: true
+      customConfig:
+        websockets: true
+        
+    - name: "sonarr"
+      service: "sonarr"
+      enabled: true
+      
+    - name: "radarr"
+      service: "radarr"
+      enabled: true
+      
+    - name: "lidarr"
+      service: "lidarr"
+      enabled: true
+      
+    - name: "bazarr"
+      service: "bazarr"
+      enabled: true
+      
+    # Download Management
+    - name: "prowlarr"
+      service: "prowlarr"
+      enabled: true
+      
+    - name: "qbit"
+      service: "qbittorrent"
+      enabled: true
+      
+    - name: "nzb"
+      service: "nzbget"
+      enabled: true
+      
+    # Book Management
+    - name: "readarr"
+      service: "readarr"
+      enabled: true
+      
+    - name: "calibre"
+      service: "calibre"
+      enabled: true
+      
+    - name: "audiobooks"
+      service: "audiobookshelf"
+      enabled: true
+      
+    # Monitoring & Management
+    - name: "grafana"
+      service: "grafana"
+      enabled: true
+      
+    - name: "prometheus"
+      service: "prometheus"
+      enabled: true
+      customConfig:
+        extraHeaders:
+          X-Scope-OrgID: "1"
+      
+    - name: "tautulli"
+      service: "tautulli"
+      enabled: true
+      
+    # User Interface
+    - name: "dash"
+      service: "organizr"
+      enabled: true
+      
+    - name: "request"
+      service: "overseerr"
+      enabled: true
+      customConfig:
+        proxyPass: "http://overseerr:5055"
+        websockets: true
+
+# Notes:
+# 1. Each subdomain automatically gets SSL if enabled at the domain level
+# 2. Custom configurations allow for service-specific proxy settings
+# 3. The 'enabled' flag allows for selective service deployment
+# 4. All services inherit global SSL and security settings
+# 5. WebSocket support is automatically enabled for services that require it

@@ -4,7 +4,8 @@ import {
   DatabaseConfig,
   SecurityConfig,
   MonitoringConfig,
-  ConfigValidationResult
+  ConfigValidationResult,
+  DomainConfig
 } from '../../types/config';
 
 export class ConfigService {
@@ -14,7 +15,18 @@ export class ConfigService {
     host: 'localhost',
     baseUrl: 'http://localhost:3000',
     mediaPath: '/opt/media-server/media',
-    logsPath: '/opt/media-server/logs'
+    logsPath: '/opt/media-server/logs',
+    domain: {
+      enabled: false,
+      primaryDomain: '',
+      subdomains: [],
+      ssl: {
+        enabled: false,
+        provider: 'letsencrypt',
+        autoRenew: true,
+        forceSSL: true
+      }
+    }
   };
   private serviceConfigs: Map<string, ServiceConfig> = new Map();
   private databaseConfig: DatabaseConfig = {
@@ -88,13 +100,26 @@ export class ConfigService {
    */
   private async loadSystemConfig(): Promise<void> {
     // TODO: Implement actual config loading from file/environment
+    const defaultDomainConfig: DomainConfig = {
+      enabled: false,
+      primaryDomain: '',
+      subdomains: [],
+      ssl: {
+        enabled: false,
+        provider: 'letsencrypt',
+        autoRenew: true,
+        forceSSL: true
+      }
+    };
+
     this.systemConfig = {
-      environment: 'development',
-      port: 3000,
-      host: 'localhost',
-      baseUrl: 'http://localhost:3000',
-      mediaPath: '/opt/media-server/media',
-      logsPath: '/opt/media-server/logs'
+      environment: process.env.NODE_ENV as 'development' | 'production' | 'test' || 'development',
+      port: parseInt(process.env.PORT || '3000'),
+      host: process.env.HOST || 'localhost',
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+      mediaPath: process.env.MEDIA_PATH || '/opt/media-server/media',
+      logsPath: process.env.LOGS_PATH || '/opt/media-server/logs',
+      domain: defaultDomainConfig
     };
   }
 
@@ -102,7 +127,6 @@ export class ConfigService {
    * Load service configurations
    */
   private async loadServiceConfigs(): Promise<void> {
-    // TODO: Implement actual service config loading
     const defaultHealthCheck = {
       endpoint: '/health',
       interval: 30,
@@ -123,12 +147,26 @@ export class ConfigService {
       ],
       environment: {
         PLEX_CLAIM: 'claim-token',
-        ADVERTISE_IP: 'http://localhost:32400'
+        ADVERTISE_IP: this.getServiceUrl('plex', 32400)
       },
       healthCheck: defaultHealthCheck
     };
 
     this.serviceConfigs.set('plex', plexConfig);
+  }
+
+  /**
+   * Get the full URL for a service
+   * @param serviceName Name of the service
+   * @param port Port number
+   * @returns Full URL for the service
+   */
+  private getServiceUrl(serviceName: string, port: number): string {
+    const { domain } = this.systemConfig;
+    if (domain?.enabled) {
+      return `https://${serviceName}.${domain.primaryDomain}`;
+    }
+    return `http://${this.systemConfig.host}:${port}`;
   }
 
   /**
@@ -148,16 +186,18 @@ export class ConfigService {
    * Load security configuration
    */
   private async loadSecurityConfig(): Promise<void> {
-    // TODO: Implement actual security config loading
+    const { domain } = this.systemConfig;
     this.securityConfig = {
       ssl: {
-        enabled: false,
-        cert: '',
-        key: ''
+        enabled: domain?.ssl.enabled || false,
+        cert: domain?.ssl.cert || '',
+        key: domain?.ssl.key || ''
       },
       cors: {
         enabled: true,
-        origins: ['http://localhost:3000'],
+        origins: domain?.enabled 
+          ? [`https://${domain.primaryDomain}`, ...domain.subdomains.map(sub => `https://${sub.name}.${domain.primaryDomain}`)]
+          : ['http://localhost:3000'],
         methods: ['GET', 'POST', 'PUT', 'DELETE']
       },
       rateLimit: {
@@ -177,7 +217,7 @@ export class ConfigService {
       metrics: {
         enabled: true,
         interval: 60,
-        retention: 7 * 24 * 60 * 60 // 7 days
+        retention: 7 * 24 * 60 * 60
       },
       alerts: {
         enabled: true,
@@ -255,6 +295,25 @@ export class ConfigService {
       warnings.push('Logs path not specified');
     }
 
+    // Validate domain config
+    const { domain } = this.systemConfig;
+    if (domain?.enabled) {
+      if (!domain.primaryDomain) {
+        errors.push('Primary domain is required when domain is enabled');
+      }
+      if (domain.ssl.enabled) {
+        if (domain.ssl.provider === 'custom' && (!domain.ssl.cert || !domain.ssl.key)) {
+          errors.push('SSL certificate and key are required for custom SSL');
+        }
+        if (domain.ssl.provider === 'letsencrypt' && !domain.ssl.email) {
+          errors.push('Email is required for Let\'s Encrypt SSL');
+        }
+      }
+      if (this.systemConfig.environment === 'production' && !domain.ssl.enabled) {
+        errors.push('SSL must be enabled in production when using custom domain');
+      }
+    }
+
     // Validate service configs
     this.serviceConfigs.forEach((config, name) => {
       if (!config.port) {
@@ -293,6 +352,10 @@ export class ConfigService {
    */
   updateSystemConfig(config: Partial<SystemConfig>): void {
     this.systemConfig = { ...this.systemConfig, ...config };
+    // Reload security config if domain settings change
+    if (config.domain) {
+      this.loadSecurityConfig();
+    }
     // TODO: Implement config persistence
   }
 }

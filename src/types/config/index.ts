@@ -5,6 +5,46 @@ export interface SystemConfig {
   baseUrl: string;
   mediaPath: string;
   logsPath: string;
+  domain?: DomainConfig;
+}
+
+export interface DomainConfig {
+  enabled: boolean;
+  primaryDomain: string;
+  subdomains: SubdomainConfig[];
+  ssl: SSLConfig;
+  ddns?: DDNSConfig;
+}
+
+export interface SubdomainConfig {
+  name: string;
+  service: string;
+  enabled: boolean;
+  customConfig?: {
+    proxyPass?: string;
+    extraHeaders?: Record<string, string>;
+    websockets?: boolean;
+  };
+}
+
+export interface SSLConfig {
+  enabled: boolean;
+  provider: 'letsencrypt' | 'custom';
+  email?: string;
+  cert?: string;
+  key?: string;
+  autoRenew?: boolean;
+  forceSSL?: boolean;
+}
+
+export interface DDNSConfig {
+  enabled: boolean;
+  provider: 'dynu' | 'cloudflare' | 'duckdns';
+  username?: string;
+  password?: string;
+  token?: string;
+  updateInterval: number;
+  ipType: 'dynamic' | 'static';
 }
 
 export interface ServiceConfig {
