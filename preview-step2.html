@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monsterr Media Server Setup - Step 2</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 0 8px;
+        }
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+        }
+        .step.active .step-circle {
+            background: #2196f3;
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
+        }
+        .step.completed .step-circle {
+            background: #4caf50;
+        }
+        .step-label {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .content {
+            min-height: 400px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1976d2;
+        }
+        .service-group {
+            margin-bottom: 24px;
+        }
+        .service-group-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #1976d2;
+        }
+        .service-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .service-option:hover {
+            background: #f5f5f5;
+        }
+        .service-info {
+            margin-left: 12px;
+            flex-grow: 1;
+        }
+        .service-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .service-description {
+            font-size: 14px;
+            color: #666;
+        }
+        .service-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Monsterr Media Server Setup</h1>
+        </div>
+        
+        <div class="stepper">
+            <div class="step completed">
+                <div class="step-circle">1</div>
+                <div class="step-label">System Requirements</div>
+            </div>
+            <div class="step active">
+                <div class="step-circle">2</div>
+                <div class="step-label">Service Selection</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <div class="step-label">Storage Config</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <div class="step-label">Network Setup</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">5</div>
+                <div class="step-label">Security Config</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">6</div>
+                <div class="step-label">Review & Deploy</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="alert alert-info">
+                Select the services you want to install. You can modify these selections later.
+            </div>
+
+            <div class="service-group">
+                <div class="service-group-title">Media Services</div>
+                <div class="service-option">
+                    <input type="checkbox" id="plex" checked>
+                    <div class="service-info">
+                        <div class="service-name">Plex Media Server</div>
+                        <div class="service-description">Stream your media to any device, anywhere</div>
+                    </div>
+                    <span class="service-badge">Recommended</span>
+                </div>
+                <div class="service-option">
+                    <input type="checkbox" id="sonarr" checked>
+                    <div class="service-info">
+                        <div class="service-name">Sonarr</div>
+                        <div class="service-description">Smart TV show management and automation</div>
+                    </div>
+                    <span class="service-badge">Recommended</span>
+                </div>
+                <div class="service-option">
+                    <input type="checkbox" id="radarr" checked>
+                    <div class="service-info">
+                        <div class="service-name">Radarr</div>
+                        <div class="service-description">Automated movie downloading and management</div>
+                    </div>
+                    <span class="service-badge">Recommended</span>
+                </div>
+            </div>
+
+            <div class="service-group">
+                <div class="service-group-title">Download Management</div>
+                <div class="service-option">
+                    <input type="checkbox" id="qbit" checked>
+                    <div class="service-info">
+                        <div class="service-name">qBittorrent</div>
+                        <div class="service-description">Download client with VPN integration</div>
+                    </div>
+                    <span class="service-badge">Recommended</span>
+                </div>
+                <div class="service-option">
+                    <input type="checkbox" id="nzb">
+                    <div class="service-info">
+                        <div class="service-name">NZBGet</div>
+                        <div class="service-description">Efficient Usenet downloader</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-group">
+                <div class="service-group-title">Monitoring</div>
+                <div class="service-option">
+                    <input type="checkbox" id="grafana" checked>
+                    <div class="service-info">
+                        <div class="service-name">Grafana</div>
+                        <div class="service-description">Beautiful system monitoring dashboards</div>
+                    </div>
+                    <span class="service-badge">Recommended</span>
+                </div>
+                <div class="service-option">
+                    <input type="checkbox" id="prometheus" checked>
+                    <div class="service-info">
+                        <div class="service-name">Prometheus</div>
+                        <div class="service-description">Time-series monitoring database</div>
+                    </div>
+                    <span class="service-badge">Recommended</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="preview-step1.html" class="btn btn-secondary">Back</a>
+            <a href="preview-step3.html" class="btn btn-primary">Next</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monsterr Media Server Setup</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 0 8px;
+        }
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+        }
+        .step.active .step-circle {
+            background: #2196f3;
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
+        }
+        .step.completed .step-circle {
+            background: #4caf50;
+        }
+        .step-label {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .content {
+            min-height: 400px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+        .summary-section {
+            margin-bottom: 24px;
+        }
+        .summary-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #1976d2;
+            display: flex;
+            align-items: center;
+        }
+        .summary-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: #1976d2;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+        .summary-card {
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .summary-item {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        .summary-label {
+            width: 200px;
+            color: #666;
+        }
+        .summary-value {
+            flex-grow: 1;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .deploy-button {
+            background: #2e7d32;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Monsterr Media Server Setup</h1>
+        </div>
+        
+        <div class="stepper">
+            <div class="step completed">
+                <div class="step-circle">1</div>
+                <div class="step-label">System Requirements</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">2</div>
+                <div class="step-label">Service Selection</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">3</div>
+                <div class="step-label">Storage Config</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">4</div>
+                <div class="step-label">Network Setup</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">5</div>
+                <div class="step-label">Security Config</div>
+            </div>
+            <div class="step active">
+                <div class="step-circle">6</div>
+                <div class="step-label">Review & Deploy</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="alert alert-info">
+                Review your configuration and deploy your media server. All settings can be modified later.
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">Selected Services</div>
+                <div class="summary-card">
+                    <div class="summary-item">
+                        <span class="summary-label">Media Server</span>
+                        <span class="summary-value">Plex Media Server</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Content Management</span>
+                        <span class="summary-value">Sonarr, Radarr</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Download Client</span>
+                        <span class="summary-value">qBittorrent (with VPN)</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Monitoring</span>
+                        <span class="summary-value">Grafana, Prometheus</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">Storage Configuration</div>
+                <div class="summary-card">
+                    <div class="summary-item">
+                        <span class="summary-label">Media Storage</span>
+                        <span class="summary-value">/opt/media-server/media (2.4 TB free)</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Application Data</span>
+                        <span class="summary-value">/opt/media-server/config (180 GB free)</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Downloads</span>
+                        <span class="summary-value">/opt/media-server/downloads (400 GB free)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">Network Configuration</div>
+                <div class="summary-card">
+                    <div class="summary-item">
+                        <span class="summary-label">Domain</span>
+                        <span class="summary-value">media.example.com <span class="status-badge status-success">Verified</span></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">SSL Certificate</span>
+                        <span class="summary-value">Let's Encrypt (Auto-renewal enabled)</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">VPN</span>
+                        <span class="summary-value">NordVPN (Configured for downloads)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">Security Configuration</div>
+                <div class="summary-card">
+                    <div class="summary-item">
+                        <span class="summary-label">Authentication</span>
+                        <span class="summary-value">2FA Enabled</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Access Control</span>
+                        <span class="summary-value">Fail2Ban, Rate Limiting</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Monitoring</span>
+                        <span class="summary-value">Security Events, Email Alerts</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="deploy-button">Deploy Media Server</button>
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary">Back</button>
+            <button class="btn btn-primary" disabled>Next</button>
+        </div>
+    </div>
+</body>
+</html>

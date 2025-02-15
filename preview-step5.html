@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monsterr Media Server Setup - Step 5</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 0 8px;
+        }
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+        }
+        .step.active .step-circle {
+            background: #2196f3;
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
+        }
+        .step.completed .step-circle {
+            background: #4caf50;
+        }
+        .step-label {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .content {
+            min-height: 400px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1976d2;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .security-card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .security-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .security-option-label {
+            margin-left: 8px;
+            flex-grow: 1;
+        }
+        .strength-meter {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .strength-meter-fill {
+            height: 100%;
+            background: #4caf50;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Monsterr Media Server Setup</h1>
+        </div>
+        
+        <div class="stepper">
+            <div class="step completed">
+                <div class="step-circle">1</div>
+                <div class="step-label">System Requirements</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">2</div>
+                <div class="step-label">Service Selection</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">3</div>
+                <div class="step-label">Storage Config</div>
+            </div>
+            <div class="step completed">
+                <div class="step-circle">4</div>
+                <div class="step-label">Network Setup</div>
+            </div>
+            <div class="step active">
+                <div class="step-circle">5</div>
+                <div class="step-label">Security Config</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">6</div>
+                <div class="step-label">Review & Deploy</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="alert alert-info">
+                Configure security settings to protect your media server. Two-factor authentication is recommended.
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Administrator Account</label>
+                <input type="text" class="form-control" placeholder="Username" style="margin-bottom: 8px;" />
+                <input type="password" class="form-control" placeholder="Password" />
+                <div class="strength-meter">
+                    <div class="strength-meter-fill"></div>
+                </div>
+                <small style="color: #666;">Password strength: Strong</small>
+            </div>
+
+            <div class="security-card">
+                <label class="form-label">Authentication Settings</label>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Enable Two-Factor Authentication</span>
+                </div>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Require Strong Passwords</span>
+                </div>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Auto-lock After Inactivity</span>
+                </div>
+            </div>
+
+            <div class="security-card">
+                <label class="form-label">Access Control</label>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Enable Fail2Ban Protection</span>
+                </div>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Rate Limiting</span>
+                </div>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">IP Whitelisting</span>
+                </div>
+            </div>
+
+            <div class="security-card">
+                <label class="form-label">Monitoring & Alerts</label>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Security Event Logging</span>
+                </div>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Email Notifications</span>
+                </div>
+                <div class="security-option">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="security-option-label">Automated Security Updates</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="preview-step4.html" class="btn btn-secondary">Back</a>
+            <a href="preview-step6.html" class="btn btn-primary">Next</a>
+        </div>
+    </div>
+</body>
+</html>
