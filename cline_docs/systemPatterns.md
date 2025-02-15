@@ -72,10 +72,11 @@
   - Fail2Ban for intrusion prevention
 
 - **Download Security**
-  - VPN integration for secure downloads
+  - Built-in VPN support in qBittorrent
   - Network isolation for sensitive services
-  - Kill switch protection
+  - Integrated kill switch protection
   - IP leak prevention
+  - Direct VPN configuration in download clients
 
 ### 4. Data Management
 - **Volume Management**
@@ -91,12 +92,19 @@
   - Metadata management
 
 ### 5. Service Organization
-- **Profile-based Deployment**
-  - Core infrastructure profile
+- **Core Infrastructure (Required)**
+  - Nginx Proxy Manager
+  - Authelia authentication
+  - Redis session management
+  - Fail2Ban security
+  - Portainer management
+  - System monitoring
+
+- **Optional Profiles**
   - Media services profile
   - Download management profile
   - Book services profile
-  - Monitoring profile
+  - Interface profile
 
 - **Dependency Management**
   - Automated dependency resolution
@@ -125,6 +133,7 @@
   - Grafana visualization
   - Service health monitoring
   - Resource usage tracking
+  - Container management through Portainer
 
 - **Automated Maintenance**
   - Watchtower for updates
@@ -153,12 +162,14 @@
 - Bridge network for communication
 - Host network for specific services
 - Automatic container recovery
+- Centralized management through Portainer
 
 ### 4. Configuration Management
 - Environment variables
 - External config files
 - Service templates
 - Version control
+- Centralized management interface
 
 ### 5. Testing Strategy
 - Component testing
@@ -178,7 +189,7 @@
 
 ### 1. Security First
 - Two-factor authentication
-- VPN for sensitive traffic
+- Integrated VPN for downloads
 - Intrusion prevention
 - Secure proxy management
 - Regular security updates
