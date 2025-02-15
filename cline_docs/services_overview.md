@@ -87,13 +87,12 @@
      * Authentication integration
 
 ## 4. Download Management
-1. **qBittorrent with VPN**
+1. **qBittorrent**
    - Image: `ghcr.io/hotio/qbittorrent:latest`
-   - Description: Torrent client with VPN integration
+   - Description: Torrent client
    - Features:
-     * Multi-provider VPN support
-     * Kill switch protection
      * Secure WebUI access
+     * Custom domain routing
      * Authentication integration
 
 2. **Prowlarr**
@@ -111,14 +110,6 @@
      * Secure API access
      * Custom domain routing
      * Authentication integration
-
-4. **VPN Service**
-   - Image: `dperson/openvpn-client`
-   - Description: OpenVPN client for secure downloads
-   - Features:
-     * Multi-provider support
-     * Automatic reconnection
-     * Connection monitoring
 
 ## 5. Book Services
 1. **Readarr**

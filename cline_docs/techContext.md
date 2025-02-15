@@ -42,7 +42,7 @@
 - **Book Download**: LazyLibrarian
 
 ### Download Management
-- **Torrent Client**: qBittorrent with VPN
+- **Torrent Client**: qBittorrent
 - **Usenet Client**: NZBGet
 - **Indexer Management**: Prowlarr
 - **Download Processing**: Unpackerr, Recyclarr
@@ -96,7 +96,6 @@
 - Domain/DNS setup options:
   - Static IP with A records
   - Dynamic DNS (DDNS) support
-- VPN integration for secure downloads
 
 ### Repository Structure
 ```
@@ -149,7 +148,6 @@ monsterr-media-server/
 ### Security Requirements
 - Two-factor authentication mandatory
 - SSL/TLS encryption for all services
-- VPN requirement for download services
 - Regular security updates via Watchtower
 - Intrusion prevention with Fail2Ban
 - CSRF protection
@@ -220,7 +218,6 @@ monsterr-media-server/
 ### External Services
 - Domain registrar
 - DDNS provider (optional)
-- VPN service provider
 - SSL certificate provider (Let's Encrypt)
 - Package registries (npm)
 - Container registries

@@ -96,11 +96,11 @@
   - Domain-based access control
 
 - **Download Security**
-  - Built-in VPN support in qBittorrent
   - Network isolation for sensitive services
-  - Integrated kill switch protection
   - IP leak prevention
-  - Direct VPN configuration in download clients
+  - Rate limiting
+  - Access control
+  - Activity monitoring
 
 ### 5. Data Management
 - **Volume Management**
@@ -223,7 +223,6 @@
 
 ### 1. Security First
 - Two-factor authentication
-- Integrated VPN for downloads
 - Intrusion prevention
 - Secure proxy management
 - Regular security updates
