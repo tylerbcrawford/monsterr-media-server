@@ -1,156 +1,128 @@
 # Quick Start Guide
 
-## Overview
-This guide provides a streamlined setup process for Monsterr Media Server, getting you up and running quickly with a basic configuration.
+This guide provides a streamlined installation process for Monsterr Media Server. For a detailed walkthrough, see our [Complete Installation Guide](installation-walkthrough.md).
 
-## Hardware Recommendations
+## Minimum Requirements
 
-### Small Home Setup (1-2 users, 1080p content)
-- CPU: 4 cores (Intel i3/Ryzen 3 or better)
+### Hardware
+- CPU: 4+ cores
 - RAM: 8GB
-- Storage: 
-  * System SSD: 120GB
-  * Media HDD: 2TB+
-- Network: 100Mbps+
+- Storage: 20GB + media storage
+- Network: 10Mbps+ internet
 
-### Medium Home Setup (2-4 users, mixed 1080p/4K content)
-- CPU: 6 cores (Intel i5/Ryzen 5 or better)
-- RAM: 16GB
-- Storage:
-  * System SSD: 250GB
-  * Media HDD: 4TB+
-- Network: Gigabit
+### Software
+- Ubuntu 20.04+ or similar Linux
+- Git
+- Node.js 18.0.0+
+- npm 9.0.0+
 
-### Large Home Setup (4+ users, heavy 4K content)
-- CPU: 8+ cores (Intel i7/Ryzen 7 or better)
-- RAM: 32GB
-- Storage:
-  * System SSD: 500GB
-  * Media HDD: 8TB+
-- Network: Gigabit
+### Network
+- Domain name or DDNS
+- Router access
+- Available ports: 80, 443, 9000 (Portainer), 32400 (Plex)
 
-## 5-Minute Setup
+## Quick Installation
 
-1. **Download and Extract**
-   ```bash
-   git clone https://github.com/yourusername/monsterr-media-server.git
-   cd monsterr-media-server
-   ```
-
-2. **Run Quick Setup**
-   ```bash
-   sudo ./install_media_server.sh --quick
-   ```
-
-3. **Configure Basic Settings**
-   - Choose media storage location
-   - Set up basic authentication
-   - Configure network access
-
-## First-Time Configuration
-
-### 1. Access Services
-- Open http://localhost:32400/web for Plex
-- Open http://localhost:81 for Nginx Proxy Manager
-- Default credentials in config.env
-
-### 2. Add Media
-1. Create basic folders:
-   ```bash
-   movies/
-   tv/
-   music/
-   ```
-2. Point Plex to your media folders
-3. Start media scanning
-
-### 3. Enable Monitoring
+### 1. Clone & Install
 ```bash
-sudo ./scripts/setup_monitoring.sh
+# Clone repository
+git clone https://github.com/yourusername/monsterr-media-server.git
+cd monsterr-media-server
+
+# Start installation
+sudo ./install_media_server.sh
 ```
 
-### 4. Set Up Backups
+### 2. Setup Wizard Steps
+1. **System Check**
+   - Confirms requirements
+   - Verifies dependencies
+   - Tests network
+
+2. **Choose Services**
+   - Required Core Services:
+     * Nginx Proxy Manager
+     * Authelia (2FA)
+     * Portainer (System Management)
+     * Fail2Ban
+   - Optional Services:
+     * Media (Plex, Sonarr, Radarr)
+     * Downloads (qBittorrent with VPN)
+     * Books (Readarr, Calibre)
+     * Monitoring (Prometheus, Grafana)
+
+3. **Configure Storage**
+   - Set media location
+   - Configure permissions
+   - Create directories
+
+4. **Network Setup**
+   - Enter domain
+   - Configure ports
+   - Setup SSL
+
+5. **Security**
+   - Set admin password
+   - Configure 2FA
+   - Set up firewall
+
+### 3. Access Services
+After installation, access your services at:
+- Dashboard: https://dashboard.yourdomain.com
+- Portainer: https://portainer.yourdomain.com
+- Plex: https://plex.yourdomain.com
+
+### 4. Quick Verification
 ```bash
-sudo ./scripts/setup_backup.sh
+# Check system health
+sudo ./scripts/post_install_check.sh --all
+
+# View service status
+docker-compose ps
 ```
 
-## Common Tasks
+## Common Issues
 
-### Adding Media
-1. Add to appropriate folder:
-   - Movies → movies/
-   - TV Shows → tv/
-   - Music → music/
-2. Plex will automatically detect new content
+### Can't Access Services
+1. Check port forwarding
+2. Verify DNS settings
+3. Test firewall rules
 
-### Checking System Health
-```bash
-# View system status
-sudo ./scripts/post_install_check.sh
+### Services Won't Start
+1. Verify permissions
+2. Check resource availability
+3. Review service logs
 
-# View monitoring dashboard
-http://localhost:3000
-```
-
-### Managing Backups
-```bash
-# Manual backup
-sudo ./scripts/backup_system.sh daily
-
-# View backup status
-sudo ./scripts/backup_system.sh status
-```
-
-## Basic Troubleshooting
-
-### Service Issues
-```bash
-# Restart a service
-docker-compose restart [service_name]
-
-# View service logs
-docker-compose logs [service_name]
-```
-
-### Permission Problems
-```bash
-# Fix common permission issues
-sudo ./scripts/fix_permissions.sh
-```
-
-### Network Issues
-```bash
-# Check service connectivity
-sudo ./scripts/post_install_check.sh --network
-```
-
-## Getting Help
-
-### Check Logs
-- System logs: `/var/log/monsterr/`
-- Service logs: `docker-compose logs`
-- Monitoring: http://localhost:3000
-
-### Common Solutions
-1. **Service won't start**
-   - Check logs
-   - Verify permissions
-   - Ensure ports are free
-
-2. **Can't access service**
-   - Check network settings
-   - Verify service is running
-   - Check proxy configuration
-
-3. **Media not showing**
-   - Verify file permissions
-   - Check folder structure
-   - Force library scan
+### SSL Problems
+1. Verify domain
+2. Check certificate setup
+3. Test HTTPS access
 
 ## Next Steps
-1. Configure remote access
-2. Set up automated downloads
-3. Enable media requests
-4. Configure backup schedule
 
-For detailed configuration, see the [full documentation](installation.md).
+1. **Configure Media**
+   - Set up libraries
+   - Configure scanning
+   - Add content
+
+2. **Security**
+   - Review access
+   - Test 2FA
+   - Check firewall
+
+3. **Monitoring**
+   - Set up alerts
+   - Configure dashboards
+   - Test notifications
+
+4. **Backups**
+   - Schedule backups
+   - Test recovery
+   - Verify data
+
+## Need Help?
+- Full documentation: /docs directory
+- Detailed guide: [Installation Walkthrough](installation-walkthrough.md)
+- Support: GitHub Issues
+
+Remember: This is a quick start guide. For detailed instructions, troubleshooting, and best practices, refer to our [Complete Installation Guide](installation-walkthrough.md).
