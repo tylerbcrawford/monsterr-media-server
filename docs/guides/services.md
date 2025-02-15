@@ -2,20 +2,36 @@
 
 This guide provides detailed configuration instructions for all services included in the Monsterr Media Server.
 
-## Table of Contents
-- [Core Infrastructure](#core-infrastructure)
-- [Media Management](#media-management)
-- [Download Management](#download-management)
-- [Media Request & Discovery](#media-request--discovery)
-- [Book & Audio Management](#book--audio-management)
-- [System Management](#system-management)
-- [Monitoring Services](#monitoring-services)
-- [Security Services](#security-services)
-
 ## Core Infrastructure
 
-### Nginx Proxy Manager
+### Portainer (Required)
+1. **Configuration**
+   ```yaml
+   portainer:
+     image: portainer/portainer-ce:latest
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+       - ./portainer/data:/data
+     ports:
+       - "9000:9000"
+   ```
 
+2. **Management Features**
+   - Container management
+   - Volume management
+   - Network configuration
+   - Resource monitoring
+   - System health checks
+   - Update management
+
+3. **Initial Setup**
+   - Access at http://SERVER_IP:9000
+   - Create admin credentials
+   - Configure endpoint
+   - Set up monitoring
+   - Configure backup location
+
+### Nginx Proxy Manager
 1. **Initial Access**
    ```
    URL: https://npm.yourdomain.com
@@ -39,7 +55,6 @@ This guide provides detailed configuration instructions for all services include
    ```
 
 ### Authelia
-
 1. **Basic Configuration**
    ```yaml
    authelia:
@@ -63,7 +78,6 @@ This guide provides detailed configuration instructions for all services include
 ## Media Management
 
 ### Plex Media Server
-
 1. **Initial Setup**
    ```yaml
    plex:
@@ -84,7 +98,6 @@ This guide provides detailed configuration instructions for all services include
    - Library scan schedule
 
 ### Sonarr (TV Shows)
-
 1. **Basic Configuration**
    ```yaml
    sonarr:
@@ -100,7 +113,6 @@ This guide provides detailed configuration instructions for all services include
    - Set up quality profiles
 
 ### Radarr (Movies)
-
 1. **Configuration**
    ```yaml
    radarr:
@@ -115,58 +127,9 @@ This guide provides detailed configuration instructions for all services include
    - Language preferences
    - Release restrictions
 
-### Lidarr (Music)
-
-1. **Setup**
-   ```yaml
-   lidarr:
-     image: lscr.io/linuxserver/lidarr:latest
-     volumes:
-       - ./lidarr/config:/config
-       - ./media/music:/music
-   ```
-
-2. **Music Management**
-   - Artist monitoring
-   - Quality profiles
-   - Metadata agents
-
-### Bazarr (Subtitles)
-
-1. **Configuration**
-   ```yaml
-   bazarr:
-     image: lscr.io/linuxserver/bazarr:latest
-     volumes:
-       - ./bazarr/config:/config
-       - ./media/movies:/movies
-       - ./media/tv:/tv
-   ```
-
-2. **Integration**
-   - Connect to Sonarr/Radarr
-   - Language preferences
-   - Provider setup
-
-### Recyclarr
-
-1. **Configuration**
-   ```yaml
-   recyclarr:
-     image: requestrr/recyclarr:latest
-     volumes:
-       - ./recyclarr/config:/config
-   ```
-
-2. **Features**
-   - Automatic quality profile updates
-   - Custom formats synchronization
-   - Schedule configuration
-
 ## Download Management
 
 ### qBittorrent with VPN
-
 1. **Configuration**
    ```yaml
    qbittorrentvpn:
@@ -174,15 +137,26 @@ This guide provides detailed configuration instructions for all services include
      environment:
        - VPN_ENABLED=yes
        - VPN_TYPE=openvpn
+       - VPN_USERNAME=${QBITTORRENT_VPN_USERNAME}
+       - VPN_PASSWORD=${QBITTORRENT_VPN_PASSWORD}
+     cap_add:
+       - NET_ADMIN
+     devices:
+       - /dev/net/tun
    ```
 
 2. **VPN Setup**
-   - Provider configuration
-   - Kill switch
-   - Port forwarding
+   - Configure VPN credentials
+   - Enable kill switch
+   - Set up port forwarding
+   - Configure bandwidth limits
 
-### Prowlarr (Indexer Management)
+3. **Integration**
+   - Connect to Sonarr/Radarr
+   - Configure download categories
+   - Set up watch folders
 
+### Prowlarr
 1. **Basic Setup**
    ```yaml
    prowlarr:
@@ -197,11 +171,13 @@ This guide provides detailed configuration instructions for all services include
    - Set up API keys
 
 ### NZBGet
-
 1. **Configuration**
    ```yaml
    nzbget:
      image: lscr.io/linuxserver/nzbget:latest
+     environment:
+       - VPN_ENABLED=yes
+       - VPN_TYPE=openvpn
      volumes:
        - ./nzbget/config:/config
        - ./downloads:/downloads
@@ -212,128 +188,9 @@ This guide provides detailed configuration instructions for all services include
    - Download categories
    - Post-processing scripts
 
-### Unpackerr
-
-1. **Configuration**
-   ```yaml
-   unpackerr:
-     image: golift/unpackerr:latest
-     volumes:
-       - ./unpackerr/config:/config
-       - ./downloads:/downloads
-   ```
-
-2. **Features**
-   - Automatic extraction
-   - Clean-up rules
-   - Integration with *arr services
-
-## Media Request & Discovery
-
-### Overseerr
-
-1. **Configuration**
-   ```yaml
-   overseerr:
-     image: lscr.io/linuxserver/overseerr:latest
-     volumes:
-       - ./overseerr/config:/app/config
-   ```
-
-2. **Setup**
-   - Plex integration
-   - Sonarr/Radarr connection
-   - User management
-
-### Watchlist
-
-1. **Configuration**
-   ```yaml
-   watchlist:
-     image: ghcr.io/linuxserver/watchlist:latest
-     volumes:
-       - ./watchlist/config:/config
-   ```
-
-2. **Features**
-   - Media tracking
-   - Integration with media services
-   - Custom lists
-
-### Watchlistarr
-
-1. **Configuration**
-   ```yaml
-   watchlistarr:
-     image: ghcr.io/nylonee/watchlistarr:latest
-     environment:
-       - SONARR_API_KEY=${SONARR_API_KEY}
-       - RADARR_API_KEY=${RADARR_API_KEY}
-       - TRAKT_CLIENT_ID=${TRAKT_CLIENT_ID}
-       - TRAKT_CLIENT_SECRET=${TRAKT_CLIENT_SECRET}
-       - IMDB_USER_ID=${IMDB_USER_ID}
-   ```
-
-2. **Setup Instructions**
-   - Get API keys from Sonarr/Radarr
-   - Set up Trakt integration
-   - Configure IMDB watchlist
-
-## Book & Audio Management
-
-### Audiobookshelf
-
-1. **Configuration**
-   ```yaml
-   audiobookshelf:
-     image: ghcr.io/advplyr/audiobookshelf:latest
-     volumes:
-       - ./audiobookshelf/config:/config
-       - ./media/audiobooks:/audiobooks
-       - ./media/podcasts:/podcasts
-   ```
-
-2. **Features**
-   - Audiobook organization
-   - Podcast management
-   - Progress tracking
-
-### Calibre-Web
-
-1. **Configuration**
-   ```yaml
-   calibre-web:
-     image: lscr.io/linuxserver/calibre-web:latest
-     volumes:
-       - ./calibre-web/config:/config
-       - ./media/ebooks:/books
-   ```
-
-2. **Setup**
-   - Library configuration
-   - User management
-   - Format conversion
-
-### LazyLibrarian
-
-1. **Configuration**
-   ```yaml
-   lazylibrarian:
-     image: lscr.io/linuxserver/lazylibrarian:latest
-     volumes:
-       - ./lazylibrarian/config:/config
-       - ./media/ebooks:/books
-   ```
-
-2. **Features**
-   - Author monitoring
-   - Book discovery
-   - Automatic downloads
-
 ## Monitoring Services
 
 ### Prometheus
-
 1. **Basic Configuration**
    ```yaml
    prometheus:
@@ -348,7 +205,6 @@ This guide provides detailed configuration instructions for all services include
    - Data retention
 
 ### Grafana
-
 1. **Setup**
    ```yaml
    grafana:
@@ -362,94 +218,9 @@ This guide provides detailed configuration instructions for all services include
    - Service health
    - Custom panels
 
-### Tautulli (Plex Monitoring)
-
-1. **Configuration**
-   ```yaml
-   tautulli:
-     image: lscr.io/linuxserver/tautulli:latest
-     volumes:
-       - ./tautulli/config:/config
-   ```
-
-2. **Monitoring Setup**
-   - User statistics
-   - Library analytics
-   - Notifications
-
-### Monitorr
-
-1. **Configuration**
-   ```yaml
-   monitorr:
-     image: monitorr/monitorr:latest
-     volumes:
-       - ./monitorr/config:/var/www/html/assets/config
-   ```
-
-2. **Features**
-   - Service status monitoring
-   - Uptime tracking
-   - Alert configuration
-
-## System Management
-
-### Portainer
-
-1. **Configuration**
-   ```yaml
-   portainer:
-     image: portainer/portainer-ce:latest
-     volumes:
-       - /var/run/docker.sock:/var/run/docker.sock
-       - ./portainer/data:/data
-   ```
-
-2. **Management Features**
-   - Container management
-   - Volume management
-   - Network configuration
-
-### Watchtower
-
-1. **Configuration**
-   ```yaml
-   watchtower:
-     image: containrrr/watchtower:latest
-     volumes:
-       - /var/run/docker.sock:/var/run/docker.sock
-     environment:
-       - WATCHTOWER_CLEANUP=true
-       - WATCHTOWER_POLL_INTERVAL=86400
-   ```
-
-2. **Features**
-   - Automatic updates
-   - Update scheduling
-   - Notification options
-
-## Security Services
-
-### Fail2Ban
-
-1. **Configuration**
-   ```yaml
-   fail2ban:
-     image: crazymax/fail2ban:latest
-     volumes:
-       - /var/log:/var/log:ro
-       - /var/run/docker.sock:/var/run/docker.sock
-   ```
-
-2. **Jail Setup**
-   - Custom rules
-   - Ban policies
-   - Email notifications
-
 ## Service Maintenance
 
 ### Backup Procedures
-
 1. **Configuration Backup**
    ```bash
    # Backup all config directories
@@ -462,7 +233,6 @@ This guide provides detailed configuration instructions for all services include
    - Retention policy
 
 ### Update Procedures
-
 1. **Service Updates**
    ```bash
    # Update all containers
@@ -478,7 +248,6 @@ This guide provides detailed configuration instructions for all services include
 ## Troubleshooting
 
 ### Common Issues
-
 1. **Permission Problems**
    ```bash
    # Fix common permission issues
@@ -492,7 +261,6 @@ This guide provides detailed configuration instructions for all services include
    - VPN connectivity
 
 ### Logging
-
 1. **Log Access**
    ```bash
    # View service logs

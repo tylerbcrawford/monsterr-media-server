@@ -40,6 +40,17 @@ service_groups:
         required: true
         network_mode: "host"
 
+      portainer:
+        name: "Portainer"
+        description: "Docker management and monitoring interface"
+        image: "portainer/portainer-ce:latest"
+        required: true
+        ports:
+          - "9000:9000"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - ./portainer/data:/data
+
   media:
     name: "Media Services"
     description: "Services for managing and streaming media content"
@@ -95,13 +106,16 @@ service_groups:
     services:
       qbittorrentvpn:
         name: "qBittorrent with VPN"
-        description: "Torrent client with VPN integration"
+        description: "Torrent client with built-in VPN support"
         image: "ghcr.io/hotio/qbittorrent:latest"
         required: false
         cap_add:
           - NET_ADMIN
         devices:
           - /dev/net/tun
+        environment:
+          - VPN_ENABLED=yes
+          - VPN_TYPE=openvpn
       
       prowlarr:
         name: "Prowlarr"
@@ -114,14 +128,9 @@ service_groups:
         description: "Usenet downloader"
         image: "lscr.io/linuxserver/nzbget:latest"
         required: false
-        depends_on:
-          - vpn
-      
-      vpn:
-        name: "VPN Service"
-        description: "OpenVPN client for secure downloads"
-        image: "dperson/openvpn-client"
-        required: false
+        environment:
+          - VPN_ENABLED=yes
+          - VPN_TYPE=openvpn
         cap_add:
           - NET_ADMIN
         devices:
@@ -191,14 +200,6 @@ service_groups:
         required: false
         depends_on:
           - plex
-      
-      portainer:
-        name: "Portainer"
-        description: "Docker management interface"
-        image: "portainer/portainer-ce:latest"
-        required: false
-        ports:
-          - "9000:9000"
       
       watchtower:
         name: "Watchtower"

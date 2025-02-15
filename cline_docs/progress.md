@@ -3,164 +3,79 @@
 ## Completed Features
 
 ### Core Infrastructure
-- ✓ Docker containerization
-- ✓ Service orchestration
-- ✓ Reverse proxy setup
-- ✓ Authentication system
-- ✓ Automated updates
-- ✓ Enhanced setup wizard
-- ✓ React-based configuration UI
-- ✓ Service health monitoring
-- ✓ Service dependency management
-- ✓ Remote desktop access (VNC)
+- [x] Basic container orchestration
+- [x] Reverse proxy setup
+- [x] Authentication system
+- [x] Fail2Ban integration
+- [x] Portainer integration (moved to core)
+- [x] VPN configuration streamlining
 
 ### Media Management
-- ✓ Plex media server
-- ✓ Sonarr TV management
-- ✓ Radarr movie management
-- ✓ Lidarr music management
-- ✓ Bazarr subtitle management
-- ✓ Health checks and monitoring
+- [x] Plex server setup
+- [x] Sonarr integration
+- [x] Radarr integration
+- [x] Lidarr integration
+- [x] Bazarr subtitle management
 
 ### Download Management
-- ✓ qBittorrent with VPN
-- ✓ NZBGet integration
-- ✓ Prowlarr indexer
-- ✓ Download automation
-- ✓ VPN integration
-- ✓ Health validation
-
-### Book Services
-- ✓ Readarr integration
-- ✓ Full Calibre system
-- ✓ Audiobookshelf
-- ✓ LazyLibrarian
-- ✓ Service monitoring
-- ✓ Library management
+- [x] qBittorrent with built-in VPN
+- [x] NZBGet with VPN support
+- [x] Prowlarr indexer management
+- [x] Download automation
 
 ### Monitoring
-- ✓ Prometheus metrics
-- ✓ Grafana dashboards
-- ✓ Tautulli for Plex
-- ✓ System health checks
-- ✓ Alert configuration
-- ✓ Service health monitoring
-
-### Security
-- ✓ Two-factor authentication
-- ✓ Fail2Ban protection
-- ✓ SSL/TLS encryption
-- ✓ Firewall configuration
-- ✓ VPN security
-- ✓ Health check security
-
-### User Interface
-- ✓ Organizr dashboard
-- ✓ React setup wizard
-- ✓ Service management
-- ✓ Configuration tools
-- ✓ Mobile responsiveness
-- ✓ Overseerr integration
-- ✓ Watchlist integration
+- [x] Prometheus metrics
+- [x] Grafana dashboards
+- [x] Tautulli integration
+- [x] System health monitoring
 
 ### Documentation
-- ✓ API documentation
-- ✓ Setup wizard documentation
-- ✓ Development guide
-- ✓ Installation guide
-- ✓ Configuration guides
-- ✓ Health monitoring docs
-- ✓ Repository cleanup plan
-- ✓ Service analysis
-- ✓ Source control management
-- ✓ VNC access documentation
-- ✓ Remote access security guide
+- [x] Installation guides
+- [x] Network setup documentation
+- [x] Service configuration guides
+- [x] Troubleshooting documentation
+- [x] Beta changes documentation
 
-### Testing
-- ✓ Component tests
-- ✓ API integration tests
-- ✓ Test infrastructure
-- ✓ Security testing
-- ✓ Health check validation
-
-## In Progress Features
-
-### Service Enhancements
-- ⟳ Centralized logging system
-- ⟳ Advanced monitoring features
-- ⟳ Performance optimization
-- ⟳ Resource usage tracking
-- ⟳ User feedback collection
-
-### Documentation
-- ⟳ Advanced configuration guides
-- ⟳ Performance tuning docs
-- ⟳ Security hardening guides
-- ⟳ Troubleshooting procedures
-- ⟳ Version compatibility matrix
-
-### System Improvements
-- ⟳ Network isolation
-- ⟳ Advanced routing
-- ⟳ Dependency validation
-- ⟳ Error recovery procedures
-- ⟳ Resource optimization
+## In Progress
+- [ ] Beta testing phase
+- [ ] Performance optimization
+- [ ] User feedback collection
+- [ ] System stress testing
 
 ## Planned Features
+- [ ] Automated backup system
+- [ ] Enhanced monitoring alerts
+- [ ] Mobile app integration
+- [ ] API documentation
+- [ ] Custom dashboard development
 
-### Service Enhancements
-- □ Advanced metrics collection
-- □ Predictive analytics
-- □ Automated scaling
-- □ Custom dashboards
-- □ Service analytics
+## Recent Updates
+1. Beta Refinements (2025-02-15)
+   - Moved Portainer to core services
+   - Streamlined VPN configuration
+   - Updated documentation
+   - Enhanced service integration
 
-### Security
-- □ Enhanced access control
-- □ Security auditing
-- □ Compliance tools
-- □ Threat detection
-- □ Automated responses
+2. Documentation Updates
+   - Added beta-changes.md
+   - Updated network setup guide
+   - Enhanced service documentation
+   - Improved troubleshooting guides
 
-### Performance
-- □ Load balancing
-- □ Cache optimization
-- □ Resource allocation
-- □ Network optimization
-- □ Storage management
-
-## Recent Achievements
-1. Completed service integration in setup wizard
-2. Added UI Services category with Organizr, Overseerr, and Watchlist
-3. Added Utility Services category with Recyclarr and Unpackerr
-4. Updated all service dependencies and resources
-5. Verified documentation accuracy
-
-## Current Sprint
-1. Monitor service integration feedback
-2. Test new service dependencies
-3. Verify resource calculations
-4. Gather user feedback on UI
-5. Review security configurations
-
-## Next Sprint
-1. Implement centralized logging
-2. Enhance monitoring capabilities
-3. Improve documentation
-4. Optimize performance
-5. Add security features
+## Next Steps
+1. Begin beta testing phase
+2. Collect user feedback
+3. Monitor system performance
+4. Address any reported issues
+5. Plan for stable release
 
 ## Known Issues
-1. Advanced logging needed
-2. Performance optimization required
-3. Network isolation incomplete
-4. Documentation gaps exist
-5. Security hardening needed
+- None currently tracked
 
-## Project Health
-- Build Status: Stable
-- Test Coverage: 85%
-- Documentation: 100%
-- Security: Strong
-- Performance: Good
-- Integration: Complete
+## Milestones
+- [x] Alpha release
+- [x] Core services implementation
+- [x] Documentation completion
+- [x] Beta refinements
+- [ ] Beta testing
+- [ ] Stable release

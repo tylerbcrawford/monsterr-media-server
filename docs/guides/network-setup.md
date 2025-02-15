@@ -61,6 +61,7 @@ If you have a dynamic IP address:
 | 443  | TCP      | HTTPS    | Yes       |
 | 81   | TCP      | NPM UI   | No        |
 | 32400| TCP      | Plex     | External  |
+| 9000 | TCP      | Portainer| Yes       |
 
 ### Setup Steps
 1. Access router admin panel
@@ -71,6 +72,7 @@ If you have a dynamic IP address:
    443  -> SERVER_IP:443
    81   -> SERVER_IP:81 (optional)
    32400-> SERVER_IP:32400 (for direct Plex access)
+   9000 -> SERVER_IP:9000 (for Portainer access)
    ```
 
 ### DHCP Reservation
@@ -113,6 +115,7 @@ sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow 81/tcp
 sudo ufw allow 32400/tcp
+sudo ufw allow 9000/tcp
 
 # Allow SSH (important!)
 sudo ufw allow ssh
@@ -135,13 +138,19 @@ maxretry = 3
 ```
 
 ### 3. VPN Configuration
-For download services:
-1. Get VPN credentials
-2. Configure in `config.env`:
+qBittorrent includes built-in VPN support:
+1. Configure in qBittorrent settings:
    ```bash
-   VPN_USERNAME=your-username
-   VPN_PASSWORD=your-password
+   # Environment variables in config.env
+   QBITTORRENT_VPN_USERNAME=your-username
+   QBITTORRENT_VPN_PASSWORD=your-password
    ```
+2. Enable VPN in qBittorrent:
+   - VPN_ENABLED=yes
+   - VPN_TYPE=openvpn
+   - Configure kill switch
+   - Set up port forwarding if needed
+
 3. Verify VPN connection:
    ```bash
    sudo ./scripts/post_install_check.sh --vpn
@@ -209,6 +218,19 @@ sudo netstat -tulpn
 curl -v telnet://your.public.ip:80
 ```
 
+### 4. VPN Issues
+Troubleshoot VPN connection:
+```bash
+# Check VPN status in qBittorrent
+docker logs qbittorrentvpn
+
+# Verify IP address
+curl -s https://ipinfo.io
+
+# Test kill switch
+sudo ./scripts/post_install_check.sh --vpn-killswitch
+```
+
 ## Network Monitoring
 
 ### 1. Basic Monitoring
@@ -224,9 +246,11 @@ iftop -i eth0
 - Use Grafana dashboard
 - Monitor network metrics
 - Set up alerts
+- Track VPN status
 
 ## Additional Resources
 - [Router Port Forwarding Guide](https://portforward.com)
 - [Let's Encrypt Documentation](https://letsencrypt.org/docs)
 - [UFW Guide](https://help.ubuntu.com/community/UFW)
 - [Fail2Ban Documentation](https://www.fail2ban.org/wiki/index.php/Main_Page)
+- [qBittorrent VPN Documentation](https://github.com/qbittorrent/qBittorrent/wiki/SOCKS5-Proxy-Setup)
