@@ -128,23 +128,71 @@ User Request → Setup Wizard → DomainController
 
 ## Monitoring Patterns
 
-### 1. Health Checks
-- Service status
-- DNS propagation
-- SSL certificate validity
-- Proxy connectivity
+### 1. System Health Monitoring
+```
+User Interface ← Monitoring Service → System Metrics
+                      ↓                     ↑
+              Alert Management        Resource Collectors
+                      ↓                     ↑
+               Notification         Container Health Checks
+```
 
-### 2. Performance Monitoring
-- Response times
-- WebSocket latency
-- Resource usage
-- Error rates
+### 2. Resource Monitoring
+- CPU Usage Tracking
+  ```
+  Metric Collection → Threshold Check → Alert Generation
+  ```
+- Memory Monitoring
+  ```
+  Memory Stats → Usage Analysis → Threshold Alerts
+  ```
+- Disk Space Management
+  ```
+  Partition Checks → Usage Tracking → Capacity Alerts
+  ```
 
-### 3. Security Monitoring
-- Access logs
-- Failed attempts
-- Certificate expiration
-- DNS changes
+### 3. Service Health Checks
+```
+Container Health → Status Check → Health Status
+        ↓              ↓             ↓
+ Performance      Availability    Logging
+   Metrics         Monitoring      System
+```
+
+### 4. Logging Architecture
+```
+Service Logs → Log Rotation → Archive
+      ↓            ↓            ↓
+Event Tracking  Compression  Retention
+      ↓
+Alert Generation
+```
+
+### 5. Alert Management
+```
+Threshold Check → Alert Generation → Notification
+        ↓               ↓               ↓
+  Metric Analysis  Severity Rating  Distribution
+```
+
+### 6. Performance Monitoring
+- Response Time Tracking
+- Resource Utilization
+- Service Performance
+- Network Metrics
+
+### 7. Security Monitoring
+- Access Logging
+- Authentication Events
+- Network Security
+- Container Security
+
+### 8. Backup Monitoring
+```
+Backup Process → Verification → Status Update
+       ↓             ↓             ↓
+  Size Check    Integrity Test  Notification
+```
 
 ## Error Handling
 

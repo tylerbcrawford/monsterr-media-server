@@ -108,11 +108,42 @@ RATE_LIMIT_WINDOW=900000
 - SSL handshake optimization
 - Request/response compression
 
-### Monitoring
-- Real-time status updates
-- Performance metrics
-- Error tracking
-- Resource usage monitoring
+### Monitoring System
+- **Core Monitoring**
+  ```bash
+  # System Monitoring
+  CHECK_INTERVAL=5
+  DISK_THRESHOLD=90
+  MEMORY_THRESHOLD=90
+  CPU_THRESHOLD=90
+  LOG_DIR=/var/log/monsterr
+  ```
+
+- **Metrics Collection**
+  - System resource monitoring
+  - Container health checks
+  - Network connectivity tests
+  - Service status tracking
+
+- **Logging System**
+  - Structured logging format
+  - Automatic log rotation
+  - Compressed archives
+  - 4-week retention
+
+- **Alert System**
+  - Desktop notifications
+  - Multi-level alerting
+  - Configurable thresholds
+  - Event categorization
+
+- **Future Dashboard**
+  ```bash
+  # Dashboard Configuration
+  DASHBOARD_PORT=3000
+  METRICS_RETENTION=30d
+  ALERT_HISTORY=90d
+  ```
 
 ## Development Workflow
 
