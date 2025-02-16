@@ -1,0 +1,48 @@
+{
+  "proxy_hosts": [
+    {
+      "domain_names": ["{{ domain }}", "*.{{ domain }}"],
+      "forward_scheme": "http",
+      "forward_host": "localhost",
+      "forward_port": "{{ port }}",
+      "access_list_id": "0",
+      "certificate_id": "{{ cert_id }}",
+      "ssl_forced": true,
+      "meta": {
+        "letsencrypt_email": "{{ ssl_email }}",
+        "letsencrypt_agree": true,
+        "dns_challenge": false
+      },
+      "advanced_config": "",
+      "locations": [],
+      "block_exploits": true,
+      "allow_websocket_upgrade": true,
+      "http2_support": true,
+      "hsts_enabled": true,
+      "hsts_subdomains": true
+    }
+  ],
+  "redirection_hosts": [
+    {
+      "domain_names": ["{{ domain }}"],
+      "forward_scheme": "https",
+      "forward_domain": "{{ domain }}",
+      "preserve_path": true
+    }
+  ],
+  "streams": [],
+  "access_lists": [
+    {
+      "id": 0,
+      "name": "Default Access List",
+      "satisfy_any": false,
+      "pass_auth": false,
+      "clients": [],
+      "authorization": {
+        "auth_required": true,
+        "auth_provider": "authelia",
+        "authelia_url": "http://authelia:9091"
+      }
+    }
+  ]
+}

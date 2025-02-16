@@ -1,122 +1,130 @@
 # Domain Configuration Example
-# Copy this file to config/domain.yml and modify as needed
+# This file demonstrates the structure and options for configuring domains
 
+# Primary domain configuration
 domain:
   enabled: true
-  primaryDomain: "your-domain.com"
+  primaryDomain: "your.domain.com"
   
-  # SSL Configuration
+  # SSL/TLS Configuration
   ssl:
     enabled: true
-    provider: "letsencrypt"  # or "custom"
-    email: "admin@your-domain.com"  # Required for Let's Encrypt
+    provider: "letsencrypt"  # Options: letsencrypt, custom
+    email: "admin@your.domain.com"  # Required for Let's Encrypt
     autoRenew: true
     forceSSL: true
-    # For custom SSL provider:
+    # For custom SSL provider only:
     # cert: "/path/to/certificate.pem"
     # key: "/path/to/private.key"
-  
-  # Dynamic DNS Configuration (Optional)
-  ddns:
-    enabled: false
-    provider: "dynu"  # or "cloudflare", "duckdns"
-    username: "your-username"  # Required for Dynu
-    password: "your-password"  # Required for Dynu
-    # token: "your-token"  # Required for Cloudflare/DuckDNS
-    updateInterval: 300  # seconds
-    ipType: "dynamic"  # or "static"
-  
-  # Subdomain Configuration
+
+  # Service-specific subdomains
   subdomains:
-    # Core Infrastructure
-    - name: "auth"
-      service: "authelia"
-      enabled: true
-      
-    - name: "proxy"
-      service: "nginx-proxy-manager"
-      enabled: true
-      
-    # Media Services
+    # Media streaming
     - name: "plex"
       service: "plex"
-      enabled: true
-      customConfig:
-        websockets: true
-        
+      port: 32400
+      ssl: true
+      auth: false  # Plex handles its own authentication
+    
+    # Content management
     - name: "sonarr"
       service: "sonarr"
-      enabled: true
-      
+      port: 8989
+      ssl: true
+      auth: true
+    
     - name: "radarr"
       service: "radarr"
-      enabled: true
-      
+      port: 7878
+      ssl: true
+      auth: true
+    
     - name: "lidarr"
       service: "lidarr"
-      enabled: true
-      
-    - name: "bazarr"
-      service: "bazarr"
-      enabled: true
-      
-    # Download Management
-    - name: "prowlarr"
-      service: "prowlarr"
-      enabled: true
-      
-    - name: "qbit"
-      service: "qbittorrent"
-      enabled: true
-      
-    - name: "nzb"
-      service: "nzbget"
-      enabled: true
-      
-    # Book Management
-    - name: "readarr"
-      service: "readarr"
-      enabled: true
-      
-    - name: "calibre"
-      service: "calibre"
-      enabled: true
-      
-    - name: "audiobooks"
-      service: "audiobookshelf"
-      enabled: true
-      
-    # Monitoring & Management
-    - name: "grafana"
-      service: "grafana"
-      enabled: true
-      
-    - name: "prometheus"
-      service: "prometheus"
-      enabled: true
-      customConfig:
-        extraHeaders:
-          X-Scope-OrgID: "1"
-      
-    - name: "tautulli"
-      service: "tautulli"
-      enabled: true
-      
-    # User Interface
+      port: 8686
+      ssl: true
+      auth: true
+    
+    # User interfaces
     - name: "dash"
-      service: "organizr"
-      enabled: true
-      
+      service: "dashboard"
+      port: 3000
+      ssl: true
+      auth: true
+    
     - name: "request"
       service: "overseerr"
-      enabled: true
-      customConfig:
-        proxyPass: "http://overseerr:5055"
-        websockets: true
+      port: 5055
+      ssl: true
+      auth: true
 
-# Notes:
-# 1. Each subdomain automatically gets SSL if enabled at the domain level
-# 2. Custom configurations allow for service-specific proxy settings
-# 3. The 'enabled' flag allows for selective service deployment
-# 4. All services inherit global SSL and security settings
-# 5. WebSocket support is automatically enabled for services that require it
+  # Dynamic DNS Configuration (optional)
+  ddns:
+    enabled: false
+    provider: "dynu"  # Supported: dynu, cloudflare, duckdns
+    username: "your-username"
+    password: "your-api-key"
+    updateInterval: 300  # seconds
+    ipType: "dynamic"  # Options: dynamic, static
+
+# Network security settings
+security:
+  # Fail2Ban configuration
+  fail2ban:
+    enabled: true
+    findTime: 600
+    banTime: 3600
+    maxRetry: 5
+    
+  # Rate limiting
+  rateLimit:
+    enabled: true
+    windowMs: 900000  # 15 minutes
+    maxRequests: 100
+    
+  # CORS settings
+  cors:
+    enabled: true
+    origins:
+      - "https://your.domain.com"
+      - "https://*.your.domain.com"
+    methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+
+# Monitoring configuration
+monitoring:
+  # Health checks
+  healthCheck:
+    enabled: true
+    interval: 30  # seconds
+    timeout: 5
+    retries: 3
+    
+  # SSL certificate monitoring
+  sslMonitor:
+    enabled: true
+    expiryWarningDays: 30
+    checkInterval: 86400  # 24 hours
+
+# Example service-specific configurations
+services:
+  # Authentication portal
+  authelia:
+    enabled: true
+    domain: "auth.your.domain.com"
+    port: 9091
+    
+  # Proxy management
+  nginx:
+    enabled: true
+    domain: "proxy.your.domain.com"
+    port: 81
+    
+  # Container management
+  portainer:
+    enabled: true
+    domain: "docker.your.domain.com"
+    port: 9000

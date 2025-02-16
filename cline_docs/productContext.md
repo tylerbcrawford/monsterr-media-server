@@ -1,140 +1,164 @@
 # Product Context
 
 ## Purpose
-Monsterr Media Server is a comprehensive media management solution that provides automated organization, streaming, and monitoring of digital media content.
+Monsterr Media Server is a comprehensive media management solution that enables users to host and manage their media content with professional-grade domain integration, security, and automation.
 
-## Core Features
+## Core Problems Solved
 
-1. **Media Management**: Automated organization and metadata management for movies, TV shows, music, and books
-2. **Content Streaming**: High-quality media streaming to any device through Plex
-3. **Automated Downloads**: Intelligent content acquisition through Sonarr, Radarr, and other specialized services
-4. **Security**: Two-factor authentication, SSL encryption, and intrusion prevention
-5. **Monitoring**: Real-time system monitoring, alerts, and performance tracking
-6. **User Interface**: Unified dashboard for service management and content requests
-7. **Download Security**: Secure download management with rate limiting and access control
+### 1. Domain Management
+- Simplifies custom domain setup
+- Automates SSL certificate management
+- Provides real-time validation feedback
+- Ensures secure access to services
 
-## Key Components
+### 2. Media Organization
+- Centralizes media content
+- Automates content acquisition
+- Manages metadata and organization
+- Provides multi-device access
 
-### 1. Core Infrastructure
-- Nginx Proxy Manager for reverse proxy
-- Authelia for authentication
-- Redis for session management
-- Fail2Ban for security
+### 3. Security
+- Implements robust authentication
+- Ensures encrypted communications
+- Prevents unauthorized access
+- Monitors system security
+
+### 4. User Experience
+- Streamlines setup process
+- Provides intuitive interfaces
+- Offers real-time feedback
+- Simplifies maintenance
+
+## Key Features
+
+### 1. Domain Integration
+- Custom domain support
+- Automated SSL certificates
+- Real-time DNS validation
+- Subdomain management
+- DDNS support
+- Health monitoring
 
 ### 2. Media Services
-- Plex Media Server
-- Sonarr for TV shows
-- Radarr for movies
-- Lidarr for music
-- Bazarr for subtitles
+- Plex media streaming
+- Sonarr/Radarr automation
+- Music and book management
+- Subtitle integration
+- Download automation
 
-### 3. Download Management
-- qBittorrent for torrents
-- NZBGet for Usenet
-- Prowlarr for indexer management
-
-### 4. Book Services
-- Readarr for books
-- Calibre for ebook management
-- Audiobookshelf for audiobooks
-
-### 5. Monitoring
-- Prometheus for metrics
-- Grafana for visualization
-- Tautulli for Plex statistics
-- Portainer for container management
-
-### 6. User Interface
-- Organizr dashboard
-- Overseerr for requests
-- Watchlist for media tracking
-
-## Technical Requirements
-
-### System Requirements
-- Linux-based operating system
-- Docker and Docker Compose
-- 4+ CPU cores
-- 8GB+ RAM
-- Sufficient storage for media
-
-### Network Requirements
-- Port 80/443 for web access
-- Port 32400 for Plex
-- Additional service ports
-- Internet connectivity
-- UFW firewall configuration
-
-### Security Requirements
-- SSL certificates
+### 3. Security Features
 - Two-factor authentication
+- SSL/TLS encryption
 - Fail2Ban protection
-- Regular security updates
+- Rate limiting
 - Access control
+- Security monitoring
 
-## User Experience
+### 4. Management Features
+- Web-based administration
+- Real-time status updates
+- Automated maintenance
+- Performance monitoring
+- Backup management
 
-### Installation
-1. Automated setup wizard
-2. Interactive configuration
-3. Real-time validation
-4. Guided service setup
+## User Impact
 
-### Management
-1. Centralized dashboard
-2. Service health monitoring
-3. Automated updates
-4. Backup management
+### 1. Setup Experience
+- Guided domain configuration
+- Interactive validation
+- Clear progress indicators
+- Immediate feedback
+- Error recovery assistance
 
-### Security
-1. Two-factor authentication
-2. SSL encryption
-3. Access control
-4. Security monitoring
+### 2. Daily Usage
+- Professional domain names
+- Secure access everywhere
+- Consistent experience
+- Mobile-friendly interface
+- Fast content delivery
 
-### Monitoring
-1. System metrics
-2. Service health
-3. Resource usage
-4. Alert notifications
+### 3. Management
+- Centralized administration
+- Automated updates
+- Health monitoring
+- Easy troubleshooting
+- Performance optimization
 
-## Development Focus
+### 4. Security
+- Protected access
+- Data encryption
+- Intrusion prevention
+- Regular security updates
+- Audit logging
 
-### Primary Goals
-1. Simplified installation
-2. Automated configuration
-3. Enhanced security
-4. Improved monitoring
-5. User-friendly interface
+## Target Users
 
-### Secondary Goals
-1. Performance optimization
-2. Resource efficiency
-3. Scalability improvements
-4. Enhanced automation
+### 1. Media Enthusiasts
+- Large media collections
+- Multiple devices
+- Quality requirements
+- Automation needs
 
-## Success Metrics
+### 2. Home Server Admins
+- Technical knowledge
+- Security consciousness
+- Customization needs
+- Performance requirements
 
-### User Experience
-- Installation success rate
-- Configuration accuracy
-- User satisfaction
-- Support ticket volume
+### 3. Small Organizations
+- Content management needs
+- Professional appearance
+- Security requirements
+- Multiple users
 
-### System Performance
-- Service uptime
-- Resource utilization
-- Response times
-- Error rates
+## Value Proposition
 
-### Security
-- Authentication success
-- Intrusion attempts blocked
-- Security incident rate
-- Update compliance
+### 1. Professional Setup
+- Custom domain integration
+- Enterprise-grade security
+- Automated management
+- Professional appearance
 
-### Monitoring
-- Alert response time
-- Issue resolution time
-- System availability
+### 2. Time Savings
+- Automated configuration
+- Self-healing systems
+- Automated updates
+- Simplified management
+
+### 3. Cost Efficiency
+- Free SSL certificates
+- Optimized resources
+- Automated maintenance
+- Reduced management time
+
+### 4. Peace of Mind
+- Security best practices
+- Regular monitoring
+- Automated backups
+- Professional support
+
+## Future Vision
+
+### 1. Enhanced Features
+- Multi-domain support
+- Advanced DNS management
+- CDN integration
+- Load balancing
+
+### 2. Improved Security
+- DNSSEC support
+- Advanced WAF
+- Threat intelligence
+- Automated auditing
+
+### 3. Better Performance
+- Edge caching
+- Protocol optimization
 - Resource optimization
+- Predictive scaling
+
+### 4. Extended Integration
+- Additional services
+- API expansion
+- Third-party plugins
+- Custom extensions
