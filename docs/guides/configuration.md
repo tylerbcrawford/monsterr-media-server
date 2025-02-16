@@ -3,6 +3,19 @@
 ## Overview
 This guide explains all configuration options and best practices for Monsterr Media Server. It covers both initial setup and ongoing configuration management.
 
+## Setup Wizard Configuration
+
+The setup wizard provides an intuitive interface for initial configuration through six steps:
+
+1. **System**: Validates and configures system requirements
+2. **Services**: Selects and configures service options
+3. **Storage**: Sets up media and application directories
+4. **Network**: Configures domain and networking
+5. **Security**: Sets up authentication and security
+6. **Deploy**: Reviews and applies configuration
+
+The wizard automatically generates the necessary configuration files based on your selections. These configurations can be modified later using the methods described below.
+
 ## Configuration Files
 
 ### config.env
@@ -217,3 +230,16 @@ sudo ./scripts/error_handler.sh --restart-services
 - [Troubleshooting Guide](troubleshooting.md)
 - [Monitoring Guide](monitoring.md)
 - [Backup Guide](backup.md)
+
+## Version History
+
+### v1.1.0 (2025-02-15)
+- Added setup wizard configuration section
+- Updated configuration management procedures
+- Improved documentation structure
+- Added version history
+
+### v1.0.0 (2025-01-01)
+- Initial configuration guide
+- Basic setup instructions
+- Service configuration examples

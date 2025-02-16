@@ -33,13 +33,21 @@ cd monsterr-media-server
 sudo ./install_media_server.sh
 ```
 
-### 2. Setup Wizard Steps
-1. **System Check**
-   - Confirms requirements
-   - Verifies dependencies
-   - Tests network
+### 2. Setup Wizard Interface
+The setup wizard features a modern, intuitive interface with six clearly labeled steps. Each step is represented by a menu bubble that changes color to indicate your progress:
+- Active step: Blue
+- Completed steps: Green
+- Upcoming steps: Gray
 
-2. **Choose Services**
+### 3. Setup Steps
+
+1. **System**
+   - Hardware validation
+   - Software verification
+   - Network testing
+   *Time: 2-3 minutes*
+
+2. **Services**
    - Required Core Services:
      * Nginx Proxy Manager
      * Authelia (2FA)
@@ -50,29 +58,39 @@ sudo ./install_media_server.sh
      * Downloads (qBittorrent with VPN)
      * Books (Readarr, Calibre)
      * Monitoring (Prometheus, Grafana)
+   *Time: 5-7 minutes*
 
-3. **Configure Storage**
+3. **Storage**
    - Set media location
    - Configure permissions
    - Create directories
+   *Time: 3-5 minutes*
 
-4. **Network Setup**
+4. **Network**
    - Enter domain
    - Configure ports
    - Setup SSL
+   *Time: 5-7 minutes*
 
 5. **Security**
    - Set admin password
    - Configure 2FA
    - Set up firewall
+   *Time: 3-5 minutes*
 
-### 3. Access Services
+6. **Deploy**
+   - Review configuration
+   - Deploy services
+   - Verify installation
+   *Time: 10-15 minutes*
+
+### 4. Access Services
 After installation, access your services at:
 - Dashboard: https://dashboard.yourdomain.com
 - Portainer: https://portainer.yourdomain.com
 - Plex: https://plex.yourdomain.com
 
-### 4. Quick Verification
+### 5. Quick Verification
 ```bash
 # Check system health
 sudo ./scripts/post_install_check.sh --all
@@ -124,5 +142,18 @@ docker-compose ps
 - Full documentation: /docs directory
 - Detailed guide: [Installation Walkthrough](installation-walkthrough.md)
 - Support: GitHub Issues
+
+## Version Information
+
+### v1.1.0 (2025-02-15)
+- Updated setup wizard interface with modern menu bubbles
+- Simplified step labels
+- Added estimated time per step
+- Improved progress indication
+
+### v1.0.0 (2025-01-01)
+- Initial quick start guide
+- Basic installation steps
+- Service configuration
 
 Remember: This is a quick start guide. For detailed instructions, troubleshooting, and best practices, refer to our [Complete Installation Guide](installation-walkthrough.md).

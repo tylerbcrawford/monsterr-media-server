@@ -68,74 +68,71 @@ This guide provides a detailed, user-focused walkthrough of the Monsterr Media S
    *Potential Issue:* Failed requirements
    *Solution:* Follow on-screen instructions to install missing dependencies
 
-### Stage 3: Configuration (30-45 minutes)
+### Stage 3: Setup Wizard Interface
 
-1. **System Requirements Check**
+The setup wizard features a streamlined interface with six clearly labeled steps:
+
+1. **System**
    - Hardware validation
    - Software verification
    - Network tests
+   *Interface:* Blue menu bubble indicates active step
    *Watch Points:*
-   - Ensure all hardware meets minimum requirements
-   - Check for virtualization support if using VM
+   - All hardware meets minimum requirements
+   - Check virtualization support if using VM
    - Verify network connectivity
 
-2. **Service Selection**
+2. **Services**
    - Choose required services
    - Review dependencies
    - Confirm resource requirements
+   *Interface:* Green bubble shows completed steps
    *Watch Points:*
-   - Don't select more services than your hardware can handle
+   - Select services based on hardware capacity
    - Consider future expansion needs
    - Note service dependencies
 
-3. **Storage Configuration**
+3. **Storage**
    - Set media storage locations
    - Configure backup paths
    - Set permissions
+   *Interface:* Fixed-width menu bubbles (120px)
    *Watch Points:*
    - Ensure sufficient space
    - Use appropriate mount points
    - Set correct permissions
 
-4. **Network Setup**
+4. **Network**
    - Domain configuration
    - Port forwarding
    - SSL setup
+   *Interface:* Center-aligned text in bubbles
    *Watch Points:*
    - Verify domain ownership
    - Check port availability
    - Ensure router access
 
-5. **Security Configuration**
+5. **Security**
    - 2FA setup
    - Firewall configuration
    - Access control
+   *Interface:* Consistent spacing between steps
    *Watch Points:*
    - Save 2FA backup codes
    - Note admin credentials
    - Verify firewall rules
 
-### Stage 4: Deployment (15-30 minutes)
-
-1. **Final Review**
-   - Configuration verification
-   - Resource check
-   - Dependency validation
+6. **Deploy**
+   - Configuration review
+   - Service deployment
+   - System initialization
+   *Interface:* Final step in deployment process
    *Watch Points:*
    - Review all settings
-   - Verify storage paths
-   - Check service selections
+   - Monitor deployment progress
+   - Verify service status
 
-2. **Installation**
-   - Service deployment
-   - Configuration application
-   - System initialization
-   *Watch Points:*
-   - Monitor progress
-   - Watch for errors
-   - Check service status
-
-### Stage 5: Verification (15-20 minutes)
+### Stage 4: Verification (15-20 minutes)
 
 1. **System Health Check**
    ```bash
@@ -239,4 +236,17 @@ This guide provides a detailed, user-focused walkthrough of the Monsterr Media S
 3. [Configure Backups](backup.md)
 4. [Review Security](security.md)
 
-Remember: Take your time with each step and verify everything works before moving forward. Don't hesitate to consult the documentation or seek help if needed.
+Remember: Take your time with each step and verify everything works before moving forward. The setup wizard's intuitive interface will guide you through the process, but don't hesitate to consult the documentation or seek help if needed.
+
+## Version History
+
+### v1.1.0 (2025-02-15)
+- Updated setup wizard interface with standardized menu bubbles
+- Simplified step labels for better clarity
+- Added detailed interface descriptions
+- Improved step-by-step guidance
+
+### v1.0.0 (2025-01-01)
+- Initial installation walkthrough
+- Basic setup instructions
+- System requirements

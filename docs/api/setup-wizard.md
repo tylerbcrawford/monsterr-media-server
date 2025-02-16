@@ -1,12 +1,40 @@
-# Setup Wizard API Documentation
+# Setup Wizard API & UI Documentation
 
 ## Overview
-The Setup Wizard API provides endpoints for system validation, configuration, and deployment of the Monsterr Media Server. This API is used by the React-based setup wizard interface.
+The Setup Wizard provides a streamlined interface for configuring and deploying the Monsterr Media Server. It consists of both a React-based UI and supporting API endpoints.
 
-## Base URL
+## UI Components
+
+### Setup Wizard Navigation
+The wizard uses a standardized navigation bar with six steps:
+1. System
+2. Services
+3. Storage
+4. Network
+5. Security
+6. Deploy
+
+Each step is represented by a menu bubble with:
+- Fixed width (120px)
+- Center-aligned text
+- State-based styling:
+  - Active: Blue (#1976d2)
+  - Completed: Green (#4caf50)
+  - Inactive: Gray (#e0e0e0)
+
+```jsx
+// Example StepBubble component usage
+<StepBubble
+  completed={stepIndex < activeStep}
+  active={stepIndex === activeStep}
+>
+  {stepLabel}
+</StepBubble>
+```
+
+## API Endpoints
+
 All API endpoints are prefixed with `/api/setup/`
-
-## Endpoints
 
 ### System Check
 Validates system requirements and dependencies.
@@ -204,7 +232,40 @@ All endpoints return error responses in the following format:
 
 ## Example Usage
 
-### JavaScript/Axios
+### React Component
+```jsx
+import React, { useState } from 'react';
+import { StepBubble } from './components';
+
+const steps = [
+  { label: 'System', path: '' },
+  { label: 'Services', path: 'services' },
+  { label: 'Storage', path: 'storage' },
+  { label: 'Network', path: 'network' },
+  { label: 'Security', path: 'security' },
+  { label: 'Deploy', path: 'review' }
+];
+
+const SetupWizard = () => {
+  const [activeStep, setActiveStep] = useState(0);
+
+  return (
+    <div className="stepper">
+      {steps.map((step, index) => (
+        <StepBubble
+          key={step.label}
+          completed={index < activeStep}
+          active={index === activeStep}
+        >
+          {step.label}
+        </StepBubble>
+      ))}
+    </div>
+  );
+};
+```
+
+### API Integration
 ```javascript
 import axios from 'axios';
 
@@ -243,7 +304,7 @@ const deploy = async (config) => {
 ```
 
 ## WebSocket Events
-The setup wizard also provides real-time updates through WebSocket connections:
+The setup wizard provides real-time updates through WebSocket connections:
 
 ### Connection
 ```javascript
@@ -266,3 +327,17 @@ socket.on('service:status', (data) => {
   console.log('Service:', data.service);
   console.log('Status:', data.status);
 });
+```
+
+## Version History
+
+### v1.1.0 (2025-02-15)
+- Added standardized menu bubble interface
+- Updated step labels for better clarity
+- Added UI component documentation
+- Improved state management examples
+
+### v1.0.0 (2025-01-01)
+- Initial release of setup wizard
+- Basic API endpoints
+- WebSocket integration
