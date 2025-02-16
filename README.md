@@ -7,7 +7,9 @@ Built with a security-first approach, Monsterr provides:
 - 🔒 Complete data privacy - your media stays under your control
 - 🛡️ Enterprise-grade security with two-factor authentication and fail2ban protection
 - 🌐 Secure remote access with VPN integration
-- 📊 Real-time monitoring and threat detection
+- 📊 Real-time monitoring dashboard with WebSocket updates
+- 🔔 Comprehensive alert management system
+- 📈 Resource utilization tracking and visualization
 - 🎯 Automated media management with granular access controls
 
 Perfect for privacy-conscious users who want a secure, self-hosted alternative to traditional streaming services.
@@ -17,7 +19,10 @@ Perfect for privacy-conscious users who want a secure, self-hosted alternative t
 - 🎬 Complete media server stack (Plex, Sonarr, Radarr, etc.)
 - 🔒 Secure authentication with Authelia
 - 🔄 Automated content management
-- 📊 System monitoring and notifications
+- 📊 Real-time system monitoring dashboard
+- 🔔 WebSocket-based live updates
+- 📈 Resource utilization visualization
+- 🚨 Configurable alert management
 - 🛠️ Enhanced React-based setup wizard
 - 🚀 Docker-based deployment
 - 📱 Mobile-friendly interface
@@ -163,6 +168,19 @@ See [Hardware Guide](docs/guides/hardware.md) for detailed recommendations.
 
 ### Monitoring & Management
 
+#### System Dashboard
+- **Purpose**: Real-time system monitoring
+- **Dependencies**: None
+- **Port**: 3000
+- **Configuration**: `/config/dashboard/`
+- **Key Features**:
+  * Real-time resource monitoring
+  * WebSocket-based updates
+  * Service health tracking
+  * Alert management
+  * Performance visualization
+  * Historical metrics
+
 #### Prometheus
 - **Purpose**: Metrics collection
 - **Dependencies**: None
@@ -172,18 +190,22 @@ See [Hardware Guide](docs/guides/hardware.md) for detailed recommendations.
   * System resources
   * Container stats
   * Service health
+  * Network performance
+  * Storage utilization
 
 #### Grafana
-- **Purpose**: Metrics visualization
+- **Purpose**: Advanced metrics visualization
 - **Dependencies**: Prometheus
-- **Port**: 3000
+- **Port**: 3001
 - **Configuration**: `/config/grafana/`
 - **Environment Variables**:
   * `GF_SECURITY_ADMIN_PASSWORD`: Admin password
 - **Features**:
   * Custom dashboards
-  * Alert management
+  * Advanced analytics
+  * Alert correlation
   * Data visualization
+  * Trend analysis
 
 ### Book & Audio Management
 
