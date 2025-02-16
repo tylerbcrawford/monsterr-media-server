@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monsterr Media Server - System Monitor Preview</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: rgba(0, 0, 0, 0.87);
+            padding: 32px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .paper {
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2),
+                        0 3px 4px 0 rgba(0,0,0,0.14),
+                        0 1px 8px 0 rgba(0,0,0,0.12);
+            padding: 32px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 2.125rem;
+            font-weight: 400;
+            margin: 0;
+            color: rgba(0, 0, 0, 0.87);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2),
+                        0 1px 1px 0 rgba(0,0,0,0.14),
+                        0 1px 3px 0 rgba(0,0,0,0.12);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin: 0 0 16px 0;
+            color: rgba(0, 0, 0, 0.87);
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .metric {
+            background-color: #f5f5f5;
+            padding: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .metric h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0 0 8px 0;
+            color: rgba(0, 0, 0, 0.87);
+        }
+        .service {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        .healthy { background-color: #4caf50; }
+        .warning { background-color: #ff9800; }
+        .error { background-color: #f44336; }
+        .alert {
+            padding: 12px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .chart {
+            width: 100%;
+            height: 150px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(25,118,210,0.2) 0%,
+                rgba(25,118,210,0.5) 50%,
+                rgba(25,118,210,0.2) 100%);
+            clip-path: polygon(0 80%, 20% 40%, 40% 60%, 60% 30%, 80% 70%, 100% 20%);
+        }
+        .timestamp {
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 0.875rem;
+            text-align: right;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="paper">
+            <div class="header">
+                <h1>System Monitor</h1>
+            </div>
+
+            <div class="timestamp">
+                Last Update: 2025-02-15 22:40:00
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h2>System Resources</h2>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>CPU Usage</h3>
+                            <div class="chart"></div>
+                            <div style="color: #4caf50; margin-top: 8px; font-weight: 500;">45%</div>
+                        </div>
+                        <div class="metric">
+                            <h3>Memory Usage</h3>
+                            <div class="chart"></div>
+                            <div style="color: #ff9800; margin-top: 8px; font-weight: 500;">75%</div>
+                        </div>
+                        <div class="metric">
+                            <h3>Disk Usage</h3>
+                            <div class="chart"></div>
+                            <div style="color: #4caf50; margin-top: 8px; font-weight: 500;">60%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Service Health</h2>
+                    <div class="service">
+                        <div class="status healthy"></div>
+                        <div>Plex Media Server</div>
+                    </div>
+                    <div class="service">
+                        <div class="status healthy"></div>
+                        <div>Sonarr</div>
+                    </div>
+                    <div class="service">
+                        <div class="status warning"></div>
+                        <div>Radarr</div>
+                    </div>
+                    <div class="service">
+                        <div class="status error"></div>
+                        <div>qBittorrent</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Recent Alerts</h2>
+                    <div class="alert">
+                        <div style="color: #f44336; font-weight: 500; margin-bottom: 4px;">ERROR</div>
+                        <div>qBittorrent container stopped unexpectedly</div>
+                        <div style="color: rgba(0, 0, 0, 0.6); font-size: 0.875rem; margin-top: 4px;">2025-02-15 22:35:00</div>
+                    </div>
+                    <div class="alert">
+                        <div style="color: #ff9800; font-weight: 500; margin-bottom: 4px;">WARNING</div>
+                        <div>Memory usage exceeded 75% threshold</div>
+                        <div style="color: rgba(0, 0, 0, 0.6); font-size: 0.875rem; margin-top: 4px;">2025-02-15 22:30:00</div>
+                    </div>
+                    <div class="alert">
+                        <div style="color: #ff9800; font-weight: 500; margin-bottom: 4px;">WARNING</div>
+                        <div>Radarr health check warning</div>
+                        <div style="color: rgba(0, 0, 0, 0.6); font-size: 0.875rem; margin-top: 4px;">2025-02-15 22:25:00</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Network Status</h2>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 48px; color: #4caf50;">✓</div>
+                        <div style="color: #4caf50; margin: 12px 0; font-weight: 500;">Connected</div>
+                        <div style="color: rgba(0, 0, 0, 0.6);">Latency: 25ms</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
