@@ -2,49 +2,50 @@
 
 ## Configuration Patterns
 
-### 1. Modular Configuration
+### 1. Modular Configuration Structure
 ```
 config/
 ├── defaults/           # Default configurations
-├── schemas/           # Validation schemas
+│   ├── base.env       # Core system settings
+│   ├── media-services.env
+│   ├── security-services.env
+│   └── monitoring-services.env
+├── schemas/           # JSON/YAML schemas
+│   ├── nginx-proxy-config.schema.json
+│   └── service-catalog.schema.yaml
 ├── templates/         # Configuration templates
 └── services/         # Service definitions
 ```
 
-### 2. Environment Configuration Pattern
+### 2. Configuration Loading Pattern
 ```
-Base Configuration → Service Configs → Local Overrides
-        ↓                   ↓               ↓
-   Core Settings    Service Settings   Custom Values
+Base Config → Service Configs → Security Config → Monitoring Config
+     ↓              ↓                ↓                  ↓
+Environment    Service-specific   Security         Monitoring
+  Settings       Settings         Settings         Settings
 ```
 
 ### 3. Validation Pattern
 ```
-Configuration → Schema Validation → Error Reporting
-       ↓               ↓                ↓
-   JSON/YAML     Schema Definition   User Feedback
+Load Schema → Parse Config → Validate → Error Handling
+     ↓            ↓             ↓            ↓
+JSON Schema    Parse ENV     Schema      Error/Warning
+Definition     Variables    Validation    Collection
 ```
 
-## Architecture Overview
+## Core Services
 
-### 1. Core Services
+### 1. Configuration Service
 ```
-├── Core Services
-│   ├── ConfigService
-│   │   └── Configuration management
-│   ├── SystemService
-│   │   └── System operations
-│   ├── MonitoringService
-│   │   ├── Metric collection
-│   │   ├── Alert management
-│   │   ├── WebSocket updates
-│   │   └── Data visualization
-│   ├── AuthService
-│   │   └── Authentication
-│   └── DomainService
-│       ├── DNS validation
-│       ├── SSL management
-│       └── Real-time updates
+ConfigService
+├── System Configuration
+│   └── Environment, paths, domain settings
+├── Service Configurations
+│   └── Service-specific settings
+├── Security Configuration
+│   └── SSL, CORS, rate limiting
+└── Monitoring Configuration
+    └── Metrics, alerts, logging
 ```
 
 ### 2. Service Organization
@@ -186,3 +187,34 @@ Service Definition → Resource Allocation → Dependency Check
 - Security updates
 - Dependency updates
 - Documentation maintenance
+
+## Setup Patterns
+
+### 1. Configuration Setup
+```
+Load Defaults → User Input → Validation → Save Config
+      ↓             ↓           ↓            ↓
+Base Settings   UI Wizard   Schema Check   Persist
+```
+
+### 2. Service Setup
+```
+Config Input → Dependency Check → Service Start → Health Check
+      ↓              ↓                ↓             ↓
+User Settings   Required Services   Launch      Validation
+```
+
+## Error Handling Patterns
+
+### 1. Configuration Errors
+```
+Validation Error → Log Error → User Feedback → Recovery
+       ↓              ↓            ↓             ↓
+Schema/Type      Error Log    UI Message    Default Values
+```
+
+### 2. Service Errors
+```
+Service Error → Log Error → Alert → Auto-Recovery
+      ↓             ↓         ↓           ↓
+Error Event    Error Log   Notify    Restart/Fallback

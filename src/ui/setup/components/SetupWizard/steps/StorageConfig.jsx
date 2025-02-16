@@ -11,6 +11,8 @@ import {
   Tooltip,
   LinearProgress,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import {
   FolderOpen as FolderIcon,
@@ -20,8 +22,20 @@ import {
 
 const StorageConfig = ({ onNext }) => {
   const [paths, setPaths] = useState({
-    mediaRoot: {
+    base: {
+      path: '/opt/media-server',
+      valid: false,
+      space: null,
+      error: '',
+    },
+    media: {
       path: '/opt/media-server/media',
+      valid: false,
+      space: null,
+      error: '',
+    },
+    config: {
+      path: '/opt/media-server/config',
       valid: false,
       space: null,
       error: '',
@@ -32,18 +46,18 @@ const StorageConfig = ({ onNext }) => {
       space: null,
       error: '',
     },
-    configs: {
-      path: '/opt/media-server/configs',
+    logs: {
+      path: '/opt/media-server/logs',
       valid: false,
       space: null,
       error: '',
     },
-    backups: {
-      path: '/opt/media-server/backups',
-      valid: false,
-      space: null,
-      error: '',
-    },
+  });
+
+  const [enabledServices, setEnabledServices] = useState({
+    media: true,
+    monitoring: false,
+    security: false,
   });
 
   const [checking, setChecking] = useState(false);
@@ -71,6 +85,18 @@ const StorageConfig = ({ onNext }) => {
           error: data.error || '',
         },
       }));
+
+      // Update dependent paths when base path changes
+      if (key === 'base') {
+        const newBasePath = path;
+        setPaths((prev) => ({
+          ...prev,
+          media: { ...prev.media, path: `${newBasePath}/media` },
+          config: { ...prev.config, path: `${newBasePath}/config` },
+          downloads: { ...prev.downloads, path: `${newBasePath}/downloads` },
+          logs: { ...prev.logs, path: `${newBasePath}/logs` },
+        }));
+      }
     } catch (error) {
       setPaths((prev) => ({
         ...prev,
@@ -96,6 +122,13 @@ const StorageConfig = ({ onNext }) => {
     }));
   };
 
+  const handleServiceToggle = (service) => (event) => {
+    setEnabledServices((prev) => ({
+      ...prev,
+      [service]: event.target.checked,
+    }));
+  };
+
   const validateAllPaths = async () => {
     setChecking(true);
     try {
@@ -106,6 +139,72 @@ const StorageConfig = ({ onNext }) => {
       );
     } finally {
       setChecking(false);
+    }
+  };
+
+  const saveConfiguration = async () => {
+    try {
+      // Save base environment configuration
+      await fetch('/api/setup/save-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'base',
+          config: {
+            BASE_PATH: paths.base.path,
+            MEDIA_PATH: paths.media.path,
+            CONFIG_PATH: paths.config.path,
+            DOWNLOADS_PATH: paths.downloads.path,
+            LOGS_PATH: paths.logs.path,
+          },
+        }),
+      });
+
+      // Save service-specific configurations
+      if (enabledServices.media) {
+        await fetch('/api/setup/save-config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'media-services',
+            enabled: true,
+          }),
+        });
+      }
+
+      if (enabledServices.security) {
+        await fetch('/api/setup/save-config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'security-services',
+            enabled: true,
+          }),
+        });
+      }
+
+      if (enabledServices.monitoring) {
+        await fetch('/api/setup/save-config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'monitoring-services',
+            enabled: true,
+          }),
+        });
+      }
+
+      onNext();
+    } catch (error) {
+      console.error('Failed to save configuration:', error);
     }
   };
 
@@ -149,8 +248,8 @@ const StorageConfig = ({ onNext }) => {
       </Typography>
 
       <Typography variant="body1" paragraph>
-        Configure storage locations for your media server. Ensure the paths have
-        proper permissions and sufficient space.
+        Configure storage locations and enable required services. All paths will be created
+        if they don't exist.
       </Typography>
 
       {checking && (
@@ -168,7 +267,7 @@ const StorageConfig = ({ onNext }) => {
                   variant="subtitle2"
                   sx={{ mb: 1, textTransform: 'capitalize' }}
                 >
-                  {key.replace(/([A-Z])/g, ' $1').trim()}
+                  {key.replace(/([A-Z])/g, ' $1').trim()} Path
                 </Typography>
                 <TextField
                   fullWidth
@@ -200,6 +299,39 @@ const StorageConfig = ({ onNext }) => {
                 )}
               </Box>
             ))}
+
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Enable Services
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={enabledServices.media}
+                    onChange={handleServiceToggle('media')}
+                  />
+                }
+                label="Media Services (Plex, Sonarr, Radarr)"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={enabledServices.security}
+                    onChange={handleServiceToggle('security')}
+                  />
+                }
+                label="Security Services (Authelia, Fail2Ban)"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={enabledServices.monitoring}
+                    onChange={handleServiceToggle('monitoring')}
+                  />
+                }
+                label="Monitoring Services (Prometheus, Grafana)"
+              />
+            </Box>
           </Paper>
         </Grid>
 
@@ -213,16 +345,19 @@ const StorageConfig = ({ onNext }) => {
             </Typography>
             <Box sx={{ mb: 2 }}>
               <Typography variant="body2">
+                • Base: 1GB (system files)
+              </Typography>
+              <Typography variant="body2">
                 • Media: 100GB+ (varies with library size)
               </Typography>
               <Typography variant="body2">
-                • Downloads: 50GB+
+                • Config: 1GB (service configurations)
               </Typography>
               <Typography variant="body2">
-                • Configs: 1GB
+                • Downloads: 50GB+ (temporary storage)
               </Typography>
               <Typography variant="body2">
-                • Backups: 10GB+
+                • Logs: 5GB (system and service logs)
               </Typography>
             </Box>
 
@@ -235,7 +370,7 @@ const StorageConfig = ({ onNext }) => {
 
             {canProceed && (
               <Alert severity="success" sx={{ mt: 2 }}>
-                Storage configuration is valid.
+                Storage configuration is valid. Click Next to continue.
               </Alert>
             )}
           </Paper>

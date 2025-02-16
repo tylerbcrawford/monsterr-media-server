@@ -11,7 +11,7 @@
 - **Docker Compose**: Container orchestration (V2)
 
 ### Frontend
-- **React**: UI framework (standardizing on React)
+- **React**: UI framework
 - **Material-UI**: Component library
 - **TypeScript**: Type safety
 - **Vite**: Build tool
@@ -22,7 +22,8 @@
 - **JSON Schema**: Configuration validation
 - **YAML**: Service definitions
 - **Environment Variables**: Runtime configuration
-- **Docker Compose**: Service orchestration
+- **TypeScript Types**: Type safety
+- **Validation System**: Schema-based validation
 
 ### Monitoring
 - **WebSocket Server**: Real-time metrics
@@ -40,8 +41,6 @@
 - Git
 - Docker >= 20.10.0
 - Docker Compose V2
-- JSON Schema Validator
-- YAML Lint
 
 ### Configuration Structure
 ```bash
@@ -56,21 +55,26 @@ config/
 └── services/         # Service definitions
 ```
 
-### Environment Variables
+### Base Configuration
 ```bash
-# Core Configuration
-NODE_ENV=development
-PORT=3000
-HOST=localhost
+# Core System Configuration
+PUID=1000
+PGID=1000
+TZ=UTC
 
-# Base Paths
+# Base Storage Configuration
 BASE_PATH=/opt/media-server
-CONFIG_PATH=${BASE_PATH}/config
 MEDIA_PATH=${BASE_PATH}/media
+CONFIG_PATH=${BASE_PATH}/config
 DOWNLOADS_PATH=${BASE_PATH}/downloads
 LOGS_PATH=${BASE_PATH}/logs
 
-# Security
+# Network Configuration
+HOST_IP=
+DOMAIN=
+BASE_URL=https://${DOMAIN}
+
+# Security Configuration
 FORCE_SSL=true
 RATE_LIMIT_MAX=100
 RATE_LIMIT_WINDOW=900000
@@ -98,6 +102,7 @@ RATE_LIMIT_WINDOW=900000
 - Environment variable management
 - Secure credential storage
 - Configuration versioning
+- Type safety
 
 ### Security Requirements
 - HTTPS enforcement
@@ -198,3 +203,49 @@ RATE_LIMIT_WINDOW=900000
 - Error logging
 - Alert notification
 - Automatic recovery
+
+## Validation System
+
+### Schema Validation
+- JSON Schema for configuration
+- YAML Schema for services
+- TypeScript types for runtime
+- Environment variable validation
+- Path validation
+
+### Error Reporting
+- Detailed error messages
+- Validation context
+- Error categorization
+- Warning system
+- Recovery suggestions
+
+## Configuration Types
+
+### Base Configuration
+- System paths
+- Network settings
+- Environment variables
+- Core settings
+- Default values
+
+### Service Configuration
+- Service-specific settings
+- Dependencies
+- Resource limits
+- Network ports
+- Volume mappings
+
+### Security Configuration
+- Authentication settings
+- SSL/TLS configuration
+- Rate limiting
+- Access control
+- Fail2Ban settings
+
+### Monitoring Configuration
+- Metric collection
+- Alert thresholds
+- Log settings
+- Performance monitoring
+- Health checks

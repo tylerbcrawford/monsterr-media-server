@@ -34,88 +34,121 @@ import {
 
 const SecurityConfig = ({ onNext }) => {
   const [config, setConfig] = useState({
-    adminUser: {
-      username: '',
-      password: '',
-      email: '',
-      valid: false,
-      error: '',
-    },
-    twoFactor: {
+    authelia: {
       enabled: true,
-      method: 'totp',
+      jwt: {
+        secret: '',
+        valid: false,
+        error: '',
+      },
+      session: {
+        secret: '',
+        valid: false,
+        error: '',
+      },
+      storage: {
+        encryption_key: '',
+        valid: false,
+        error: '',
+      },
+      admin: {
+        username: '',
+        password: '',
+        email: '',
+        valid: false,
+        error: '',
+      },
     },
     fail2ban: {
       enabled: true,
-      maxRetries: 5,
+      maxRetries: 3,
+      findtime: 600,
+      bantime: 3600,
+      jailPath: '${CONFIG_PATH}/fail2ban/jail.d',
+      filterPath: '${CONFIG_PATH}/fail2ban/filter.d',
+    },
+    nginx: {
+      enabled: true,
+      sslForced: true,
+      port: 81,
+      httpPort: 80,
+      httpsPort: 443,
+    },
+    vnc: {
+      enabled: false,
+      port: 5900,
+      password: '',
+      fail2banEnabled: true,
+      maxRetry: 3,
       findtime: 600,
       bantime: 3600,
     },
-    firewall: {
-      enabled: true,
-      allowedIps: [],
-      customRules: [],
-    },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [userDialog, setUserDialog] = useState({
-    open: false,
-    username: '',
-    password: '',
-    email: '',
-    role: 'user',
+  const [showPasswords, setShowPasswords] = useState({
+    admin: false,
+    jwt: false,
+    session: false,
+    storage: false,
+    vnc: false,
   });
 
   const [canProceed, setCanProceed] = useState(false);
 
-  const validateAdminUser = () => {
-    const { username, password, email } = config.adminUser;
+  const validateAuthelia = () => {
+    const { admin, jwt, session, storage } = config.authelia;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValid =
-      username.length >= 4 &&
-      password.length >= 8 &&
-      emailRegex.test(email);
+
+    const adminValid = 
+      admin.username.length >= 4 &&
+      admin.password.length >= 8 &&
+      emailRegex.test(admin.email);
+
+    const jwtValid = jwt.secret.length >= 32;
+    const sessionValid = session.secret.length >= 32;
+    const storageValid = storage.encryption_key.length >= 32;
 
     setConfig((prev) => ({
       ...prev,
-      adminUser: {
-        ...prev.adminUser,
-        valid: isValid,
-        error: isValid ? '' : 'Please fill all required fields correctly',
+      authelia: {
+        ...prev.authelia,
+        admin: {
+          ...prev.authelia.admin,
+          valid: adminValid,
+          error: adminValid ? '' : 'Invalid admin configuration',
+        },
+        jwt: {
+          ...prev.authelia.jwt,
+          valid: jwtValid,
+          error: jwtValid ? '' : 'JWT secret must be at least 32 characters',
+        },
+        session: {
+          ...prev.authelia.session,
+          valid: sessionValid,
+          error: sessionValid ? '' : 'Session secret must be at least 32 characters',
+        },
+        storage: {
+          ...prev.authelia.storage,
+          valid: storageValid,
+          error: storageValid ? '' : 'Encryption key must be at least 32 characters',
+        },
       },
     }));
 
-    return isValid;
+    return adminValid && jwtValid && sessionValid && storageValid;
   };
 
-  const handleAdminUserChange = (field) => (event) => {
+  const handleAutheliaChange = (section, field) => (event) => {
     setConfig((prev) => ({
       ...prev,
-      adminUser: {
-        ...prev.adminUser,
-        [field]: event.target.value,
+      authelia: {
+        ...prev.authelia,
+        [section]: {
+          ...prev.authelia[section],
+          [field]: event.target.value,
+        },
       },
     }));
-  };
-
-  const handleAddUser = () => {
-    const { username, password, email, role } = userDialog;
-    if (username && password && email) {
-      setUsers([...users, { username, email, role }]);
-      setUserDialog({
-        open: false,
-        username: '',
-        password: '',
-        email: '',
-        role: 'user',
-      });
-    }
-  };
-
-  const handleRemoveUser = (username) => {
-    setUsers(users.filter((user) => user.username !== username));
   };
 
   const handleFail2banChange = (field) => (event) => {
@@ -132,27 +165,107 @@ const SecurityConfig = ({ onNext }) => {
     }));
   };
 
-  const handleFirewallIpAdd = (ip) => {
-    if (ip && /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/.test(ip)) {
-      setConfig((prev) => ({
-        ...prev,
-        firewall: {
-          ...prev.firewall,
-          allowedIps: [...prev.firewall.allowedIps, ip],
+  const handleNginxChange = (field) => (event) => {
+    const value =
+      typeof event.target.value === 'string'
+        ? event.target.value
+        : event.target.checked;
+    setConfig((prev) => ({
+      ...prev,
+      nginx: {
+        ...prev.nginx,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleVncChange = (field) => (event) => {
+    const value =
+      typeof event.target.value === 'string'
+        ? event.target.value
+        : event.target.checked;
+    setConfig((prev) => ({
+      ...prev,
+      vnc: {
+        ...prev.vnc,
+        [field]: value,
+      },
+    }));
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
+  const saveConfiguration = async () => {
+    try {
+      // Save security services configuration
+      await fetch('/api/setup/save-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      }));
+        body: JSON.stringify({
+          type: 'security-services',
+          config: {
+            // Authelia Configuration
+            AUTHELIA_JWT_SECRET: config.authelia.jwt.secret,
+            AUTHELIA_SESSION_SECRET: config.authelia.session.secret,
+            AUTHELIA_STORAGE_ENCRYPTION_KEY: config.authelia.storage.encryption_key,
+            AUTHELIA_ADMIN_USER: config.authelia.admin.username,
+            AUTHELIA_ADMIN_PASSWORD: config.authelia.admin.password,
+            AUTHELIA_ADMIN_EMAIL: config.authelia.admin.email,
+
+            // Fail2Ban Configuration
+            FAIL2BAN_ENABLED: config.fail2ban.enabled,
+            FAIL2BAN_MAXRETRY: config.fail2ban.maxRetries,
+            FAIL2BAN_FINDTIME: config.fail2ban.findtime,
+            FAIL2BAN_BANTIME: config.fail2ban.bantime,
+            FAIL2BAN_JAIL_PATH: config.fail2ban.jailPath,
+            FAIL2BAN_FILTER_PATH: config.fail2ban.filterPath,
+
+            // NGINX Configuration
+            NPM_PORT: config.nginx.port,
+            NPM_HTTP_PORT: config.nginx.httpPort,
+            NPM_HTTPS_PORT: config.nginx.httpsPort,
+            FORCE_SSL: config.nginx.sslForced,
+
+            // VNC Configuration
+            VNC_ENABLED: config.vnc.enabled,
+            VNC_PORT: config.vnc.port,
+            VNC_PASSWORD: config.vnc.password,
+            VNC_FAIL2BAN_ENABLED: config.vnc.fail2banEnabled,
+            VNC_FAIL2BAN_MAXRETRY: config.vnc.maxRetry,
+            VNC_FAIL2BAN_FINDTIME: config.vnc.findtime,
+            VNC_FAIL2BAN_BANTIME: config.vnc.bantime,
+          },
+        }),
+      });
+
+      onNext();
+    } catch (error) {
+      console.error('Failed to save security configuration:', error);
     }
   };
 
   useEffect(() => {
-    const isValid =
-      config.adminUser.valid &&
-      (config.twoFactor.enabled ? !!config.twoFactor.method : true) &&
-      (config.fail2ban.enabled
-        ? config.fail2ban.maxRetries > 0 &&
-          config.fail2ban.findtime > 0 &&
-          config.fail2ban.bantime > 0
-        : true);
+    const isValid = validateAuthelia() &&
+      (!config.fail2ban.enabled || (
+        config.fail2ban.maxRetries > 0 &&
+        config.fail2ban.findtime > 0 &&
+        config.fail2ban.bantime > 0
+      )) &&
+      (!config.vnc.enabled || (
+        config.vnc.password.length >= 8 &&
+        (!config.vnc.fail2banEnabled || (
+          config.vnc.maxRetry > 0 &&
+          config.vnc.findtime > 0 &&
+          config.vnc.bantime > 0
+        ))
+      ));
 
     setCanProceed(isValid);
   }, [config]);
@@ -164,44 +277,43 @@ const SecurityConfig = ({ onNext }) => {
       </Typography>
 
       <Typography variant="body1" paragraph>
-        Configure security settings including authentication, intrusion
-        prevention, and access control.
+        Configure authentication, intrusion prevention, and access control settings.
       </Typography>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
             <Typography variant="subtitle1" gutterBottom>
-              Administrator Account
+              Authelia Configuration
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Username"
-                  value={config.adminUser.username}
-                  onChange={handleAdminUserChange('username')}
-                  error={!config.adminUser.valid && !config.adminUser.username}
+                  label="Admin Username"
+                  value={config.authelia.admin.username}
+                  onChange={handleAutheliaChange('admin', 'username')}
+                  error={!config.authelia.admin.valid}
                   helperText="Minimum 4 characters"
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={config.adminUser.password}
-                  onChange={handleAdminUserChange('password')}
-                  error={!config.adminUser.valid && !config.adminUser.password}
+                  label="Admin Password"
+                  type={showPasswords.admin ? 'text' : 'password'}
+                  value={config.authelia.admin.password}
+                  onChange={handleAutheliaChange('admin', 'password')}
+                  error={!config.authelia.admin.valid}
                   helperText="Minimum 8 characters"
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={() => togglePasswordVisibility('admin')}
                           edge="end"
                         >
-                          {showPassword ? (
+                          {showPasswords.admin ? (
                             <VisibilityOffIcon />
                           ) : (
                             <VisibilityIcon />
@@ -215,11 +327,11 @@ const SecurityConfig = ({ onNext }) => {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Email"
+                  label="Admin Email"
                   type="email"
-                  value={config.adminUser.email}
-                  onChange={handleAdminUserChange('email')}
-                  error={!config.adminUser.valid && !config.adminUser.email}
+                  value={config.authelia.admin.email}
+                  onChange={handleAutheliaChange('admin', 'email')}
+                  error={!config.authelia.admin.valid}
                   helperText="Required for account recovery"
                 />
               </Grid>
@@ -228,53 +340,96 @@ const SecurityConfig = ({ onNext }) => {
 
           <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
             <Typography variant="subtitle1" gutterBottom>
-              Two-Factor Authentication
+              Security Keys
             </Typography>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={config.twoFactor.enabled}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      twoFactor: {
-                        ...prev.twoFactor,
-                        enabled: e.target.checked,
-                      },
-                    }))
-                  }
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="JWT Secret"
+                  type={showPasswords.jwt ? 'text' : 'password'}
+                  value={config.authelia.jwt.secret}
+                  onChange={handleAutheliaChange('jwt', 'secret')}
+                  error={!config.authelia.jwt.valid}
+                  helperText="Minimum 32 characters"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility('jwt')}
+                          edge="end"
+                        >
+                          {showPasswords.jwt ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-              }
-              label="Enable Two-Factor Authentication"
-            />
-            {config.twoFactor.enabled && (
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel>2FA Method</InputLabel>
-                <Select
-                  value={config.twoFactor.method}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      twoFactor: {
-                        ...prev.twoFactor,
-                        method: e.target.value,
-                      },
-                    }))
-                  }
-                  label="2FA Method"
-                >
-                  <MenuItem value="totp">
-                    Time-based One-Time Password (TOTP)
-                  </MenuItem>
-                  <MenuItem value="webauthn">WebAuthn (Security Key)</MenuItem>
-                </Select>
-              </FormControl>
-            )}
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Session Secret"
+                  type={showPasswords.session ? 'text' : 'password'}
+                  value={config.authelia.session.secret}
+                  onChange={handleAutheliaChange('session', 'secret')}
+                  error={!config.authelia.session.valid}
+                  helperText="Minimum 32 characters"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility('session')}
+                          edge="end"
+                        >
+                          {showPasswords.session ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Storage Encryption Key"
+                  type={showPasswords.storage ? 'text' : 'password'}
+                  value={config.authelia.storage.encryption_key}
+                  onChange={handleAutheliaChange('storage', 'encryption_key')}
+                  error={!config.authelia.storage.valid}
+                  helperText="Minimum 32 characters"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility('storage')}
+                          edge="end"
+                        >
+                          {showPasswords.storage ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Paper>
 
           <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
             <Typography variant="subtitle1" gutterBottom>
-              Intrusion Prevention (Fail2Ban)
+              Fail2Ban Configuration
             </Typography>
             <FormControlLabel
               control={
@@ -321,106 +476,193 @@ const SecurityConfig = ({ onNext }) => {
             )}
           </Paper>
 
+          <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              NGINX Proxy Configuration
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={config.nginx.sslForced}
+                      onChange={handleNginxChange('sslForced')}
+                    />
+                  }
+                  label="Force SSL"
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Admin Port"
+                  value={config.nginx.port}
+                  onChange={handleNginxChange('port')}
+                  InputProps={{ inputProps: { min: 1, max: 65535 } }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="HTTP Port"
+                  value={config.nginx.httpPort}
+                  onChange={handleNginxChange('httpPort')}
+                  InputProps={{ inputProps: { min: 1, max: 65535 } }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="HTTPS Port"
+                  value={config.nginx.httpsPort}
+                  onChange={handleNginxChange('httpsPort')}
+                  InputProps={{ inputProps: { min: 1, max: 65535 } }}
+                />
+              </Grid>
+            </Grid>
+          </Paper>
+
           <Paper variant="outlined" sx={{ p: 2 }}>
             <Typography variant="subtitle1" gutterBottom>
-              Firewall Configuration
+              VNC Configuration
             </Typography>
             <FormControlLabel
               control={
                 <Switch
-                  checked={config.firewall.enabled}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      firewall: {
-                        ...prev.firewall,
-                        enabled: e.target.checked,
-                      },
-                    }))
-                  }
+                  checked={config.vnc.enabled}
+                  onChange={handleVncChange('enabled')}
                 />
               }
-              label="Enable Firewall"
+              label="Enable VNC Access"
             />
-            {config.firewall.enabled && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  Allowed IP Addresses
-                </Typography>
-                <List>
-                  {config.firewall.allowedIps.map((ip) => (
-                    <ListItem key={ip}>
-                      <ListItemText primary={ip} />
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          edge="end"
-                          onClick={() =>
-                            setConfig((prev) => ({
-                              ...prev,
-                              firewall: {
-                                ...prev.firewall,
-                                allowedIps: prev.firewall.allowedIps.filter(
-                                  (i) => i !== ip
-                                ),
-                              },
-                            }))
-                          }
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))}
-                </List>
-                <TextField
-                  fullWidth
-                  label="Add IP Address (CIDR format)"
-                  placeholder="e.g., 192.168.1.0/24"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleFirewallIpAdd(e.target.value);
-                      e.target.value = '';
+            {config.vnc.enabled && (
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    label="VNC Port"
+                    value={config.vnc.port}
+                    onChange={handleVncChange('port')}
+                    InputProps={{ inputProps: { min: 1, max: 65535 } }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="VNC Password"
+                    type={showPasswords.vnc ? 'text' : 'password'}
+                    value={config.vnc.password}
+                    onChange={handleVncChange('password')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('vnc')}
+                            edge="end"
+                          >
+                            {showPasswords.vnc ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={config.vnc.fail2banEnabled}
+                        onChange={handleVncChange('fail2banEnabled')}
+                      />
                     }
-                  }}
-                />
-              </Box>
+                    label="Enable Fail2Ban for VNC"
+                  />
+                </Grid>
+                {config.vnc.fail2banEnabled && (
+                  <>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        label="Max Retries"
+                        value={config.vnc.maxRetry}
+                        onChange={handleVncChange('maxRetry')}
+                        InputProps={{ inputProps: { min: 1 } }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        label="Find Time (seconds)"
+                        value={config.vnc.findtime}
+                        onChange={handleVncChange('findtime')}
+                        InputProps={{ inputProps: { min: 60 } }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        label="Ban Time (seconds)"
+                        value={config.vnc.bantime}
+                        onChange={handleVncChange('bantime')}
+                        InputProps={{ inputProps: { min: 60 } }}
+                      />
+                    </Grid>
+                  </>
+                )}
+              </Grid>
             )}
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <Paper
-            variant="outlined"
-            sx={{ p: 2, position: { md: 'sticky' }, top: 16 }}
-          >
+          <Paper variant="outlined" sx={{ p: 2, position: { md: 'sticky' }, top: 16 }}>
             <Typography variant="h6" gutterBottom>
               Security Recommendations
             </Typography>
             <List>
               <ListItem>
                 <ListItemText
-                  primary="Strong Passwords"
-                  secondary="Use complex passwords with mixed case, numbers, and symbols"
+                  primary="Strong Secrets"
+                  secondary="Use long, random strings for JWT and session secrets"
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
-                  primary="Two-Factor Authentication"
-                  secondary="Enable 2FA for additional security"
+                  primary="Admin Password"
+                  secondary="Use a strong password with mixed case, numbers, and symbols"
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Fail2Ban Protection"
-                  secondary="Protect against brute force attacks"
+                  secondary="Enable to protect against brute force attacks"
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
-                  primary="Firewall Rules"
-                  secondary="Restrict access to trusted IP addresses"
+                  primary="SSL/TLS"
+                  secondary="Force SSL to ensure encrypted communications"
                 />
               </ListItem>
+              {config.vnc.enabled && (
+                <ListItem>
+                  <ListItemText
+                    primary="VNC Security"
+                    secondary="Use a strong password and enable Fail2Ban protection"
+                  />
+                </ListItem>
+              )}
             </List>
 
             {!canProceed && (
@@ -437,67 +679,6 @@ const SecurityConfig = ({ onNext }) => {
           </Paper>
         </Grid>
       </Grid>
-
-      <Dialog
-        open={userDialog.open}
-        onClose={() => setUserDialog({ ...userDialog, open: false })}
-      >
-        <DialogTitle>Add User</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="Username"
-            value={userDialog.username}
-            onChange={(e) =>
-              setUserDialog({ ...userDialog, username: e.target.value })
-            }
-            sx={{ mt: 2, mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            value={userDialog.password}
-            onChange={(e) =>
-              setUserDialog({ ...userDialog, password: e.target.value })
-            }
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            value={userDialog.email}
-            onChange={(e) =>
-              setUserDialog({ ...userDialog, email: e.target.value })
-            }
-            sx={{ mb: 2 }}
-          />
-          <FormControl fullWidth>
-            <InputLabel>Role</InputLabel>
-            <Select
-              value={userDialog.role}
-              onChange={(e) =>
-                setUserDialog({ ...userDialog, role: e.target.value })
-              }
-              label="Role"
-            >
-              <MenuItem value="admin">Administrator</MenuItem>
-              <MenuItem value="user">User</MenuItem>
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setUserDialog({ ...userDialog, open: false })}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleAddUser} variant="contained">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
