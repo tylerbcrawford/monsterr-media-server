@@ -9,13 +9,13 @@
 │   │   └── Configuration management
 │   ├── SystemService
 │   │   └── System operations
+│   ├── MonitoringService
+│   │   ├── Metric collection
+│   │   ├── Alert management
+│   │   ├── WebSocket updates
+│   │   └── Data visualization
 │   ├── AuthService
 │   │   └── Authentication
-│   ├── MonitoringService
-│   │   ├── Resource tracking
-│   │   ├── Health checks
-│   │   ├── Alert management
-│   │   └── Metrics collection
 │   └── DomainService
 │       ├── DNS validation
 │       ├── SSL management
@@ -24,20 +24,20 @@
 
 ### 2. Monitoring Architecture
 ```
-User Interface ← WebSocket → Monitoring Service
-                                   ↓
-                            System Metrics
-                            ↙     ↓     ↘
-                    Resources  Services  Network
-                         ↓        ↓        ↓
-                      Alerts  Health    Status
+Dashboard UI ← WebSocket → Monitoring Service
+      ↓                           ↓
+Real-time         ┌─── System Metrics ───┐
+Updates           ↓         ↓           ↓
+                CPU      Memory        Disk
+                 │         │            │
+            Thresholds  Alerts    Performance
 ```
 
 ### 3. Data Flow Patterns
 ```
 Metric Collection → Processing → Storage → Analysis
         ↓              ↓           ↓         ↓
-   Raw Metrics    Aggregation   Time Series  Alerts
+   Raw Metrics    Aggregation   History    Alerts
 ```
 
 ## Design Patterns
@@ -49,12 +49,12 @@ Metric Collection → Processing → Storage → Analysis
 - Reusable validation logic
 - Monitoring integration
 
-### 2. Observer Pattern (Monitoring)
+### 2. Observer Pattern
 - Real-time metric updates
-- Health status changes
+- WebSocket communication
 - Alert notifications
-- Service state changes
-- Resource utilization
+- Status changes
+- Performance tracking
 
 ### 3. Repository Pattern
 - Metric data storage
@@ -93,24 +93,27 @@ Event Detection → Severity Check → Alert Creation
    Categorization   Threshold      Distribution
 ```
 
+### 4. Dashboard Pattern
+```
+WebSocket Server → Data Stream → UI Components
+        ↓               ↓              ↓
+ Connection Pool    Processing    Visualization
+```
+
 ## Data Flow
 
 ### 1. Metric Flow
 ```
-1. Collection → Raw Metrics
-2. Processing → Normalized Data
-3. Analysis → Insights
-4. Storage → Time Series
-5. Visualization → Dashboard
+Collection → Processing → Storage → Analysis → Display
+     ↓           ↓           ↓         ↓         ↓
+Raw Data    Normalization  History  Insights  Dashboard
 ```
 
 ### 2. Alert Flow
 ```
-1. Event Detection → Trigger
-2. Severity Analysis → Level
-3. Alert Generation → Notification
-4. Distribution → Channels
-5. Resolution → Tracking
+Detection → Analysis → Generation → Distribution
+    ↓          ↓           ↓            ↓
+Triggers   Severity    Formatting    Delivery
 ```
 
 ## Security Patterns
@@ -120,86 +123,64 @@ Event Detection → Severity Check → Alert Creation
 - Token-based authentication
 - Role-based access control
 - Session management
-- Monitoring access control
+- WebSocket security
 
-### 2. SSL/TLS
-- Automated certificate management
-- Forced HTTPS
-- Secure headers
-- Certificate renewal
-- Health monitoring
+### 2. Data Protection
+- Secure WebSocket
+- Metric encryption
+- Alert security
+- Access control
+- Data privacy
 
 ### 3. Network Security
 - Proxy configuration
 - Rate limiting
 - Fail2Ban integration
-- DDNS management
 - Traffic monitoring
+- Connection security
 
 ## Testing Patterns
 
 ### 1. Unit Testing
 - Service layer tests
-- Controller tests
-- Monitoring tests
+- WebSocket tests
+- Metric processing tests
 - Alert system tests
-- Metric collection tests
+- Dashboard components
 
 ### 2. Integration Testing
 - API endpoint tests
-- Monitoring system tests
-- Alert integration tests
-- Metric aggregation tests
-- Health check tests
+- WebSocket integration
+- Metric collection
+- Alert generation
+- Dashboard functionality
 
 ### 3. End-to-End Testing
-- Dashboard functionality
+- Dashboard operation
 - Real-time updates
-- Alert generation
-- Health monitoring
-- Data visualization
+- Alert workflow
+- Metric visualization
+- System monitoring
 
-## Error Handling
+## Documentation Patterns
 
-### 1. Monitoring Errors
-- Metric collection failures
-- Alert processing errors
-- Health check failures
-- Data storage issues
-- WebSocket disconnections
+### 1. API Documentation
+- Endpoint specifications
+- WebSocket protocols
+- Data formats
+- Error handling
+- Integration guides
 
-### 2. Runtime Errors
-- Network issues
-- Service failures
-- Configuration errors
-- Resource constraints
-- System overload
+### 2. User Documentation
+- Dashboard usage
+- Alert configuration
+- Metric interpretation
+- Troubleshooting
+- Best practices
 
-### 3. Recovery Patterns
-- Automatic retries
-- Fallback options
-- Graceful degradation
-- Error notifications
-- Service recovery
-
-## Beta Testing Patterns
-
-### 1. Deployment Pattern
-```
-Installation → Configuration → Validation → Monitoring
-     ↓              ↓             ↓            ↓
-Setup Wizard    Settings      Health Check   Alerts
-```
-
-### 2. Data Collection
-```
-System Metrics → Processing → Analysis → Reporting
-      ↓              ↓           ↓          ↓
-Performance     Aggregation   Patterns   Feedback
-```
-
-### 3. Feedback Loop
-```
-User Action → System Response → Data Collection
-     ↓              ↓                ↓
-Monitoring     Performance      Improvement
+### 3. Technical Documentation
+- Architecture details
+- Implementation guides
+- Security protocols
+- Testing procedures
+- Deployment steps

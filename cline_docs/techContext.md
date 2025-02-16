@@ -18,13 +18,12 @@
 - **Socket.IO**: Real-time updates
 - **Chart.js**: Metrics visualization
 
-### Infrastructure
-- **Nginx Proxy Manager**: Reverse proxy
-- **Let's Encrypt**: SSL certificates
-- **Authelia**: Authentication
-- **Fail2Ban**: Security
-- **Prometheus**: Metrics collection
-- **Node-Exporter**: System metrics
+### Monitoring
+- **WebSocket Server**: Real-time metrics
+- **System Metrics**: Resource tracking
+- **Alert System**: Notification management
+- **Dashboard**: Performance visualization
+- **Data Storage**: Metrics history
 
 ## Development Setup
 
@@ -42,12 +41,6 @@
 NODE_ENV=development
 PORT=3000
 HOST=localhost
-
-# Domain Configuration
-DOMAIN_ENABLED=true
-PRIMARY_DOMAIN=your.domain.com
-SSL_PROVIDER=letsencrypt
-SSL_EMAIL=admin@your.domain.com
 
 # Monitoring Configuration
 CHECK_INTERVAL=5
@@ -68,29 +61,22 @@ RATE_LIMIT_WINDOW=900000
 - CPU: 4 cores minimum
 - RAM: 8GB minimum
 - Storage: 20GB + media storage
-- Network: 10Mbps+ connection
 - OS: Ubuntu 20.04+ or similar Linux
+- Network: 10Mbps+ connection
 
 ### Network Requirements
 - Ports 80/443 for HTTP/HTTPS
 - Port 81 for Nginx Proxy Manager
-- Service-specific ports (configurable)
-- Firewall configuration
-- Static IP or DDNS
+- Port 3000 for Dashboard
+- Service-specific ports
+- WebSocket support
 
-### SSL/TLS Requirements
-- Valid domain name
-- Email address for Let's Encrypt
-- Port 80 accessible for ACME challenges
-- Automated renewal capability
-- HTTPS enforcement
-
-### DNS Requirements
-- Access to DNS management
-- Support for A records
-- Support for CNAME records
-- Optional DNSSEC support
-- DDNS compatibility
+### Monitoring Requirements
+- Real-time metric collection
+- WebSocket communication
+- Data persistence
+- Alert management
+- Performance visualization
 
 ### Security Requirements
 - HTTPS enforcement
@@ -98,31 +84,30 @@ RATE_LIMIT_WINDOW=900000
 - Fail2Ban protection
 - Authentication integration
 - Regular security updates
-- Automated backups
+- Secure WebSocket
 
 ## Performance Considerations
 
 ### Monitoring System
-- Real-time metrics collection
-- Resource usage tracking
-- Service health monitoring
-- Network status checks
-- Alert management
-- Log aggregation
+- Efficient metric collection
+- Optimized WebSocket communication
+- Minimal resource overhead
+- Data retention management
+- Real-time performance
 
 ### Caching
-- DNS query caching
-- SSL session caching
-- Static asset caching
-- API response caching
-- Metrics data caching
-
-### Optimization
+- Metric data caching
 - WebSocket connection pooling
-- DNS resolution optimization
-- SSL handshake optimization
-- Request/response compression
-- Resource usage optimization
+- API response caching
+- Static asset caching
+- Memory optimization
+
+### Data Management
+- Metric history retention
+- Alert history storage
+- Log rotation
+- Performance data
+- System statistics
 
 ## Development Workflow
 
@@ -131,7 +116,7 @@ RATE_LIMIT_WINDOW=900000
 - Feature branches
 - Pull request reviews
 - Version tagging
-- Automated testing
+- Documentation updates
 
 ### Testing
 - Unit tests (Jest)
@@ -140,78 +125,55 @@ RATE_LIMIT_WINDOW=900000
 - Performance testing
 - Security testing
 
+### Documentation
+- API documentation
+- Setup guides
+- Monitoring guides
+- Security documentation
+- Integration guides
+
 ### Deployment
 - Environment configuration
-- SSL certificate provisioning
-- DNS verification
+- Service deployment
 - Health checks
 - Monitoring setup
-
-### Maintenance
-- Log rotation
-- Certificate renewal
-- Configuration backups
-- Security updates
-- Performance monitoring
-
-## Documentation Requirements
-
-### API Documentation
-- Endpoint specifications
-- Request/response formats
-- Authentication details
-- Error handling
-- Rate limiting
-
-### Setup Documentation
-- Installation guide
-- Configuration examples
-- Troubleshooting steps
-- Security best practices
-- Monitoring setup
-
-### Development Documentation
-- Architecture overview
-- Component documentation
-- Testing guidelines
-- Deployment procedures
-- Monitoring integration
+- Security verification
 
 ## Integration Points
 
-### External Services
-- DNS providers
-- SSL certificate authorities
-- DDNS services
-- CDN providers
-- Monitoring services
-
-### Internal Services
-- Authentication service
-- Proxy manager
+### Core Services
 - Monitoring system
-- Backup service
 - Alert management
+- Metric collection
+- Data visualization
+- WebSocket server
+
+### External Services
+- Time series database
+- Metric exporters
+- Alert notifications
+- Log aggregation
+- Status pages
 
 ## Error Handling
 
-### Validation Errors
-- Domain validation
-- SSL configuration
-- DNS verification
-- Authentication
-- Resource limits
+### Monitoring Errors
+- Metric collection failures
+- WebSocket disconnections
+- Alert processing issues
+- Data storage errors
+- Visualization problems
 
 ### Runtime Errors
 - Network connectivity
 - Service availability
 - Resource constraints
 - Configuration issues
-- Monitoring alerts
+- Security alerts
 
 ### Recovery Procedures
 - Automatic retries
 - Fallback options
-- Manual intervention
 - Data recovery
 - Service restoration
+- Alert management
