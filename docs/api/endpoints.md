@@ -91,32 +91,196 @@ Restart a specific service.
 
 ### Monitoring
 
-#### GET /metrics
-Get system metrics and statistics.
+#### WebSocket Connection
+Connect to the monitoring WebSocket endpoint for real-time updates:
+```
+ws://localhost:3001/monitoring
+```
+
+**Events**
+- `metrics`: Real-time system metrics
+- `alert`: New system alerts
+- `status`: Service status changes
+
+Example WebSocket message:
+```json
+{
+  "type": "metrics",
+  "data": {
+    "cpu": {
+      "usage": 45.2,
+      "status": "healthy",
+      "temperature": 55.0,
+      "cores": [40.1, 42.3, 48.5, 50.1]
+    },
+    "memory": {
+      "usage": 68.5,
+      "status": "warning",
+      "total": 16.0,
+      "used": 6.8,
+      "free": 9.2
+    },
+    "disk": {
+      "usage": 75.3,
+      "status": "healthy",
+      "total": 2000.0,
+      "used": 1506.0,
+      "free": 494.0
+    },
+    "network": {
+      "status": "healthy",
+      "latency": 25,
+      "download_speed": 15.6,
+      "upload_speed": 2.3,
+      "total_downloaded": 1024.5,
+      "total_uploaded": 256.2
+    }
+  }
+}
+```
+
+#### GET /metrics/history
+Get historical system metrics.
+
+**Query Parameters**
+- start: Start timestamp (ISO 8601)
+- end: End timestamp (ISO 8601)
+- resolution: Data point interval (e.g., "5m", "1h")
 
 **Response**
 ```json
 {
-  "cpu": {
-    "usage": 45.2,
-    "temperature": 55.0,
-    "cores": [40.1, 42.3, 48.5, 50.1]
+  "metrics": [
+    {
+      "timestamp": "2025-02-15T22:40:00Z",
+      "cpu": {
+        "usage": 45.2,
+        "temperature": 55.0
+      },
+      "memory": {
+        "usage": 68.5,
+        "total": 16.0,
+        "used": 6.8
+      },
+      "disk": {
+        "usage": 75.3,
+        "free": 494.0
+      }
+    }
+  ],
+  "resolution": "5m",
+  "start": "2025-02-15T22:00:00Z",
+  "end": "2025-02-15T23:00:00Z"
+}
+```
+
+#### GET /metrics/current
+Get current system metrics snapshot.
+
+**Response**
+```json
+{
+  "timestamp": "2025-02-15T22:45:00Z",
+  "metrics": {
+    "cpu": {
+      "usage": 45.2,
+      "status": "healthy",
+      "temperature": 55.0,
+      "cores": [40.1, 42.3, 48.5, 50.1]
+    },
+    "memory": {
+      "usage": 68.5,
+      "status": "warning",
+      "total": 16.0,
+      "used": 6.8,
+      "free": 9.2
+    },
+    "disk": {
+      "usage": 75.3,
+      "status": "healthy",
+      "total": 2000.0,
+      "used": 1506.0,
+      "free": 494.0
+    }
+  }
+}
+```
+
+#### GET /alerts
+Get system alerts.
+
+**Query Parameters**
+- level: Alert level (info, warning, error)
+- limit: Number of alerts (default: 100)
+- since: Timestamp to fetch alerts from
+
+**Response**
+```json
+{
+  "alerts": [
+    {
+      "id": "alert-123",
+      "timestamp": "2025-02-15T22:35:00Z",
+      "level": "error",
+      "message": "Container stopped unexpectedly",
+      "source": "docker",
+      "details": {
+        "container": "plex",
+        "exitCode": 1
+      }
+    }
+  ],
+  "total": 1,
+  "hasMore": false
+}
+```
+
+#### GET /services/health
+Get detailed service health status.
+
+**Response**
+```json
+{
+  "services": [
+    {
+      "name": "plex",
+      "status": "running",
+      "health": "healthy",
+      "lastCheck": "2025-02-15T22:44:00Z",
+      "metrics": {
+        "uptime": "10d 4h 30m",
+        "memory": 1.2,
+        "cpu": 5.6
+      }
+    }
+  ]
+}
+```
+
+#### POST /alerts/settings
+Update alert settings.
+
+**Request Body**
+```json
+{
+  "thresholds": {
+    "cpu": {
+      "warning": 80,
+      "critical": 90
+    },
+    "memory": {
+      "warning": 80,
+      "critical": 90
+    },
+    "disk": {
+      "warning": 85,
+      "critical": 95
+    }
   },
-  "memory": {
-    "total": 16.0,
-    "used": 6.8,
-    "free": 9.2
-  },
-  "disk": {
-    "total": 2000.0,
-    "used": 1506.0,
-    "free": 494.0
-  },
-  "network": {
-    "download_speed": 15.6,
-    "upload_speed": 2.3,
-    "total_downloaded": 1024.5,
-    "total_uploaded": 256.2
+  "notifications": {
+    "email": true,
+    "desktop": true,
+    "minLevel": "warning"
   }
 }
 ```
@@ -272,6 +436,39 @@ The API follows semantic versioning. Breaking changes will result in a new major
 ### Python Example
 ```python
 import requests
+import websockets
+import asyncio
+import json
+
+# Previous examples remain unchanged
+
+async def monitor_system_metrics():
+    uri = "ws://localhost:3001/monitoring"
+    async with websockets.connect(uri) as websocket:
+        while True:
+            try:
+                message = await websocket.recv()
+                data = json.loads(message)
+                
+                if data['type'] == 'metrics':
+                    print(f"CPU Usage: {data['data']['cpu']['usage']}%")
+                    print(f"Memory Usage: {data['data']['memory']['usage']}%")
+                elif data['type'] == 'alert':
+                    print(f"Alert: {data['data']['message']}")
+            except websockets.exceptions.ConnectionClosed:
+                print("Connection lost. Reconnecting...")
+                break
+
+def get_historical_metrics(start_time, end_time, resolution="5m"):
+    response = requests.get(
+        "http://localhost:3000/api/v1/metrics/history",
+        params={
+            "start": start_time,
+            "end": end_time,
+            "resolution": resolution
+        }
+    )
+    return response.json()
 
 def get_sonarr_series(api_key, base_url="http://localhost:8989"):
     headers = {"X-Api-Key": api_key}
@@ -291,6 +488,83 @@ def add_movie_to_radarr(api_key, tmdb_id, base_url="http://localhost:7878"):
 
 ### JavaScript Example
 ```javascript
+// Monitoring WebSocket Client
+class MonitoringClient {
+  constructor(baseUrl = 'ws://localhost:3001') {
+    this.baseUrl = baseUrl;
+    this.socket = null;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
+  }
+
+  connect() {
+    this.socket = new WebSocket(`${this.baseUrl}/monitoring`);
+    
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      switch (data.type) {
+        case 'metrics':
+          this.handleMetrics(data.data);
+          break;
+        case 'alert':
+          this.handleAlert(data.data);
+          break;
+        case 'status':
+          this.handleStatus(data.data);
+          break;
+      }
+    };
+
+    this.socket.onclose = () => {
+      console.log('Connection closed');
+      this.reconnect();
+    };
+
+    this.socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  }
+
+  reconnect() {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      console.log(`Reconnecting... Attempt ${this.reconnectAttempts}`);
+      setTimeout(() => this.connect(), 1000 * this.reconnectAttempts);
+    }
+  }
+
+  handleMetrics(metrics) {
+    console.log('System Metrics:', metrics);
+    // Implement your metrics handling logic
+  }
+
+  handleAlert(alert) {
+    console.log('New Alert:', alert);
+    // Implement your alert handling logic
+  }
+
+  handleStatus(status) {
+    console.log('Service Status:', status);
+    // Implement your status handling logic
+  }
+
+  disconnect() {
+    if (this.socket) {
+      this.socket.close();
+    }
+  }
+}
+
+// Historical metrics example
+async function getHistoricalMetrics(startTime, endTime, resolution = '5m') {
+  const response = await fetch(
+    `/api/v1/metrics/history?start=${startTime}&end=${endTime}&resolution=${resolution}`
+  );
+  return response.json();
+}
+
+// Previous examples remain unchanged
 async function getPlexSessions(plexToken, baseUrl = 'http://localhost:32400') {
   const headers = {
     'X-Plex-Token': plexToken,

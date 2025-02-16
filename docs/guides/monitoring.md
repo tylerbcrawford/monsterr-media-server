@@ -1,16 +1,19 @@
 # System Monitoring Guide
 
 ## Overview
-The Monsterr Media Server monitoring system provides automated health checks and notifications for home users. It tracks system resources, container health, and network connectivity, alerting you when attention is needed.
+The Monsterr Media Server monitoring system provides comprehensive system monitoring through a real-time web dashboard and automated health checks. It tracks system resources, container health, and network connectivity, providing both visual insights and notifications when attention is needed.
 
 ## Features
-- Disk space monitoring for media and system
-- Memory and CPU utilization tracking
+- Real-time monitoring dashboard
+- System resource visualization
+- Service health tracking
+- Alert management interface
+- Network status monitoring
+- Performance metrics graphs
 - Container health status checks
-- Network connectivity verification
-- Desktop notifications for issues
+- Automated notifications
 - Daily health summaries
-- Automatic log rotation
+- Log management system
 
 ## Installation
 
@@ -23,53 +26,110 @@ This will:
 - Create necessary log directories
 - Install required dependencies
 - Set up log rotation
-- Install and start the systemd service
+- Install and start the monitoring services
+- Configure the dashboard
 - Create default configuration
 
 2. Verify the installation:
 ```bash
+# Check monitoring service
 systemctl status monsterr-monitor
+
+# Check dashboard service
+systemctl status monsterr-dashboard
 ```
+
+## Dashboard Access
+
+The monitoring dashboard is available at:
+```
+https://dashboard.yourdomain.com/monitoring
+```
+
+### Dashboard Features
+1. System Metrics
+   - Real-time CPU, memory, and disk usage graphs
+   - Historical trend visualization
+   - Resource utilization patterns
+   - Performance indicators
+
+2. Service Health
+   - Container status overview
+   - Health check results
+   - Service dependencies
+   - Real-time updates
+
+3. Alert Management
+   - Active alerts display
+   - Alert history
+   - Severity indicators
+   - Response tracking
+
+4. Network Monitoring
+   - Connectivity status
+   - Latency tracking
+   - Error reporting
+   - Health indicators
 
 ## Configuration
 
 The monitoring system can be configured by editing `config.env`:
 
 ```bash
-# Monitoring Configuration
+# System Monitoring
 DISK_THRESHOLD=90    # Alert when disk usage exceeds 90%
 MEMORY_THRESHOLD=90  # Alert when memory usage exceeds 90%
 CPU_THRESHOLD=90     # Alert when CPU usage exceeds 90%
 CHECK_INTERVAL=5     # Check every 5 minutes
+
+# Dashboard Configuration
+DASHBOARD_PORT=3000          # Dashboard web interface port
+METRICS_RETENTION=30d        # How long to keep detailed metrics
+ALERT_HISTORY=90d           # How long to keep alert history
+GRAPH_RESOLUTION=5m         # Data point interval for graphs
 ```
 
 After changing configuration:
 ```bash
+# Restart monitoring service
 sudo systemctl restart monsterr-monitor
+
+# Restart dashboard service
+sudo systemctl restart monsterr-dashboard
 ```
 
 ## Monitoring Components
 
 ### System Health Checks
-- Disk space usage for media and system directories
-- Memory utilization
-- CPU load
-- Container status and health
-- Network connectivity
+- Real-time resource monitoring
+- Container health tracking
+- Network connectivity verification
+- Storage utilization checks
+- Service dependency validation
+- Performance metrics collection
+
+### Dashboard Interface
+- Real-time updates via WebSocket
+- Interactive metric graphs
+- Service status indicators
+- Alert management interface
+- Network status display
+- Resource utilization trends
 
 ### Notifications
-The system uses desktop notifications (`notify-send`) to alert you about:
-- High disk usage
-- High memory usage
-- High CPU usage
-- Container health issues
-- Network problems
+The system provides multiple notification channels:
+- Dashboard alerts
+- Desktop notifications
+- Email notifications (if configured)
+- Log entries
+- Daily summary reports
 
 ### Logging
 Logs are stored in `/var/log/monsterr/`:
 - `monitor.log`: Real-time monitoring events
 - `daily_summary.log`: Daily system status summary
 - `monitor-service.log`: Service-related logs
+- `dashboard.log`: Dashboard application logs
 
 Log rotation is configured to:
 - Rotate logs weekly
@@ -78,7 +138,26 @@ Log rotation is configured to:
 
 ## Usage
 
-### Viewing Logs
+### Dashboard Navigation
+1. System Overview
+   - View current system status
+   - Check resource utilization
+   - Monitor service health
+   - Track active alerts
+
+2. Detailed Metrics
+   - Access historical data
+   - Analyze trends
+   - Export statistics
+   - Configure thresholds
+
+3. Alert Management
+   - View active alerts
+   - Check alert history
+   - Configure notifications
+   - Set alert rules
+
+### Command Line Access
 ```bash
 # View recent monitoring events
 tail -f /var/log/monsterr/monitor.log
@@ -88,103 +167,102 @@ cat /var/log/monsterr/daily_summary.log
 
 # View service logs
 journalctl -u monsterr-monitor
+
+# View dashboard logs
+journalctl -u monsterr-dashboard
 ```
 
-### Managing the Service
+### Service Management
 ```bash
-# Stop monitoring
-sudo systemctl stop monsterr-monitor
-
-# Start monitoring
+# Monitoring Service
 sudo systemctl start monsterr-monitor
-
-# Restart monitoring
+sudo systemctl stop monsterr-monitor
 sudo systemctl restart monsterr-monitor
 
-# Disable monitoring
-sudo systemctl disable monsterr-monitor
-
-# Enable monitoring
-sudo systemctl enable monsterr-monitor
+# Dashboard Service
+sudo systemctl start monsterr-dashboard
+sudo systemctl stop monsterr-dashboard
+sudo systemctl restart monsterr-dashboard
 ```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. Missing Notifications
-   - Ensure `libnotify-bin` is installed
-   - Check desktop environment is running
-   - Verify user permissions
+1. Dashboard Not Loading
+   - Check dashboard service status
+   - Verify network connectivity
+   - Check browser console for errors
+   - Verify WebSocket connection
 
-2. Service Not Starting
-   ```bash
-   # Check service status
-   systemctl status monsterr-monitor
-   
-   # View service logs
-   journalctl -u monsterr-monitor -n 50
-   ```
+2. Missing Metrics
+   - Check monitoring service status
+   - Verify metric collection interval
+   - Check database connectivity
+   - Review service logs
 
-3. High Resource Usage
-   - Adjust check interval in config.env
-   - Modify threshold values
-   - Check system resources
+3. Alert Issues
+   - Verify notification settings
+   - Check alert thresholds
+   - Review alert rules
+   - Check notification service
+
+4. Performance Issues
+   - Adjust metric collection interval
+   - Review data retention settings
+   - Check resource usage
+   - Optimize database queries
 
 ### Log Analysis
 ```bash
-# Find error events
+# Find dashboard errors
+grep ERROR /var/log/monsterr/dashboard.log
+
+# Find monitoring errors
 grep ERROR /var/log/monsterr/monitor.log
 
-# Find warning events
-grep WARNING /var/log/monsterr/monitor.log
+# Check WebSocket connections
+grep "WebSocket" /var/log/monsterr/dashboard.log
 
-# View recent container issues
-grep "Container" /var/log/monsterr/monitor.log | tail -n 20
+# View metric collection issues
+grep "Collection" /var/log/monsterr/monitor.log
 ```
 
 ## Maintenance
 
 ### Regular Tasks
-1. Review logs weekly
-2. Check daily summaries
-3. Verify notification settings
-4. Update thresholds if needed
+1. Review dashboard metrics
+2. Check alert history
+3. Verify data collection
+4. Update thresholds
+5. Review performance
+6. Check log rotation
 
-### Log Management
-- Logs are automatically rotated weekly
-- Old logs are compressed
-- Maintain 4 weeks of history
-
-### System Updates
-When updating the Monsterr Media Server:
-1. Stop the monitoring service
-2. Perform system updates
-3. Start the monitoring service
-4. Verify monitoring is working
-
-## Best Practices
-
+### Best Practices
 1. Resource Management
-   - Act on storage warnings promptly
-   - Monitor trends in daily summaries
-   - Plan upgrades based on usage patterns
+   - Monitor resource trends
+   - Act on warnings promptly
+   - Plan capacity upgrades
+   - Optimize thresholds
 
-2. Notification Management
-   - Keep thresholds appropriate for your system
-   - Review and act on warnings promptly
-   - Maintain log history for troubleshooting
+2. Alert Management
+   - Configure meaningful thresholds
+   - Respond to alerts promptly
+   - Document alert patterns
+   - Review alert rules
 
-3. System Maintenance
-   - Check logs regularly
-   - Update configuration as needed
-   - Monitor backup success
+3. Dashboard Usage
+   - Check daily summaries
+   - Review trend graphs
+   - Monitor service health
+   - Track performance metrics
 
 ## Support
 
 If you encounter issues:
 1. Check the troubleshooting section
-2. Review recent logs
-3. Verify configuration
-4. Check system resources
-5. Consult the community forums
+2. Review dashboard errors
+3. Check service logs
+4. Verify configuration
+5. Consult documentation
+6. Contact community support

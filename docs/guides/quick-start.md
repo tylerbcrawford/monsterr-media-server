@@ -129,9 +129,12 @@ docker-compose ps
    - Check firewall
 
 3. **Monitoring**
-   - Set up alerts
-   - Configure dashboards
-   - Test notifications
+    - Access monitoring dashboard at https://dashboard.yourdomain.com/monitoring
+    - Configure alert thresholds
+    - View real-time system metrics
+    - Monitor service health
+    - Track resource utilization
+    - Set up email notifications
 
 4. **Backups**
    - Schedule backups
@@ -145,7 +148,14 @@ docker-compose ps
 
 ## Version Information
 
-### v1.1.0 (2025-02-15)
+### v1.2.0 (2025-02-15)
+- Added real-time monitoring dashboard
+- Implemented WebSocket-based metrics updates
+- Enhanced system health monitoring
+- Added service status tracking
+- Improved alert management
+
+### v1.1.0 (2025-02-01)
 - Updated setup wizard interface with modern menu bubbles
 - Simplified step labels
 - Added estimated time per step
