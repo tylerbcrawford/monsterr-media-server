@@ -1,245 +1,174 @@
 # Configuration Guide
 
 ## Overview
-This guide explains all configuration options and best practices for Monsterr Media Server. It covers both initial setup and ongoing configuration management.
 
-## Setup Wizard Configuration
+The Monsterr Media Server uses a modular configuration system that separates concerns into distinct configuration files. This approach makes it easier to manage different aspects of the system and enables selective service activation.
 
-The setup wizard provides an intuitive interface for initial configuration through six steps:
+## Configuration Structure
 
-1. **System**: Validates and configures system requirements
-2. **Services**: Selects and configures service options
-3. **Storage**: Sets up media and application directories
-4. **Network**: Configures domain and networking
-5. **Security**: Sets up authentication and security
-6. **Deploy**: Reviews and applies configuration
+```
+config/
+├── defaults/           # Default configuration files
+│   ├── base.env       # Core system settings
+│   ├── media-services.env
+│   ├── security-services.env
+│   └── monitoring-services.env
+├── schemas/           # JSON/YAML validation schemas
+│   ├── nginx-proxy-config.schema.json
+│   └── service-catalog.schema.yaml
+├── templates/         # Configuration templates
+│   ├── environment.template.env
+│   └── nginx-proxy-config.template.json
+└── services/         # Service-specific configurations
+    └── catalog.yml   # Service catalog definition
+```
 
-The wizard automatically generates the necessary configuration files based on your selections. These configurations can be modified later using the methods described below.
+## Getting Started
 
-## Configuration Files
+1. Copy the environment template:
+   ```bash
+   cp config/templates/environment.template.env .env
+   ```
 
-### config.env
-The main configuration file containing all environment variables:
+2. Edit the .env file to enable required services:
+   - Uncomment service-specific configuration sources
+   - Customize environment variables as needed
 
+3. Validate your configuration:
+   - Use provided schema files to validate JSON/YAML configs
+   - Test environment variable resolution
+   - Verify service dependencies
+
+## Configuration Modules
+
+### 1. Base Configuration (Required)
+
+The base configuration (`defaults/base.env`) contains core system settings:
+- System user configuration
+- Storage paths
+- Network settings
+- Basic security parameters
+- Database configuration
+- Email settings
+
+### 2. Media Services Configuration (Optional)
+
+Media service settings (`defaults/media-services.env`) include:
+- Plex configuration
+- Sonarr/Radarr settings
+- Download client setup
+- Media path definitions
+- Quality profiles
+
+### 3. Security Services Configuration (Optional)
+
+Security settings (`defaults/security-services.env`) cover:
+- Authelia configuration
+- Fail2Ban settings
+- NGINX Proxy Manager
+- SSL/TLS parameters
+- VNC security
+
+### 4. Monitoring Services Configuration (Optional)
+
+Monitoring configuration (`defaults/monitoring-services.env`) includes:
+- Prometheus settings
+- Grafana configuration
+- System metrics
+- Alert thresholds
+- Notification settings
+
+## Service Catalog
+
+The service catalog (`services/catalog.yml`) defines:
+- Available services
+- Service categories
+- Resource requirements
+- Dependencies
+- Volume mappings
+
+Validate the catalog using the schema:
 ```bash
-# System Configuration
-TIMEZONE=America/Toronto    # Your local timezone
-PUID=1000                  # User ID for service permissions
-PGID=1000                  # Group ID for service permissions
-
-# Domain Configuration
-DOMAIN=example.com         # Your domain name
-USE_DDNS=no               # Use DDNS? (yes/no)
-DYNU_API_KEY=             # Dynu API key (if using DDNS)
-
-# Media Locations
-MEDIA_DIR=/opt/media-server/media       # Media storage location
-DOWNLOADS_DIR=/opt/media-server/downloads # Downloads location
-
-# Service Configuration
-PLEX_CLAIM_TOKEN=         # Get from plex.tv/claim
-VPN_USERNAME=             # VPN service username
-VPN_PASSWORD=             # VPN service password
-GRAFANA_ADMIN_PASSWORD=   # Grafana dashboard password
-
-# Email Configuration (Optional)
-AUTHELIA_NOTIFIER_SMTP_HOST=     # SMTP server hostname
-AUTHELIA_NOTIFIER_SMTP_PORT=     # SMTP server port
-AUTHELIA_NOTIFIER_SMTP_USERNAME= # SMTP username
-AUTHELIA_NOTIFIER_SMTP_PASSWORD= # SMTP password
-AUTHELIA_NOTIFIER_SMTP_SENDER=   # Sender email address
-```
-
-## Directory Structure
-
-### Media Organization
-```
-/opt/media-server/
-├── media/
-│   ├── movies/      # Movie files
-│   ├── tv/          # TV show files
-│   ├── music/       # Music files
-│   ├── books/       # E-book files
-│   ├── audiobooks/  # Audiobook files
-│   └── podcasts/    # Podcast files
-└── downloads/
-    ├── complete/    # Completed downloads
-    └── incomplete/  # In-progress downloads
-```
-
-### Service Configuration
-```
-/opt/media-server/
-├── plex/
-│   └── config/      # Plex configuration
-├── sonarr/
-│   └── config/      # Sonarr configuration
-├── radarr/
-│   └── config/      # Radarr configuration
-└── ...
+yamllint -c config/schemas/service-catalog.schema.yaml config/services/catalog.yml
 ```
 
 ## Configuration Best Practices
 
-### 1. File Permissions
-- Set correct PUID/PGID:
-  ```bash
-  # Find your user's ID and group
-  id $USER
-  
-  # Update config.env with these values
-  PUID=1000  # Replace with your user ID
-  PGID=1000  # Replace with your group ID
-  ```
+1. **Environment Variables**
+   - Keep sensitive data in .env file
+   - Use descriptive variable names
+   - Document all custom variables
+   - Use appropriate default values
 
-### 2. Storage Management
-- Separate system and media storage:
-  ```bash
-  # System files on SSD
-  MEDIA_DIR=/mnt/storage/media
-  
-  # Downloads on separate drive
-  DOWNLOADS_DIR=/mnt/downloads
-  ```
+2. **Service Configuration**
+   - Enable only required services
+   - Verify resource allocations
+   - Check service dependencies
+   - Test configuration changes
 
-### 3. Network Configuration
-- Use SSL for all services
-- Configure reverse proxy
-- Set up proper port forwarding
+3. **Security Considerations**
+   - Protect sensitive configurations
+   - Use strong passwords
+   - Enable appropriate logging
+   - Regular security audits
 
-### 4. Security Settings
-- Enable 2FA with Authelia
-- Use strong passwords
-- Keep VPN enabled for downloads
-- Regular backup configuration
+4. **Maintenance**
+   - Regular configuration backups
+   - Document custom changes
+   - Version control configs
+   - Update documentation
 
-## Service-Specific Configuration
+## Validation and Testing
 
-### 1. Plex Media Server
-```yaml
-# docker-compose.yml excerpt
-plex:
-  environment:
-    - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
-    - ADVERTISE_IP=https://plex.${DOMAIN}
-```
+1. **Schema Validation**
+   ```bash
+   # Validate NGINX proxy configuration
+   jsonschema -i config/nginx-proxy-config.json config/schemas/nginx-proxy-config.schema.json
 
-### 2. Download Services
-```yaml
-# docker-compose.yml excerpt
-qbittorrentvpn:
-  environment:
-    - VPN_ENABLED=yes
-    - VPN_USERNAME=${VPN_USERNAME}
-    - VPN_PASSWORD=${VPN_PASSWORD}
-```
+   # Validate service catalog
+   yamllint -c config/schemas/service-catalog.schema.yaml config/services/catalog.yml
+   ```
 
-### 3. Monitoring Services
-```yaml
-# docker-compose.yml excerpt
-grafana:
-  environment:
-    - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
-```
+2. **Environment Testing**
+   ```bash
+   # Test environment variable resolution
+   source .env
+   echo $BASE_PATH  # Should show configured path
+   ```
 
-## Optional Features
-
-### 1. Email Notifications
-Enable email notifications by configuring SMTP settings:
-```bash
-# In config.env
-AUTHELIA_NOTIFIER_SMTP_HOST=smtp.gmail.com
-AUTHELIA_NOTIFIER_SMTP_PORT=587
-AUTHELIA_NOTIFIER_SMTP_USERNAME=your-email@gmail.com
-AUTHELIA_NOTIFIER_SMTP_PASSWORD=your-app-password
-AUTHELIA_NOTIFIER_SMTP_SENDER=your-email@gmail.com
-```
-
-### 2. Dynamic DNS
-Enable DDNS support for dynamic IP addresses:
-```bash
-# In config.env
-USE_DDNS=yes
-DYNU_API_KEY=your-api-key
-```
-
-## Configuration Management
-
-### 1. Backup Configuration
-Regular backups of configuration:
-```bash
-# Backup configuration
-sudo ./scripts/backup_system.sh
-
-# Verify backup
-sudo ./scripts/backup_system.sh --verify
-```
-
-### 2. Update Configuration
-Modify settings safely:
-```bash
-# Edit configuration
-sudo nano config.env
-
-# Apply changes
-sudo ./scripts/configure_settings.sh
-```
-
-### 3. Validate Configuration
-Check configuration validity:
-```bash
-# Verify configuration
-sudo ./scripts/post_install_check.sh --config
-
-# Test services
-sudo ./scripts/post_install_check.sh --services
-```
+3. **Service Validation**
+   ```bash
+   # Verify service configuration
+   docker-compose config
+   ```
 
 ## Troubleshooting
 
-### 1. Configuration Issues
-If you encounter configuration problems:
-```bash
-# Check configuration
-sudo ./scripts/error_handler.sh --check-config
+Common configuration issues and solutions:
 
-# Restore from backup
-sudo ./scripts/error_handler.sh --restore-config
-```
+1. **Missing Environment Variables**
+   - Check .env file exists
+   - Verify variable names
+   - Check file permissions
 
-### 2. Permission Issues
-Fix permission problems:
-```bash
-# Fix permissions
-sudo ./scripts/error_handler.sh --fix-permissions
-```
+2. **Service Conflicts**
+   - Verify port assignments
+   - Check resource allocations
+   - Validate dependencies
 
-### 3. Service Issues
-Resolve service problems:
-```bash
-# Check service status
-sudo ./scripts/post_install_check.sh --services
+3. **Path Issues**
+   - Verify directory permissions
+   - Check path variables
+   - Validate volume mappings
 
-# Restart services
-sudo ./scripts/error_handler.sh --restart-services
-```
+4. **Schema Validation Errors**
+   - Check JSON/YAML syntax
+   - Verify required fields
+   - Validate data types
 
 ## Additional Resources
-- [Quick Start Guide](quick-start.md)
+
 - [Installation Guide](installation.md)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Security Guide](security.md)
 - [Monitoring Guide](monitoring.md)
-- [Backup Guide](backup.md)
-
-## Version History
-
-### v1.1.0 (2025-02-15)
-- Added setup wizard configuration section
-- Updated configuration management procedures
-- Improved documentation structure
-- Added version history
-
-### v1.0.0 (2025-01-01)
-- Initial configuration guide
-- Basic setup instructions
-- Service configuration examples
+- [Troubleshooting Guide](troubleshooting.md)

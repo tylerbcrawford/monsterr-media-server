@@ -1,5 +1,30 @@
 # System Patterns
 
+## Configuration Patterns
+
+### 1. Modular Configuration
+```
+config/
+├── defaults/           # Default configurations
+├── schemas/           # Validation schemas
+├── templates/         # Configuration templates
+└── services/         # Service definitions
+```
+
+### 2. Environment Configuration Pattern
+```
+Base Configuration → Service Configs → Local Overrides
+        ↓                   ↓               ↓
+   Core Settings    Service Settings   Custom Values
+```
+
+### 3. Validation Pattern
+```
+Configuration → Schema Validation → Error Reporting
+       ↓               ↓                ↓
+   JSON/YAML     Schema Definition   User Feedback
+```
+
 ## Architecture Overview
 
 ### 1. Core Services
@@ -22,165 +47,142 @@
 │       └── Real-time updates
 ```
 
-### 2. Monitoring Architecture
+### 2. Service Organization
 ```
-Dashboard UI ← WebSocket → Monitoring Service
-      ↓                           ↓
-Real-time         ┌─── System Metrics ───┐
-Updates           ↓         ↓           ↓
-                CPU      Memory        Disk
-                 │         │            │
-            Thresholds  Alerts    Performance
-```
-
-### 3. Data Flow Patterns
-```
-Metric Collection → Processing → Storage → Analysis
-        ↓              ↓           ↓         ↓
-   Raw Metrics    Aggregation   History    Alerts
+Service Categories → Service Definitions → Dependencies
+        ↓                    ↓                 ↓
+    Grouping          Configuration      Requirements
 ```
 
 ## Design Patterns
 
-### 1. Service Layer Pattern
+### 1. Configuration Management
+- Modular configuration files
+- Environment-based settings
+- Schema validation
+- Default values
+- Local overrides
+
+### 2. Service Layer Pattern
 - Clear separation of concerns
 - Domain logic encapsulation
 - Centralized business rules
 - Reusable validation logic
 - Monitoring integration
 
-### 2. Observer Pattern
+### 3. Observer Pattern
 - Real-time metric updates
 - WebSocket communication
 - Alert notifications
 - Status changes
 - Performance tracking
 
-### 3. Repository Pattern
+### 4. Repository Pattern
 - Metric data storage
 - Alert history
 - Health status records
 - Configuration management
 - Log aggregation
 
-### 4. Factory Pattern
-- Metric collectors
-- Alert generators
-- Health checkers
-- Status reporters
-- Data processors
-
 ## Implementation Patterns
 
-### 1. Monitoring Implementation
+### 1. Configuration Implementation
 ```
-Metric Collection → Threshold Check → Alert Generation
-        ↓               ↓                    ↓
-  Data Processing    Analysis           Notification
-```
-
-### 2. Health Check Pattern
-```
-Service Check → Status Update → Health Report
-      ↓              ↓              ↓
-Availability    Performance     Notification
+Load Base Config → Load Service Configs → Apply Overrides
+       ↓                    ↓                   ↓
+  Core Settings     Service Settings     Custom Settings
 ```
 
-### 3. Alert Pattern
+### 2. Validation Implementation
 ```
-Event Detection → Severity Check → Alert Creation
-        ↓               ↓               ↓
-   Categorization   Threshold      Distribution
-```
-
-### 4. Dashboard Pattern
-```
-WebSocket Server → Data Stream → UI Components
-        ↓               ↓              ↓
- Connection Pool    Processing    Visualization
+Schema Definition → Config Validation → Error Handling
+        ↓                  ↓                 ↓
+   JSON Schema      Validation Rules    User Feedback
 ```
 
-## Data Flow
-
-### 1. Metric Flow
+### 3. Service Implementation
 ```
-Collection → Processing → Storage → Analysis → Display
-     ↓           ↓           ↓         ↓         ↓
-Raw Data    Normalization  History  Insights  Dashboard
-```
-
-### 2. Alert Flow
-```
-Detection → Analysis → Generation → Distribution
-    ↓          ↓           ↓            ↓
-Triggers   Severity    Formatting    Delivery
+Service Definition → Resource Allocation → Dependency Check
+        ↓                    ↓                   ↓
+  Configuration      System Resources    Service Health
 ```
 
 ## Security Patterns
 
-### 1. Authentication
-- Centralized auth service
-- Token-based authentication
-- Role-based access control
-- Session management
-- WebSocket security
-
-### 2. Data Protection
-- Secure WebSocket
-- Metric encryption
-- Alert security
+### 1. Configuration Security
+- Environment variable protection
+- Sensitive data encryption
 - Access control
-- Data privacy
+- Validation rules
+- Secure defaults
 
-### 3. Network Security
-- Proxy configuration
-- Rate limiting
-- Fail2Ban integration
-- Traffic monitoring
-- Connection security
+### 2. Service Security
+- Authentication integration
+- Authorization checks
+- Data encryption
+- Access logging
+- Security monitoring
 
 ## Testing Patterns
 
-### 1. Unit Testing
-- Service layer tests
-- WebSocket tests
-- Metric processing tests
-- Alert system tests
-- Dashboard components
+### 1. Configuration Testing
+- Schema validation
+- Environment testing
+- Integration testing
+- Security testing
+- Performance testing
 
-### 2. Integration Testing
-- API endpoint tests
-- WebSocket integration
-- Metric collection
-- Alert generation
-- Dashboard functionality
-
-### 3. End-to-End Testing
-- Dashboard operation
-- Real-time updates
-- Alert workflow
-- Metric visualization
-- System monitoring
+### 2. Service Testing
+- Unit tests
+- Integration tests
+- End-to-end tests
+- Performance tests
+- Security tests
 
 ## Documentation Patterns
 
-### 1. API Documentation
-- Endpoint specifications
-- WebSocket protocols
-- Data formats
-- Error handling
-- Integration guides
-
-### 2. User Documentation
-- Dashboard usage
-- Alert configuration
-- Metric interpretation
-- Troubleshooting
+### 1. Configuration Documentation
+- Setup guides
+- Schema documentation
+- Example configurations
+- Troubleshooting guides
 - Best practices
 
-### 3. Technical Documentation
-- Architecture details
-- Implementation guides
-- Security protocols
-- Testing procedures
-- Deployment steps
+### 2. Service Documentation
+- API documentation
+- Integration guides
+- Dependency documentation
+- Security guidelines
+- Maintenance procedures
+
+## Monitoring Patterns
+
+### 1. Configuration Monitoring
+- Schema validation
+- Environment checks
+- Resource utilization
+- Error tracking
+- Performance metrics
+
+### 2. Service Monitoring
+- Health checks
+- Performance metrics
+- Error rates
+- Resource usage
+- Dependency status
+
+## Maintenance Patterns
+
+### 1. Configuration Maintenance
+- Regular validation
+- Schema updates
+- Security reviews
+- Performance optimization
+- Documentation updates
+
+### 2. Service Maintenance
+- Health monitoring
+- Performance tuning
+- Security updates
+- Dependency updates
+- Documentation maintenance

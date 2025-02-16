@@ -11,12 +11,18 @@
 - **Docker Compose**: Container orchestration (V2)
 
 ### Frontend
-- **React**: UI framework
+- **React**: UI framework (standardizing on React)
 - **Material-UI**: Component library
 - **TypeScript**: Type safety
 - **Vite**: Build tool
 - **Socket.IO**: Real-time updates
 - **Chart.js**: Metrics visualization
+
+### Configuration Management
+- **JSON Schema**: Configuration validation
+- **YAML**: Service definitions
+- **Environment Variables**: Runtime configuration
+- **Docker Compose**: Service orchestration
 
 ### Monitoring
 - **WebSocket Server**: Real-time metrics
@@ -34,20 +40,35 @@
 - Git
 - Docker >= 20.10.0
 - Docker Compose V2
+- JSON Schema Validator
+- YAML Lint
+
+### Configuration Structure
+```bash
+config/
+├── defaults/           # Default configurations
+│   ├── base.env
+│   ├── media-services.env
+│   ├── security-services.env
+│   └── monitoring-services.env
+├── schemas/           # Validation schemas
+├── templates/         # Configuration templates
+└── services/         # Service definitions
+```
 
 ### Environment Variables
 ```bash
-# Server Configuration
+# Core Configuration
 NODE_ENV=development
 PORT=3000
 HOST=localhost
 
-# Monitoring Configuration
-CHECK_INTERVAL=5
-DISK_THRESHOLD=90
-MEMORY_THRESHOLD=90
-CPU_THRESHOLD=90
-LOG_DIR=/var/log/monsterr
+# Base Paths
+BASE_PATH=/opt/media-server
+CONFIG_PATH=${BASE_PATH}/config
+MEDIA_PATH=${BASE_PATH}/media
+DOWNLOADS_PATH=${BASE_PATH}/downloads
+LOGS_PATH=${BASE_PATH}/logs
 
 # Security
 FORCE_SSL=true
@@ -71,12 +92,12 @@ RATE_LIMIT_WINDOW=900000
 - Service-specific ports
 - WebSocket support
 
-### Monitoring Requirements
-- Real-time metric collection
-- WebSocket communication
-- Data persistence
-- Alert management
-- Performance visualization
+### Configuration Requirements
+- JSON Schema validation
+- YAML service definitions
+- Environment variable management
+- Secure credential storage
+- Configuration versioning
 
 ### Security Requirements
 - HTTPS enforcement
@@ -88,26 +109,26 @@ RATE_LIMIT_WINDOW=900000
 
 ## Performance Considerations
 
+### Configuration System
+- Efficient validation
+- Quick environment loading
+- Minimal processing overhead
+- Caching where appropriate
+- Error handling efficiency
+
+### Service Management
+- Resource allocation
+- Container optimization
+- Network efficiency
+- Storage optimization
+- Memory management
+
 ### Monitoring System
 - Efficient metric collection
 - Optimized WebSocket communication
 - Minimal resource overhead
 - Data retention management
 - Real-time performance
-
-### Caching
-- Metric data caching
-- WebSocket connection pooling
-- API response caching
-- Static asset caching
-- Memory optimization
-
-### Data Management
-- Metric history retention
-- Alert history storage
-- Log rotation
-- Performance data
-- System statistics
 
 ## Development Workflow
 
@@ -118,62 +139,62 @@ RATE_LIMIT_WINDOW=900000
 - Version tagging
 - Documentation updates
 
+### Configuration Management
+- Schema versioning
+- Template management
+- Environment validation
+- Security reviews
+- Documentation updates
+
 ### Testing
-- Unit tests (Jest)
-- Integration tests
-- End-to-end tests
+- Schema validation
+- Environment testing
+- Integration testing
 - Performance testing
 - Security testing
 
 ### Documentation
+- Configuration guides
+- Schema documentation
 - API documentation
 - Setup guides
-- Monitoring guides
-- Security documentation
 - Integration guides
-
-### Deployment
-- Environment configuration
-- Service deployment
-- Health checks
-- Monitoring setup
-- Security verification
 
 ## Integration Points
 
 ### Core Services
+- Configuration management
+- Service orchestration
 - Monitoring system
-- Alert management
-- Metric collection
-- Data visualization
-- WebSocket server
+- Security services
+- Media services
 
 ### External Services
-- Time series database
-- Metric exporters
-- Alert notifications
-- Log aggregation
-- Status pages
+- DNS providers
+- SSL certificate authorities
+- Media sources
+- Monitoring services
+- Backup systems
 
 ## Error Handling
 
-### Monitoring Errors
-- Metric collection failures
-- WebSocket disconnections
-- Alert processing issues
-- Data storage errors
-- Visualization problems
+### Configuration Errors
+- Schema validation
+- Environment validation
+- Path resolution
+- Permission issues
+- Network configuration
 
 ### Runtime Errors
-- Network connectivity
 - Service availability
 - Resource constraints
-- Configuration issues
-- Security alerts
+- Network connectivity
+- Authentication issues
+- Authorization failures
 
 ### Recovery Procedures
-- Automatic retries
-- Fallback options
-- Data recovery
-- Service restoration
-- Alert management
+- Configuration rollback
+- Service restart
+- Error logging
+- Alert notification
+- Automatic recovery

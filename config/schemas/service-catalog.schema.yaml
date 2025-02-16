@@ -1,0 +1,89 @@
+# Service Catalog Schema
+# This schema defines the structure and validation rules for the service catalog
+
+type: object
+required: [catalog]
+properties:
+  catalog:
+    type: object
+    required: [version, categories, services]
+    properties:
+      version:
+        type: string
+        pattern: '^[0-9]+\.[0-9]+$'
+      
+      categories:
+        type: object
+        patternProperties:
+          ^[a-z][a-z0-9-]*$:
+            type: object
+            required: [name, description, services]
+            properties:
+              name:
+                type: string
+                minLength: 1
+              description:
+                type: string
+                minLength: 1
+              services:
+                type: array
+                items:
+                  type: string
+                  pattern: '^[a-z][a-z0-9-]*$'
+      
+      services:
+        type: object
+        patternProperties:
+          ^[a-z][a-z0-9-]*$:
+            type: object
+            required: [name, description, image, resources]
+            properties:
+              name:
+                type: string
+                minLength: 1
+              description:
+                type: string
+                minLength: 1
+              image:
+                type: string
+                pattern: '^[a-z0-9][a-z0-9-_./:]*[a-z0-9]$'
+              required:
+                type: boolean
+              resources:
+                type: object
+                required: [cpu, memory]
+                properties:
+                  cpu:
+                    type: integer
+                    minimum: 1
+                  memory:
+                    type: integer
+                    minimum: 128
+              ports:
+                type: array
+                items:
+                  type: string
+                  pattern: '^[0-9]+:[0-9]+$'
+              volumes:
+                type: array
+                items:
+                  type: string
+                  pattern: '^[./][a-zA-Z0-9-_./]+:/.+$'
+              depends_on:
+                type: array
+                items:
+                  type: string
+                  pattern: '^[a-z][a-z0-9-]*$'
+              security_opt:
+                type: array
+                items:
+                  type: string
+              network_mode:
+                type: string
+                enum: [host, bridge, none]
+
+volumes:
+  type: object
+  patternProperties:
+    ^[a-z][a-z0-9-_]*$:
+      type: object

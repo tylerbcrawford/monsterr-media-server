@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["proxy_hosts", "redirection_hosts", "streams", "access_lists"],
+  "properties": {
+    "proxy_hosts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain_names",
+          "forward_scheme",
+          "forward_host",
+          "forward_port",
+          "access_list_id",
+          "certificate_id",
+          "ssl_forced"
+        ],
+        "properties": {
+          "domain_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$"
+            },
+            "minItems": 1
+          },
+          "forward_scheme": {
+            "type": "string",
+            "enum": ["http", "https"]
+          },
+          "forward_host": {
+            "type": "string"
+          },
+          "forward_port": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "access_list_id": {
+            "type": "string"
+          },
+          "certificate_id": {
+            "type": "string"
+          },
+          "ssl_forced": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "letsencrypt_email": {
+                "type": "string",
+                "format": "email"
+              },
+              "letsencrypt_agree": {
+                "type": "boolean"
+              },
+              "dns_challenge": {
+                "type": "boolean"
+              }
+            },
+            "required": ["letsencrypt_email", "letsencrypt_agree"]
+          },
+          "advanced_config": {
+            "type": "string"
+          },
+          "locations": {
+            "type": "array"
+          },
+          "block_exploits": {
+            "type": "boolean"
+          },
+          "allow_websocket_upgrade": {
+            "type": "boolean"
+          },
+          "http2_support": {
+            "type": "boolean"
+          },
+          "hsts_enabled": {
+            "type": "boolean"
+          },
+          "hsts_subdomains": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "redirection_hosts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain_names",
+          "forward_scheme",
+          "forward_domain",
+          "preserve_path"
+        ],
+        "properties": {
+          "domain_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$"
+            },
+            "minItems": 1
+          },
+          "forward_scheme": {
+            "type": "string",
+            "enum": ["http", "https"]
+          },
+          "forward_domain": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$"
+          },
+          "preserve_path": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "streams": {
+      "type": "array"
+    },
+    "access_lists": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "satisfy_any",
+          "pass_auth",
+          "clients",
+          "authorization"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string"
+          },
+          "satisfy_any": {
+            "type": "boolean"
+          },
+          "pass_auth": {
+            "type": "boolean"
+          },
+          "clients": {
+            "type": "array"
+          },
+          "authorization": {
+            "type": "object",
+            "required": [
+              "auth_required",
+              "auth_provider",
+              "authelia_url"
+            ],
+            "properties": {
+              "auth_required": {
+                "type": "boolean"
+              },
+              "auth_provider": {
+                "type": "string",
+                "enum": ["authelia"]
+              },
+              "authelia_url": {
+                "type": "string",
+                "pattern": "^https?://[a-zA-Z0-9-_.]+:[0-9]+$"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
