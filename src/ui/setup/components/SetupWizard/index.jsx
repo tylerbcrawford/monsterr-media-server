@@ -3,11 +3,10 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Paper,
-  Stepper,
   Step,
-  StepLabel,
   Typography,
   Button,
+  styled,
 } from '@mui/material';
 import SystemRequirements from './steps/SystemRequirements';
 import ServiceSelection from './steps/ServiceSelection';
@@ -16,34 +15,57 @@ import NetworkConfig from './steps/NetworkConfig';
 import SecurityConfig from './steps/SecurityConfig';
 import FinalReview from './steps/FinalReview';
 
+// Custom styled components for the stepper
+const StepperContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  margin: '2rem 0',
+  padding: '0 1rem',
+  gap: '1rem',
+}));
+
+const StepBubble = styled(Box)(({ theme, completed, active }) => ({
+  background: completed ? '#4caf50' : active ? '#1976d2' : '#e0e0e0',
+  color: (completed || active) ? 'white' : '#666',
+  padding: '0.5rem 0',
+  borderRadius: '100px',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  width: '120px',
+  textAlign: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
 const steps = [
   {
-    label: 'System Requirements',
+    label: 'System',
     path: '',
     component: SystemRequirements,
   },
   {
-    label: 'Service Selection',
+    label: 'Services',
     path: 'services',
     component: ServiceSelection,
   },
   {
-    label: 'Storage Configuration',
+    label: 'Storage',
     path: 'storage',
     component: StorageConfig,
   },
   {
-    label: 'Network Setup',
+    label: 'Network',
     path: 'network',
     component: NetworkConfig,
   },
   {
-    label: 'Security Configuration',
+    label: 'Security',
     path: 'security',
     component: SecurityConfig,
   },
   {
-    label: 'Review & Deploy',
+    label: 'Deploy',
     path: 'review',
     component: FinalReview,
   },
@@ -99,13 +121,17 @@ const SetupWizard = () => {
           Monsterr Media Server Setup
         </Typography>
 
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((step) => (
-            <Step key={step.label}>
-              <StepLabel>{step.label}</StepLabel>
-            </Step>
+        <StepperContainer>
+          {steps.map((step, index) => (
+            <StepBubble
+              key={step.label}
+              completed={index < activeStep}
+              active={index === activeStep}
+            >
+              {step.label}
+            </StepBubble>
           ))}
-        </Stepper>
+        </StepperContainer>
 
         <Box sx={{ mt: 2, minHeight: '400px' }}>
           <Routes>

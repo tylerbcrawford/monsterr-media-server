@@ -1,39 +1,41 @@
 # Active Development Context
 
 ## Current Task
-Integrating Portainer as a core service and improving UI layout
+Standardizing setup wizard menu bubbles across all pages and in the React component.
 
 ## Recent Changes
-1. Service Selection Updates:
-   - Moved Portainer to core services
-   - Made it a required service with proper dependencies
-   - Added security notes and SSL/2FA integration
-   - Updated resource summary to compact inline layout
-   - Removed two-column grid design
+1. Updated setup wizard menu bubbles in preview files:
+   - Standardized styling with fixed width and centered text
+   - Shortened step labels for better readability
+   - Consistent color scheme for states
 
-2. Component Updates:
-   - ServiceSelection.jsx: New layout and Portainer integration
-   - ServiceSelection.test.jsx: Added tests for new features
-   - FinalReview.jsx: Updated deployment steps and core services list
-
-3. Configuration Updates:
-   - Updated service catalog with Portainer as core service
-   - Added proper dependencies on nginx-proxy-manager and authelia
-   - Updated deployment workflow to include Portainer setup
+2. Implemented changes in React component (src/ui/setup/components/SetupWizard/index.jsx):
+   - Created custom styled components (StepperContainer, StepBubble)
+   - Fixed width of 120px for each bubble
+   - Center-aligned text both horizontally and vertically
+   - Added 1rem gaps between steps
+   - Updated step labels to shorter versions
+   - Implemented consistent color states:
+     * Active: #1976d2 (blue)
+     * Completed: #4caf50 (green)
+     * Inactive: #e0e0e0 (gray)
 
 ## Next Steps
-1. Test deployment with new Portainer integration
-2. Verify security settings and access controls
-3. Update documentation with Portainer configuration guide
-4. Consider adding Portainer-specific monitoring dashboards
+1. Push changes to GitHub:
+   ```bash
+   git add preview-step*.html
+   git add src/ui/setup/components/SetupWizard/index.jsx
+   git add cline_docs/activeContext.md
+   git commit -m "feat: standardize setup wizard menu bubbles
+   
+   - Add fixed width and centered text to menu bubbles
+   - Update step labels to be more concise
+   - Implement consistent color states
+   - Create custom styled components for stepper"
+   git push origin main
+   ```
 
-## Technical Decisions
-1. Made Portainer a required core service for better container management
-2. Integrated with existing authentication system
-3. Improved UI layout for better resource visibility
-4. Updated deployment sequence to ensure proper service initialization
-
-## Current Status
-- All UI components updated
-- Tests passing
-- Ready for deployment testing
+2. Potential future improvements:
+   - Add hover states to menu bubbles
+   - Consider adding transition animations between states
+   - Add tooltips for additional step information

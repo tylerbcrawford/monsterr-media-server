@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Selection - Monsterr Media Server Setup</title>
+    <title>Services - Monsterr Media Server Setup</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <style>
+        /* Base styles */
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -31,6 +32,36 @@
             margin-bottom: 2rem;
             color: #333;
         }
+        /* Updated stepper styles */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            padding: 0 1rem;
+            gap: 1rem;
+        }
+        .step {
+            background: #e0e0e0;
+            color: #666;
+            padding: 0.5rem 0;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            width: 120px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .step.active {
+            background: #1976d2;
+            color: white;
+        }
+        .step.completed {
+            background: #4caf50;
+            color: white;
+        }
+        /* Rest of the existing styles */
         h2 {
             font-size: 1.25rem;
             font-weight: 500;
@@ -41,24 +72,6 @@
             font-size: 0.875rem;
             color: #666;
             margin-bottom: 1.5rem;
-        }
-        .stepper {
-            display: flex;
-            justify-content: space-between;
-            margin: 2rem 0;
-            padding: 0 1rem;
-        }
-        .step {
-            background: #e0e0e0;
-            color: #666;
-            padding: 0.5rem 1.5rem;
-            border-radius: 100px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .step.active {
-            background: #1976d2;
-            color: white;
         }
         .resource-summary {
             background: white;
@@ -172,6 +185,31 @@
             height: 18px;
             margin-right: 0.5rem;
         }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+        }
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -180,14 +218,15 @@
             <h1>Monsterr Media Server Setup</h1>
             
             <div class="stepper">
-                <span class="step">System Requirements</span>
-                <span class="step active">Service Selection</span>
-                <span class="step">Storage Configuration</span>
-                <span class="step">Network Setup</span>
-                <span class="step">Security Configuration</span>
-                <span class="step">Review & Deploy</span>
+                <span class="step completed">System</span>
+                <span class="step active">Services</span>
+                <span class="step">Storage</span>
+                <span class="step">Network</span>
+                <span class="step">Security</span>
+                <span class="step">Deploy</span>
             </div>
 
+            <!-- Rest of the content remains the same -->
             <h2>Select Services</h2>
             <p>Choose the services you want to install. Required services cannot be deselected.</p>
 
@@ -204,6 +243,7 @@
                 </div>
             </div>
 
+            <!-- Services sections remain the same -->
             <div class="services">
                 <!-- Core Infrastructure -->
                 <div class="accordion">
@@ -506,6 +546,11 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="navigation">
+                <a href="preview-step1.html" class="btn btn-secondary">Back</a>
+                <a href="preview-step3.html" class="btn btn-primary">Next</a>
             </div>
         </div>
     </div>

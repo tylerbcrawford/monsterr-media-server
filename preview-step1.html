@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Requirements - Monsterr Media Server Setup</title>
+    <title>System - Monsterr Media Server Setup</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <style>
+        /* Previous styles remain the same until stepper */
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -30,24 +31,36 @@
             margin-bottom: 2rem;
             color: #333;
         }
+        /* Updated stepper styles */
         .stepper {
             display: flex;
             justify-content: space-between;
             margin: 2rem 0;
             padding: 0 1rem;
+            gap: 1rem;
         }
         .step {
             background: #e0e0e0;
             color: #666;
-            padding: 0.5rem 1.5rem;
+            padding: 0.5rem 0;
             border-radius: 100px;
             font-size: 0.875rem;
             font-weight: 500;
+            width: 120px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .step.active {
             background: #1976d2;
             color: white;
         }
+        .step.completed {
+            background: #4caf50;
+            color: white;
+        }
+        /* Rest of the existing styles */
         .content {
             margin-top: 2rem;
         }
@@ -152,14 +165,15 @@
             <h1>Monsterr Media Server Setup</h1>
             
             <div class="stepper">
-                <span class="step active">System Requirements</span>
-                <span class="step">Service Selection</span>
-                <span class="step">Storage Configuration</span>
-                <span class="step">Network Setup</span>
-                <span class="step">Security Configuration</span>
-                <span class="step">Review & Deploy</span>
+                <span class="step active">System</span>
+                <span class="step">Services</span>
+                <span class="step">Storage</span>
+                <span class="step">Network</span>
+                <span class="step">Security</span>
+                <span class="step">Deploy</span>
             </div>
 
+            <!-- Rest of the content remains the same -->
             <div class="content">
                 <h2>System Requirements Check</h2>
                 <p>Verify that your system meets the minimum requirements for running Monsterr Media Server.</p>
