@@ -3,89 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monsterr Media Server Setup - Step 1</title>
+    <title>System Requirements - Monsterr Media Server Setup</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
         }
         .container {
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .paper {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            padding: 2rem;
         }
-        .header {
+        h1 {
             text-align: center;
-            margin-bottom: 32px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: #333;
         }
         .stepper {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 32px;
-            position: relative;
-        }
-        .stepper::before {
-            content: '';
-            position: absolute;
-            top: 14px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e0e0e0;
-            z-index: 1;
+            margin: 2rem 0;
+            padding: 0 1rem;
         }
         .step {
-            position: relative;
-            z-index: 2;
-            background: white;
-            padding: 0 8px;
+            background: #e0e0e0;
+            color: #666;
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
-        .step-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+        .step.active {
             background: #1976d2;
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-        }
-        .step.active .step-circle {
-            background: #2196f3;
-            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
-        }
-        .step.completed .step-circle {
-            background: #4caf50;
-        }
-        .step-label {
-            font-size: 14px;
-            color: #666;
-            text-align: center;
         }
         .content {
-            min-height: 400px;
+            margin-top: 2rem;
+        }
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .requirement-card {
+            background: white;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 1.5rem;
+        }
+        .requirement-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .requirement-header i {
+            margin-right: 0.75rem;
+            color: #1976d2;
+        }
+        .requirement-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .requirement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        .requirement-item:last-child {
+            margin-bottom: 0;
+        }
+        .requirement-item i {
+            margin-right: 0.75rem;
+            margin-top: 0.125rem;
+        }
+        .requirement-content {
+            flex: 1;
+        }
+        .requirement-content strong {
+            display: block;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+        .requirement-content div {
+            color: #666;
+            font-size: 0.875rem;
+        }
+        .status-success {
+            color: #4caf50;
+        }
+        .status-warning {
+            color: #ff9800;
+        }
+        .status-error {
+            color: #f44336;
         }
         .navigation {
             display: flex;
             justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
         }
         .btn {
-            padding: 8px 16px;
+            padding: 0.5rem 1.5rem;
             border-radius: 4px;
-            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 14px;
             text-decoration: none;
+            border: none;
         }
         .btn-primary {
             background: #1976d2;
@@ -93,138 +141,156 @@
         }
         .btn-secondary {
             background: #f5f5f5;
-            border: 1px solid #ddd;
             color: #333;
-        }
-        .alert {
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 16px;
-        }
-        .alert-info {
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            color: #1976d2;
-        }
-        .requirement-card {
             border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .requirement-status {
-            display: flex;
-            align-items: center;
-            margin-top: 8px;
-        }
-        .status-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        .status-success {
-            background: #4caf50;
-        }
-        .status-warning {
-            background: #ff9800;
-        }
-        .status-error {
-            background: #f44336;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <div class="paper">
             <h1>Monsterr Media Server Setup</h1>
-        </div>
-        
-        <div class="stepper">
-            <div class="step active">
-                <div class="step-circle">1</div>
-                <div class="step-label">System Requirements</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">2</div>
-                <div class="step-label">Service Selection</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">3</div>
-                <div class="step-label">Storage Config</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">4</div>
-                <div class="step-label">Network Setup</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">5</div>
-                <div class="step-label">Security Config</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">6</div>
-                <div class="step-label">Review & Deploy</div>
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="alert alert-info">
-                Let's check if your system meets the requirements for running Monsterr Media Server.
+            
+            <div class="stepper">
+                <span class="step active">System Requirements</span>
+                <span class="step">Service Selection</span>
+                <span class="step">Storage Configuration</span>
+                <span class="step">Network Setup</span>
+                <span class="step">Security Configuration</span>
+                <span class="step">Review & Deploy</span>
             </div>
 
-            <div class="requirement-card">
-                <h3>Hardware Requirements</h3>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>CPU: 4 cores (6 cores recommended)</span>
-                </div>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>RAM: 16GB available</span>
-                </div>
-                <div class="requirement-status">
-                    <span class="status-icon status-warning"></span>
-                    <span>Storage: 500GB available (2TB+ recommended)</span>
+            <div class="content">
+                <h2>System Requirements Check</h2>
+                <p>Verify that your system meets the minimum requirements for running Monsterr Media Server.</p>
+
+                <div class="requirements-grid">
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <i class="material-icons">memory</i>
+                            <h3>Hardware Requirements</h3>
+                        </div>
+                        <div class="requirement-list">
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>CPU: 4+ cores (8+ recommended)</strong>
+                                    <div>Detected: 8 cores</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>RAM: 8GB+ (16GB+ recommended)</strong>
+                                    <div>Detected: 32GB</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Storage: 100GB+ for system</strong>
+                                    <div>Detected: 500GB available</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <i class="material-icons">dns</i>
+                            <h3>Software Requirements</h3>
+                        </div>
+                        <div class="requirement-list">
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Docker: 20.10.0+</strong>
+                                    <div>Detected: 24.0.7</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Docker Compose: 2.0.0+</strong>
+                                    <div>Detected: 2.21.0</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Operating System</strong>
+                                    <div>Detected: Ubuntu 22.04 LTS</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <i class="material-icons">router</i>
+                            <h3>Network Requirements</h3>
+                        </div>
+                        <div class="requirement-list">
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Required Ports</strong>
+                                    <div>Port 80 and 443 available</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Internet Connection</strong>
+                                    <div>100Mbps+ detected</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Network Mode</strong>
+                                    <div>Bridge mode supported</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <i class="material-icons">security</i>
+                            <h3>Security Requirements</h3>
+                        </div>
+                        <div class="requirement-list">
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>SSL/TLS Support</strong>
+                                    <div>SSL/TLS 1.3 supported</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>Firewall</strong>
+                                    <div>UFW active and configured</div>
+                                </div>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="material-icons status-success">check_circle</i>
+                                <div class="requirement-content">
+                                    <strong>User Permissions</strong>
+                                    <div>Docker group configured</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="requirement-card">
-                <h3>Software Requirements</h3>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>Docker: Version 24.0.0 installed</span>
-                </div>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>Docker Compose: Version 2.0.0 installed</span>
-                </div>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>Operating System: Ubuntu 20.04 LTS</span>
-                </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" style="visibility: hidden">Back</button>
+                <a href="preview-step2.html" class="btn btn-primary">Next</a>
             </div>
-
-            <div class="requirement-card">
-                <h3>Network Requirements</h3>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>Port 80 available</span>
-                </div>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>Port 443 available</span>
-                </div>
-                <div class="requirement-status">
-                    <span class="status-icon status-success"></span>
-                    <span>Internet connection: 100Mbps+</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="navigation">
-            <a class="btn btn-secondary" style="visibility: hidden">Back</a>
-            <a href="preview-step2.html" class="btn btn-primary">Next</a>
         </div>
     </div>
 </body>

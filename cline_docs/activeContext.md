@@ -1,58 +1,39 @@
-# Active Context
+# Active Development Context
 
 ## Current Task
-Documentation and Architecture Cleanup:
-- Removed VPN service
-- Archived cleanup documents
-- Updated service organization
-- Enhanced documentation structure
+Integrating Portainer as a core service and improving UI layout
 
 ## Recent Changes
-1. Service Architecture:
-   - Removed VPN service
-   - Updated qBittorrent configuration
-   - Simplified network setup
-   - Updated dependencies
+1. Service Selection Updates:
+   - Moved Portainer to core services
+   - Made it a required service with proper dependencies
+   - Added security notes and SSL/2FA integration
+   - Updated resource summary to compact inline layout
+   - Removed two-column grid design
 
-2. Documentation Organization:
-   - Moved cleanup docs to archive
-   - Updated service catalog
-   - Enhanced configuration examples
-   - Improved setup instructions
+2. Component Updates:
+   - ServiceSelection.jsx: New layout and Portainer integration
+   - ServiceSelection.test.jsx: Added tests for new features
+   - FinalReview.jsx: Updated deployment steps and core services list
 
-3. Memory Bank Updates:
-   - Updated system patterns
-   - Revised technical context
-   - Enhanced product context
-   - Streamlined service overview
-
-4. Repository Structure:
-   - Organized documentation
-   - Archived completed plans
-   - Updated active documents
-   - Enhanced file organization
+3. Configuration Updates:
+   - Updated service catalog with Portainer as core service
+   - Added proper dependencies on nginx-proxy-manager and authelia
+   - Updated deployment workflow to include Portainer setup
 
 ## Next Steps
-1. Documentation:
-   - Update installation guides
-   - Revise network setup docs
-   - Update security guidelines
-   - Enhance troubleshooting guides
+1. Test deployment with new Portainer integration
+2. Verify security settings and access controls
+3. Update documentation with Portainer configuration guide
+4. Consider adding Portainer-specific monitoring dashboards
 
-2. Implementation:
-   - Test service connectivity
-   - Verify security settings
-   - Update monitoring
-   - Enhance backup procedures
-
-3. Testing:
-   - Verify service dependencies
-   - Test network connectivity
-   - Check security configurations
-   - Validate monitoring
+## Technical Decisions
+1. Made Portainer a required core service for better container management
+2. Integrated with existing authentication system
+3. Improved UI layout for better resource visibility
+4. Updated deployment sequence to ensure proper service initialization
 
 ## Current Status
-- VPN service removed
-- Documentation organized
-- Memory bank updated
-- Ready for testing phase
+- All UI components updated
+- Tests passing
+- Ready for deployment testing

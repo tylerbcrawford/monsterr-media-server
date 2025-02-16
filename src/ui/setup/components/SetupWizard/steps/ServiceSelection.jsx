@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Box,
   Typography,
-  Paper,
   FormGroup,
   FormControlLabel,
   Checkbox,
@@ -12,12 +11,9 @@ import {
   AccordionDetails,
   Chip,
   Tooltip,
-  Alert,
-  Grid,
 } from '@mui/material';
 import {
-  ExpandMore as ExpandMoreIcon,
-  Info as InfoIcon,
+  ExpandMore as ExpandMoreIcon
 } from '@mui/icons-material';
 
 const serviceCategories = [
@@ -36,7 +32,7 @@ const serviceCategories = [
       {
         id: 'authelia',
         name: 'Authelia',
-        description: 'Authentication and 2FA',
+        description: 'Two-factor authentication and SSO',
         required: true,
         resources: { cpu: 1, memory: 512 },
         dependencies: ['redis'],
@@ -44,7 +40,7 @@ const serviceCategories = [
       {
         id: 'redis',
         name: 'Redis',
-        description: 'Session management',
+        description: 'Session management for Authelia',
         required: true,
         resources: { cpu: 1, memory: 256 },
       },
@@ -54,6 +50,15 @@ const serviceCategories = [
         description: 'Intrusion prevention system',
         required: true,
         resources: { cpu: 1, memory: 256 },
+      },
+      {
+        id: 'portainer',
+        name: 'Portainer',
+        description: 'Docker management interface',
+        required: true,
+        resources: { cpu: 1, memory: 256 },
+        dependencies: ['nginx-proxy-manager', 'authelia'],
+        securityNotes: 'Protected by 2FA and SSL encryption',
       },
     ],
   },
@@ -72,21 +77,21 @@ const serviceCategories = [
         name: 'Sonarr',
         description: 'TV show management',
         resources: { cpu: 1, memory: 512 },
-        dependencies: ['qbittorrent'],
+        dependencies: ['qbittorrent', 'prowlarr'],
       },
       {
         id: 'radarr',
         name: 'Radarr',
         description: 'Movie management',
         resources: { cpu: 1, memory: 512 },
-        dependencies: ['qbittorrent'],
+        dependencies: ['qbittorrent', 'prowlarr'],
       },
       {
         id: 'lidarr',
         name: 'Lidarr',
         description: 'Music management',
         resources: { cpu: 1, memory: 512 },
-        dependencies: ['qbittorrent'],
+        dependencies: ['qbittorrent', 'prowlarr'],
       },
       {
         id: 'bazarr',
@@ -103,8 +108,8 @@ const serviceCategories = [
     services: [
       {
         id: 'qbittorrent',
-        name: 'qBittorrent VPN',
-        description: 'Torrent client with VPN',
+        name: 'qBittorrent',
+        description: 'Torrent client',
         resources: { cpu: 1, memory: 512 },
       },
       {
@@ -118,6 +123,7 @@ const serviceCategories = [
         name: 'Prowlarr',
         description: 'Indexer management',
         resources: { cpu: 1, memory: 256 },
+        dependencies: ['qbittorrent'],
       },
     ],
   },
@@ -133,16 +139,16 @@ const serviceCategories = [
         dependencies: ['qbittorrent'],
       },
       {
-        id: 'audiobookshelf',
-        name: 'Audiobookshelf',
-        description: 'Audiobook server',
-        resources: { cpu: 1, memory: 512 },
-      },
-      {
         id: 'calibre',
         name: 'Calibre',
         description: 'Full-featured ebook management system and server',
         resources: { cpu: 1, memory: 1024 },
+      },
+      {
+        id: 'audiobookshelf',
+        name: 'Audiobookshelf',
+        description: 'Audiobook and podcast server',
+        resources: { cpu: 1, memory: 512 },
       },
       {
         id: 'lazylibrarian',
@@ -166,22 +172,16 @@ const serviceCategories = [
       {
         id: 'grafana',
         name: 'Grafana',
-        description: 'Monitoring dashboard',
+        description: 'Metrics visualization',
         resources: { cpu: 1, memory: 512 },
         dependencies: ['prometheus'],
       },
       {
         id: 'tautulli',
         name: 'Tautulli',
-        description: 'Plex statistics',
+        description: 'Plex statistics and monitoring',
         resources: { cpu: 1, memory: 256 },
         dependencies: ['plex'],
-      },
-      {
-        id: 'portainer',
-        name: 'Portainer',
-        description: 'Docker management interface',
-        resources: { cpu: 1, memory: 256 },
       },
       {
         id: 'watchtower',
@@ -332,86 +332,163 @@ const ServiceSelection = ({ onNext }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h6" gutterBottom>
-        Select Services
-      </Typography>
+      <h2>Select Services</h2>
+      <p>Choose the services you want to install. Required services cannot be deselected.</p>
 
-      <Typography variant="body1" paragraph>
-        Choose the services you want to install. Required services cannot be
-        deselected.
-      </Typography>
+      <Box
+        sx={{
+          p: 2,
+          mb: 2,
+          border: '1px solid #e0e0e0',
+          borderRadius: '4px',
+          bgcolor: 'white'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+          <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>
+            Resource Summary
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Typography sx={{ fontSize: '0.875rem', color: '#333' }}>
+              CPU Cores: {resources.cpu}
+            </Typography>
+            <Typography sx={{ fontSize: '0.875rem', color: '#333' }}>
+              Memory: {(resources.memory / 1024).toFixed(1)}GB
+            </Typography>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            p: 1.5,
+            bgcolor: '#e3f2fd',
+            borderLeft: '4px solid #2196f3',
+            borderRadius: '4px',
+            '& p': {
+              fontSize: '0.875rem',
+              color: '#1565c0',
+              m: 0
+            }
+          }}
+        >
+          <p>
+            These are estimated minimum requirements. Actual usage may vary
+            based on your media library size and usage patterns.
+          </p>
+        </Box>
+      </Box>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          {serviceCategories.map((category) => (
-            <Accordion
-              key={category.name}
-              expanded={expandedCategory === category.name}
-              onChange={() =>
-                setExpandedCategory(
-                  expandedCategory === category.name ? '' : category.name
-                )
+      <Box>
+        {serviceCategories.map((category) => (
+          <Accordion
+            key={category.name}
+            expanded={expandedCategory === category.name}
+            onChange={() =>
+              setExpandedCategory(
+                expandedCategory === category.name ? '' : category.name
+              )
+            }
+            sx={{
+              mb: 2,
+              '& .MuiAccordionSummary-root': {
+                background: '#f8f9fa',
+                borderBottom: '1px solid #e0e0e0'
+              },
+              '& .MuiAccordionSummary-content': {
+                my: 1
               }
-              sx={{ mb: 2 }}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle1">{category.name}</Typography>
-                  {category.required && (
-                    <Chip
-                      label="Required"
-                      size="small"
-                      color="primary"
-                      sx={{ ml: 1 }}
-                    />
-                  )}
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  paragraph
-                >
-                  {category.description}
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>
+                  {category.name}
                 </Typography>
-                <FormGroup>
-                  {category.services.map((service) => (
-                    <FormControlLabel
-                      key={service.id}
-                      control={
-                        <Checkbox
-                          checked={selectedServices.has(service.id)}
-                          onChange={() => handleServiceToggle(service.id)}
-                          disabled={service.required}
-                        />
-                      }
-                      label={
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <Typography>{service.name}</Typography>
-                          <Tooltip title={service.description}>
-                            <InfoIcon
-                              fontSize="small"
-                              sx={{ ml: 1, color: 'action.active' }}
-                            />
-                          </Tooltip>
+                {category.required && (
+                  <Chip
+                    label="Required"
+                    size="small"
+                    sx={{
+                      ml: 1,
+                      bgcolor: '#1976d2',
+                      color: 'white',
+                      fontSize: '0.75rem',
+                      height: '24px'
+                    }}
+                  />
+                )}
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails sx={{ pt: 2, pb: 1 }}>
+              <Typography
+                sx={{
+                  fontSize: '0.875rem',
+                  color: '#666',
+                  mb: 2
+                }}
+              >
+                {category.description}
+              </Typography>
+              <FormGroup sx={{ gap: 1 }}>
+                {category.services.map((service) => (
+                  <FormControlLabel
+                    key={service.id}
+                    control={
+                      <Checkbox
+                        checked={selectedServices.has(service.id)}
+                        onChange={() => handleServiceToggle(service.id)}
+                        disabled={service.required}
+                      />
+                    }
+                    label={
+                      <Box sx={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 1
+                      }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography sx={{
+                            fontSize: '0.875rem',
+                            fontWeight: 500,
+                            color: '#333',
+                            mb: 0.5
+                          }}>
+                            {service.name}
+                          </Typography>
+                          <Typography sx={{
+                            fontSize: '0.875rem',
+                            color: '#666'
+                          }}>
+                            {service.description}
+                          </Typography>
+                        </Box>
+                        <Box sx={{
+                          display: 'flex',
+                          gap: 0.5,
+                          mt: 0.5
+                        }}>
                           {service.required && (
                             <Chip
                               label="Required"
                               size="small"
-                              sx={{ ml: 1 }}
+                              sx={{
+                                bgcolor: '#1976d2',
+                                color: 'white',
+                                fontSize: '0.75rem',
+                                height: '24px'
+                              }}
                             />
                           )}
                           {service.dependencies && (
-                            <Tooltip
-                              title={`Requires: ${service.dependencies.join(
-                                ', '
-                              )}`}
-                            >
+                            <Tooltip title={`Requires: ${service.dependencies.join(', ')}`}>
                               <Chip
                                 label="Has Dependencies"
                                 size="small"
-                                sx={{ ml: 1 }}
+                                sx={{
+                                  bgcolor: '#ff9800',
+                                  color: 'white',
+                                  fontSize: '0.75rem',
+                                  height: '24px'
+                                }}
                               />
                             </Tooltip>
                           )}
@@ -420,48 +497,25 @@ const ServiceSelection = ({ onNext }) => {
                               <Chip
                                 label="Security Info"
                                 size="small"
-                                color="success"
-                                sx={{ ml: 1 }}
+                                sx={{
+                                  bgcolor: '#4caf50',
+                                  color: 'white',
+                                  fontSize: '0.75rem',
+                                  height: '24px'
+                                }}
                               />
                             </Tooltip>
                           )}
                         </Box>
-                      }
-                    />
-                  ))}
-                </FormGroup>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Paper
-            variant="outlined"
-            sx={{ p: 2, position: { md: 'sticky' }, top: 16 }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Resource Summary
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                Estimated resource usage for selected services:
-              </Typography>
-              <Typography variant="body1">
-                CPU Cores: {resources.cpu}
-              </Typography>
-              <Typography variant="body1">
-                Memory: {(resources.memory / 1024).toFixed(1)}GB
-              </Typography>
-            </Box>
-
-            <Alert severity="info">
-              These are estimated minimum requirements. Actual usage may vary
-              based on your media library size and usage patterns.
-            </Alert>
-          </Paper>
-        </Grid>
-      </Grid>
+                      </Box>
+                    }
+                  />
+                ))}
+              </FormGroup>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </Box>
     </Box>
   );
 };

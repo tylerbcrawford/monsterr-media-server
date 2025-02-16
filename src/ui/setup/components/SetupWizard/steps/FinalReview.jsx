@@ -30,8 +30,9 @@ const deploymentSteps = [
   'Create Directories',
   'Generate Configurations',
   'Pull Docker Images',
-  'Start Core Services',
+  'Start Infrastructure Services',
   'Configure Security',
+  'Start Portainer',
   'Start Media Services',
   'Verify Deployment',
 ];
@@ -82,17 +83,22 @@ const FinalReview = ({ onNext, isLastStep }) => {
       });
       if (!images.ok) throw new Error('Failed to pull Docker images');
       setCurrentStep(4);
+// Start Infrastructure Services
+addLog('Starting infrastructure services (Nginx, Authelia, Redis, Fail2Ban)...');
+await new Promise((resolve) => setTimeout(resolve, 2000));
+setCurrentStep(5);
 
-      // Start Core Services
-      addLog('Starting core services...');
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setCurrentStep(5);
+// Configure Security
+addLog('Configuring security settings...');
+await new Promise((resolve) => setTimeout(resolve, 1500));
+setCurrentStep(6);
 
-      // Configure Security
-      addLog('Configuring security settings...');
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setCurrentStep(6);
+// Start Portainer
+addLog('Starting Portainer management interface...');
+await new Promise((resolve) => setTimeout(resolve, 1500));
+setCurrentStep(7);
 
+// Start Media Services
       // Start Media Services
       addLog('Starting media services...');
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -157,7 +163,7 @@ const FinalReview = ({ onNext, isLastStep }) => {
             <ListItem>
               <ListItemText
                 primary="Core Services"
-                secondary="Nginx Proxy Manager, Authelia, Redis"
+                secondary="Nginx Proxy Manager, Authelia, Redis, Fail2Ban, Portainer"
               />
             </ListItem>
             <ListItem>

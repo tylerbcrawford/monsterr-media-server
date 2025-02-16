@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { ServiceSelection } from '../steps/ServiceSelection';
+import ServiceSelection from '../steps/ServiceSelection';
 
 describe('ServiceSelection', () => {
   const mockOnNext = jest.fn();
@@ -24,17 +24,50 @@ describe('ServiceSelection', () => {
     render(<ServiceSelection onNext={mockOnNext} />);
 
     // Core services should be required
-    const nginxCheckbox = screen.getByRole('checkbox', {
-      name: /nginx proxy manager/i,
-    });
-    const autheliaCheckbox = screen.getByRole('checkbox', {
-      name: /authelia/i,
-    });
+    const requiredServices = [
+      'nginx proxy manager',
+      'authelia',
+      'redis',
+      'fail2ban',
+      'portainer'
+    ];
 
-    expect(nginxCheckbox).toBeChecked();
-    expect(nginxCheckbox).toBeDisabled();
-    expect(autheliaCheckbox).toBeChecked();
-    expect(autheliaCheckbox).toBeDisabled();
+    requiredServices.forEach(service => {
+      const checkbox = screen.getByRole('checkbox', {
+        name: new RegExp(service, 'i'),
+      });
+      expect(checkbox).toBeChecked();
+      expect(checkbox).toBeDisabled();
+    });
+  });
+
+  it('shows resource summary in compact layout', () => {
+    render(<ServiceSelection onNext={mockOnNext} />);
+
+    const summary = screen.getByText('Resource Summary').closest('div');
+    
+    // Check inline stats
+    const stats = within(summary).getAllByText(/^(CPU Cores|Memory):/);
+    expect(stats).toHaveLength(2);
+    
+    // Check info box
+    expect(within(summary).getByText(/estimated minimum requirements/i))
+      .toBeInTheDocument();
+  });
+
+  it('includes Portainer in core services with proper dependencies', () => {
+    render(<ServiceSelection onNext={mockOnNext} />);
+
+    const portainerSection = screen.getByText('Portainer').closest('div');
+    
+    // Check required status
+    expect(within(portainerSection).getByText('Required')).toBeInTheDocument();
+    
+    // Check dependencies
+    expect(within(portainerSection).getByText('Has Dependencies')).toBeInTheDocument();
+    
+    // Check security info
+    expect(within(portainerSection).getByText('Security Info')).toBeInTheDocument();
   });
 
   it('handles service dependencies correctly', () => {

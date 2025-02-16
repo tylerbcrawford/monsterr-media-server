@@ -3,259 +3,510 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monsterr Media Server Setup - Step 2</title>
+    <title>Service Selection - Monsterr Media Server Setup</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
         }
         .container {
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .paper {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            padding: 2rem;
         }
-        .header {
+        h1 {
             text-align: center;
-            margin-bottom: 32px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        p {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 1.5rem;
         }
         .stepper {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 32px;
-            position: relative;
-        }
-        .stepper::before {
-            content: '';
-            position: absolute;
-            top: 14px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e0e0e0;
-            z-index: 1;
+            margin: 2rem 0;
+            padding: 0 1rem;
         }
         .step {
-            position: relative;
-            z-index: 2;
-            background: white;
-            padding: 0 8px;
+            background: #e0e0e0;
+            color: #666;
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
-        .step-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+        .step.active {
             background: #1976d2;
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
         }
-        .step.active .step-circle {
-            background: #2196f3;
-            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
-        }
-        .step.completed .step-circle {
-            background: #4caf50;
-        }
-        .step-label {
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-        }
-        .content {
-            min-height: 400px;
+        .resource-summary {
+            background: white;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
         }
-        .navigation {
+        .resource-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
+            margin-bottom: 0.75rem;
         }
-        .btn {
-            padding: 8px 16px;
+        .resource-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .resource-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .resource-value {
+            font-size: 0.875rem;
+            color: #333;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 0.75rem;
             border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
         }
-        .btn-primary {
+        .info-box p {
+            font-size: 0.875rem;
+            color: #1565c0;
+            margin: 0;
+        }
+        .accordion {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .accordion-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .accordion-content {
+            padding: 1.5rem;
+        }
+        .service-description {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .service-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .service-item-content {
+            flex: 1;
+        }
+        .service-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+        .service-desc {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        .chip {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            display: inline-block;
+        }
+        .chip-required {
             background: #1976d2;
             color: white;
         }
-        .btn-secondary {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            color: #333;
+        .chip-dependency {
+            background: #ff9800;
+            color: white;
         }
-        .alert {
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 16px;
+        .chip-security {
+            background: #4caf50;
+            color: white;
         }
-        .alert-info {
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            color: #1976d2;
-        }
-        .service-group {
-            margin-bottom: 24px;
-        }
-        .service-group-title {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            color: #1976d2;
-        }
-        .service-option {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-        .service-option:hover {
-            background: #f5f5f5;
-        }
-        .service-info {
-            margin-left: 12px;
-            flex-grow: 1;
-        }
-        .service-name {
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-        .service-description {
-            font-size: 14px;
-            color: #666;
-        }
-        .service-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            background: #e8f5e9;
-            color: #2e7d32;
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.5rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <div class="paper">
             <h1>Monsterr Media Server Setup</h1>
-        </div>
-        
-        <div class="stepper">
-            <div class="step completed">
-                <div class="step-circle">1</div>
-                <div class="step-label">System Requirements</div>
-            </div>
-            <div class="step active">
-                <div class="step-circle">2</div>
-                <div class="step-label">Service Selection</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">3</div>
-                <div class="step-label">Storage Config</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">4</div>
-                <div class="step-label">Network Setup</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">5</div>
-                <div class="step-label">Security Config</div>
-            </div>
-            <div class="step">
-                <div class="step-circle">6</div>
-                <div class="step-label">Review & Deploy</div>
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="alert alert-info">
-                Select the services you want to install. You can modify these selections later.
+            
+            <div class="stepper">
+                <span class="step">System Requirements</span>
+                <span class="step active">Service Selection</span>
+                <span class="step">Storage Configuration</span>
+                <span class="step">Network Setup</span>
+                <span class="step">Security Configuration</span>
+                <span class="step">Review & Deploy</span>
             </div>
 
-            <div class="service-group">
-                <div class="service-group-title">Media Services</div>
-                <div class="service-option">
-                    <input type="checkbox" id="plex" checked>
-                    <div class="service-info">
-                        <div class="service-name">Plex Media Server</div>
-                        <div class="service-description">Stream your media to any device, anywhere</div>
+            <h2>Select Services</h2>
+            <p>Choose the services you want to install. Required services cannot be deselected.</p>
+
+            <div class="resource-summary">
+                <div class="resource-header">
+                    <div class="resource-title">Resource Summary</div>
+                    <div class="resource-stats">
+                        <div class="resource-value">CPU Cores: 5</div>
+                        <div class="resource-value">Memory: 1.8GB</div>
                     </div>
-                    <span class="service-badge">Recommended</span>
                 </div>
-                <div class="service-option">
-                    <input type="checkbox" id="sonarr" checked>
-                    <div class="service-info">
-                        <div class="service-name">Sonarr</div>
-                        <div class="service-description">Smart TV show management and automation</div>
-                    </div>
-                    <span class="service-badge">Recommended</span>
-                </div>
-                <div class="service-option">
-                    <input type="checkbox" id="radarr" checked>
-                    <div class="service-info">
-                        <div class="service-name">Radarr</div>
-                        <div class="service-description">Automated movie downloading and management</div>
-                    </div>
-                    <span class="service-badge">Recommended</span>
+                <div class="info-box">
+                    <p>These are estimated minimum requirements. Actual usage may vary based on your media library size and usage patterns.</p>
                 </div>
             </div>
 
-            <div class="service-group">
-                <div class="service-group-title">Download Management</div>
-                <div class="service-option">
-                    <input type="checkbox" id="qbit" checked>
-                    <div class="service-info">
-                        <div class="service-name">qBittorrent</div>
-                        <div class="service-description">Download client with VPN integration</div>
+            <div class="services">
+                <!-- Core Infrastructure -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        Core Infrastructure
+                        <span class="chip chip-required">Required</span>
                     </div>
-                    <span class="service-badge">Recommended</span>
+                    <div class="accordion-content">
+                        <div class="service-description">Essential services for system operation</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked disabled>
+                                <div class="service-item-content">
+                                    <div class="service-name">Nginx Proxy Manager</div>
+                                    <div class="service-desc">Reverse proxy for managing access to services</div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked disabled>
+                                <div class="service-item-content">
+                                    <div class="service-name">Authelia</div>
+                                    <div class="service-desc">Two-factor authentication and SSO</div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked disabled>
+                                <div class="service-item-content">
+                                    <div class="service-name">Redis</div>
+                                    <div class="service-desc">Session management for Authelia</div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked disabled>
+                                <div class="service-item-content">
+                                    <div class="service-name">Fail2Ban</div>
+                                    <div class="service-desc">Intrusion prevention system</div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked disabled>
+                                <div class="service-item-content">
+                                    <div class="service-name">Portainer</div>
+                                    <div class="service-desc">Docker management interface</div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                                <span class="chip chip-security">Security Info</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="service-option">
-                    <input type="checkbox" id="nzb">
-                    <div class="service-info">
-                        <div class="service-name">NZBGet</div>
-                        <div class="service-description">Efficient Usenet downloader</div>
+
+                <!-- Media Services -->
+                <div class="accordion">
+                    <div class="accordion-header">Media Services</div>
+                    <div class="accordion-content">
+                        <div class="service-description">Media server and content management</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Plex Media Server</div>
+                                    <div class="service-desc">Media streaming server</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Sonarr</div>
+                                    <div class="service-desc">TV series management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Radarr</div>
+                                    <div class="service-desc">Movie management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Lidarr</div>
+                                    <div class="service-desc">Music management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Bazarr</div>
+                                    <div class="service-desc">Subtitle management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Download Management -->
+                <div class="accordion">
+                    <div class="accordion-header">Download Management</div>
+                    <div class="accordion-content">
+                        <div class="service-description">Download clients and tools</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">qBittorrent</div>
+                                    <div class="service-desc">Torrent client</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Prowlarr</div>
+                                    <div class="service-desc">Indexer manager</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">NZBGet</div>
+                                    <div class="service-desc">Usenet downloader</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Services -->
+                <div class="accordion">
+                    <div class="accordion-header">Book Services</div>
+                    <div class="accordion-content">
+                        <div class="service-description">Book and audiobook management</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Readarr</div>
+                                    <div class="service-desc">Book management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Audiobookshelf</div>
+                                    <div class="service-desc">Audiobook and podcast server</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Calibre</div>
+                                    <div class="service-desc">Full-featured ebook management system and server</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">LazyLibrarian</div>
+                                    <div class="service-desc">Book download automation</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Services -->
+                <div class="accordion">
+                    <div class="accordion-header">Monitoring Services</div>
+                    <div class="accordion-content">
+                        <div class="service-description">System monitoring and metrics</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Prometheus</div>
+                                    <div class="service-desc">Metrics collection</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Grafana</div>
+                                    <div class="service-desc">Metrics visualization</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Tautulli</div>
+                                    <div class="service-desc">Plex statistics and monitoring</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Watchtower</div>
+                                    <div class="service-desc">Automatic container updates</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UI Services -->
+                <div class="accordion">
+                    <div class="accordion-header">User Interface Services</div>
+                    <div class="accordion-content">
+                        <div class="service-description">User interface and request management</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Organizr</div>
+                                    <div class="service-desc">Services dashboard</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Overseerr</div>
+                                    <div class="service-desc">Media request management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Watchlist</div>
+                                    <div class="service-desc">Media watchlist management</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remote Access -->
+                <div class="accordion">
+                    <div class="accordion-header">Remote Access</div>
+                    <div class="accordion-content">
+                        <div class="service-description">Secure remote desktop access</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">noVNC</div>
+                                    <div class="service-desc">Web-based VNC client with secure proxy</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                                <span class="chip chip-security">Security Info</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">VNC Server</div>
+                                    <div class="service-desc">Remote desktop server with KDE environment</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                                <span class="chip chip-security">Security Info</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Utility Services -->
+                <div class="accordion">
+                    <div class="accordion-header">Utility Services</div>
+                    <div class="accordion-content">
+                        <div class="service-description">Additional utility and automation tools</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Recyclarr</div>
+                                    <div class="service-desc">Configuration management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Unpackerr</div>
+                                    <div class="service-desc">Automated extraction</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="service-group">
-                <div class="service-group-title">Monitoring</div>
-                <div class="service-option">
-                    <input type="checkbox" id="grafana" checked>
-                    <div class="service-info">
-                        <div class="service-name">Grafana</div>
-                        <div class="service-description">Beautiful system monitoring dashboards</div>
-                    </div>
-                    <span class="service-badge">Recommended</span>
-                </div>
-                <div class="service-option">
-                    <input type="checkbox" id="prometheus" checked>
-                    <div class="service-info">
-                        <div class="service-name">Prometheus</div>
-                        <div class="service-description">Time-series monitoring database</div>
-                    </div>
-                    <span class="service-badge">Recommended</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="navigation">
-            <a href="preview-step1.html" class="btn btn-secondary">Back</a>
-            <a href="preview-step3.html" class="btn btn-primary">Next</a>
         </div>
     </div>
 </body>

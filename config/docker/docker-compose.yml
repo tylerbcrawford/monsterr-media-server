@@ -31,6 +31,11 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   redis:
     image: redis:latest
@@ -56,6 +61,36 @@ services:
       - ./fail2ban/data:/data
       - ./logs:/var/log:ro
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=UTC
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer/data:/data
+    depends_on:
+      nginx-proxy-manager:
+        condition: service_healthy
+      authelia:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
   # Media Services
   plex:
     image: lscr.io/linuxserver/plex:latest
@@ -67,6 +102,7 @@ services:
       - PGID=1000
       - VERSION=docker
       - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
+      - TZ=UTC
     volumes:
       - ./plex/config:/config
       - ./media:/media
@@ -83,6 +119,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - TZ=UTC
     volumes:
       - ./sonarr/config:/config
       - ./media/tv:/tv
@@ -90,6 +127,11 @@ services:
     depends_on:
       - qbittorrent
       - prowlarr
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -98,6 +140,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - TZ=UTC
     volumes:
       - ./radarr/config:/config
       - ./media/movies:/movies
@@ -105,6 +148,52 @@ services:
     depends_on:
       - qbittorrent
       - prowlarr
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./lidarr/config:/config
+      - ./media/music:/music
+      - ./downloads:/downloads
+    depends_on:
+      - qbittorrent
+      - prowlarr
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8686"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./bazarr/config:/config
+      - ./media:/media
+    depends_on:
+      - sonarr
+      - radarr
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6767"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Download Management
   qbittorrent:
@@ -134,12 +223,110 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - TZ=UTC
     volumes:
       - ./prowlarr/config:/config
     depends_on:
       - qbittorrent
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9696"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Monitoring
+  nzbget:
+    image: lscr.io/linuxserver/nzbget:latest
+    container_name: nzbget
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./nzbget/config:/config
+      - ./downloads:/downloads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6789"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Book Services
+  readarr:
+    image: lscr.io/linuxserver/readarr:latest
+    container_name: readarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./readarr/config:/config
+      - ./media/books:/books
+      - ./downloads:/downloads
+    depends_on:
+      - qbittorrent
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8787"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./calibre/config:/config
+      - ./media/books:/books
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./audiobookshelf/config:/config
+      - ./media/audiobooks:/audiobooks
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:13378"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  lazylibrarian:
+    image: lscr.io/linuxserver/lazylibrarian:latest
+    container_name: lazylibrarian
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./lazylibrarian/config:/config
+      - ./media/books:/books
+      - ./downloads:/downloads
+    depends_on:
+      - qbittorrent
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5299"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Monitoring Services
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -152,6 +339,11 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   grafana:
     image: grafana/grafana:latest
@@ -159,10 +351,153 @@ services:
     restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - TZ=UTC
     volumes:
       - ./grafana:/var/lib/grafana
     depends_on:
       - prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./tautulli/config:/config
+    depends_on:
+      - plex
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 * * *
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # UI Services
+  organizr:
+    image: organizr/organizr:latest
+    container_name: organizr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./organizr/config:/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./overseerr/config:/config
+    depends_on:
+      - plex
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5055"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  watchlist:
+    image: ghcr.io/linuxserver/watchlist:latest
+    container_name: watchlist
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./watchlist/config:/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Remote Access
+  novnc:
+    image: ghcr.io/linuxserver/novnc:latest
+    container_name: novnc
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    depends_on:
+      - vnc
+      - nginx-proxy-manager
+      - authelia
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  vnc:
+    image: ghcr.io/linuxserver/webtop:ubuntu-kde
+    container_name: vnc
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./vnc/config:/config
+    depends_on:
+      - nginx-proxy-manager
+      - authelia
+
+  # Utility Services
+  recyclarr:
+    image: requestrr/recyclarr:latest
+    container_name: recyclarr
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./recyclarr/config:/config
+    depends_on:
+      - radarr
+      - sonarr
+
+  unpackerr:
+    image: golift/unpackerr:latest
+    container_name: unpackerr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./downloads:/downloads
 
 volumes:
   prometheus_data:
