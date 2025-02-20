@@ -6,14 +6,14 @@ This guide explains how to configure custom domains for your Monsterr Media Serv
 
 Before setting up your domain, ensure you have:
 
-1. A registered domain name
-2. Access to your domain's DNS settings
-3. Port 80 and 443 open on your network
-4. Email address for SSL certificate registration
+1.  A registered domain name.
+2.  Access to your domain's DNS settings.
+3.  Ports 80 and 443 open on your network.
+4.  An email address for SSL certificate registration.
 
 ## Configuration Steps
 
-### 1. Domain Configuration
+### Domain Configuration
 
 Create a domain configuration file based on the example in `config/examples/domain.config.example.yml`. Save it as `config/domain.config.yml`:
 
@@ -29,7 +29,7 @@ domain:
     forceSSL: true
 ```
 
-### 2. DNS Configuration
+### DNS Configuration
 
 Configure your DNS records according to your chosen subdomain structure:
 
@@ -43,7 +43,7 @@ sonarr.your.domain.com.  IN CNAME your.domain.com.
 radarr.your.domain.com.  IN CNAME your.domain.com.
 ```
 
-### 3. Subdomain Setup
+### Subdomain Setup
 
 Add service-specific subdomains to your configuration:
 
@@ -62,7 +62,7 @@ subdomains:
     auth: true
 ```
 
-### 4. SSL Certificate Setup
+### SSL Certificate Setup
 
 The system automatically handles SSL certificate provisioning through Let's Encrypt. For custom certificates:
 
@@ -76,7 +76,7 @@ ssl:
   forceSSL: true
 ```
 
-### 5. Dynamic DNS (Optional)
+### Dynamic DNS (Optional)
 
 For dynamic IP addresses, configure DDNS:
 
@@ -92,75 +92,77 @@ ddns:
 
 ## Security Considerations
 
-1. **Authentication**
-   - Enable Authelia for centralized authentication
-   - Configure 2FA for additional security
-   - Set appropriate access controls per service
+1.  **Authentication:**
+    *   Enable Authelia for centralized authentication.
+    *   Configure 2FA for additional security.
+    *   Set appropriate access controls per service.
 
-2. **SSL/TLS**
-   - Always enable SSL in production
-   - Use auto-renewal for certificates
-   - Configure HSTS for enhanced security
+2.  **SSL/TLS:**
+    *   Always enable SSL in production.
+    *   Use auto-renewal for certificates.
+    *   Configure HSTS for enhanced security.
 
-3. **Fail2Ban**
-   - Enable Fail2Ban protection
-   - Configure appropriate ban times
-   - Monitor access logs
+3.  **Fail2Ban:**
+    *   Enable Fail2Ban protection.
+    *   Configure appropriate ban times.
+    *   Monitor access logs.
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **DNS Propagation**
-   - Allow up to 48 hours for DNS changes to propagate
-   - Use `dig` or `nslookup` to verify records
-   - Check DNS configuration for typos
+1.  **DNS Propagation:**
+    *   Allow up to 48 hours for DNS changes to propagate.
+    *   Use `dig` or `nslookup` to verify records.
+    *   Check DNS configuration for typos.
 
-2. **SSL Certificate Issues**
-   - Verify domain ownership
-   - Check email address for Let's Encrypt
-   - Ensure ports 80/443 are accessible
+2.  **SSL Certificate Issues:**
+    *   Verify domain ownership.
+    *   Check email address for Let's Encrypt.
+    *   Ensure ports 80/443 are accessible.
 
-3. **Proxy Issues**
-   - Verify Nginx Proxy Manager configuration
-   - Check service connectivity
-   - Review proxy logs for errors
+3.  **Proxy Issues:**
+    *   Verify Nginx Proxy Manager configuration.
+    *   Check service connectivity.
+    *   Review proxy logs for errors.
 
 ### Validation Commands
 
-Check DNS propagation:
-```bash
-dig +short your.domain.com
-dig +short plex.your.domain.com
-```
+*   **Check DNS Propagation:**
 
-Test SSL certificate:
-```bash
-openssl s_client -connect your.domain.com:443 -servername your.domain.com
-```
+    ```bash
+    dig +short your.domain.com
+    dig +short plex.your.domain.com
+    ```
+
+*   **Test SSL Certificate:**
+
+    ```bash
+    openssl s_client -connect your.domain.com:443 -servername your.domain.com
+    ```
 
 ## Maintenance
 
 ### Regular Tasks
 
-1. **SSL Certificates**
-   - Monitor certificate expiration
-   - Verify auto-renewal is working
-   - Keep email address updated
+1.  **SSL Certificates:**
+    *   Monitor certificate expiration.
+    *   Verify auto-renewal is working.
+    *   Keep email address updated.
 
-2. **DNS Records**
-   - Regularly verify DNS configuration
-   - Update records when adding services
-   - Monitor DDNS updates if enabled
+2.  **DNS Records:**
+    *   Regularly verify DNS configuration.
+    *   Update records when adding services.
+    *   Monitor DDNS updates if enabled.
 
-3. **Security**
-   - Review access logs
-   - Update security configurations
-   - Monitor for unauthorized access
+3.  **Security:**
+    *   Review access logs.
+    *   Update security configurations.
+    *   Monitor for unauthorized access.
 
 ## Additional Resources
 
-- [DNS Configuration Guide](network-setup.md)
-- [Security Best Practices](security.md)
-- [Troubleshooting Guide](troubleshooting.md)
-- [Nginx Proxy Manager Documentation](https://nginxproxymanager.com/)
+*   [DNS Configuration Guide](network-setup.md)
+*   [Security Best Practices](security.md)
+*   [Troubleshooting Guide](troubleshooting.md)
+*   [Nginx Proxy Manager Documentation](https://nginxproxymanager.com/)

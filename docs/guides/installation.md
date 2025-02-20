@@ -1,166 +1,182 @@
-# Installation Guide
+# Monsterr Media Server Installation Guide
 
-## Overview
-This guide provides step-by-step instructions for installing Monsterr Media Server using our enhanced React-based setup wizard. For a quicker setup, see our [Quick Start Guide](quick-start.md).
+This guide provides comprehensive instructions for installing Monsterr Media Server, covering quick setup, detailed walkthroughs, and common troubleshooting steps.
 
 ## Table of Contents
-- [Prerequisites](#prerequisites)
-- [Installation Methods](#installation-methods)
-- [Post-Installation Setup](#post-installation-setup)
-- [Verification](#verification)
-- [Next Steps](#next-steps)
 
-## Prerequisites
+*   [Minimum Requirements](#minimum-requirements)
+*   [Quick Installation](#quick-installation)
+*   [Detailed Installation Walkthrough](#detailed-installation-walkthrough)
+*   [Post-Installation Setup](#post-installation-setup)
+*   [Verification](#verification)
+*   [Common Issues](#common-issues)
+*   [Next Steps](#next-steps)
+*   [Support Resources](#support-resources)
+*   [Version Information](#version-information)
 
-### Hardware Requirements
-See our [Hardware Guide](hardware.md) for detailed recommendations.
+## Minimum Requirements
 
-Minimum Requirements:
-- CPU: 4 cores
-- RAM: 8GB
-- Storage: 20GB for system + storage for media
-- Network: 10Mbps+ internet connection
+### Hardware
 
-### Network Requirements
-See our [Network Setup Guide](network-setup.md) for detailed instructions.
+*   CPU: 4+ cores
+*   RAM: 8GB
+*   Storage: 20GB + media storage
+*   Network: 10Mbps+ internet
 
-Required Setup:
-- Domain name or DDNS hostname
-- Port forwarding capability
-- Router access for configuration
-- Static local IP or DHCP reservation
+### Software
 
-### Software Requirements
-- Operating System: Ubuntu 20.04+ or similar Linux distribution
-- Docker Engine (installed automatically)
-- Docker Compose (installed automatically)
-- Git (for installation)
-- Node.js 18.0.0+ (for setup wizard)
-- npm 9.0.0+ (installed with Node.js)
+*   Ubuntu 20.04+ or similar Linux distribution
+*   Git
+*   Node.js 18.0.0+
+*   npm 9.0.0+
 
-## Installation Methods
+### Network
 
-### Method 1: Automated Installation (Recommended)
+*   Domain name or DDNS
+*   Router access
+*   Available ports: 80, 443, 9000 (Portainer), 32400 (Plex)
 
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/yourusername/monsterr-media-server.git
-   cd monsterr-media-server
-   ```
+## Quick Installation
 
-2. **Start Installation**
-   ```bash
-   sudo ./install_media_server.sh
-   ```
+1.  **Clone and Install:**
 
-   The installer will:
-   - Check system requirements
-   - Install dependencies
-   - Launch the React-based setup wizard
-   - Configure services
-   - Start the system
+    ```bash
+    git clone https://github.com/yourusername/monsterr-media-server.git
+    cd monsterr-media-server
+    sudo ./install_media_server.sh
+    ```
 
-3. **Follow Setup Wizard**
-   The enhanced React-based setup wizard provides:
+2.  **Setup Wizard:** Follow the on-screen prompts in the setup wizard. The wizard guides you through system checks, service selection, storage configuration, network setup, security configuration, and deployment. Each step is represented by a menu bubble:
 
-   a. **System Requirements Check**
-   - Hardware validation
-   - Software dependency verification
-   - Network connectivity tests
-   - Real-time feedback
+    *   Active step: Blue
+    *   Completed steps: Green
+    *   Upcoming steps: Gray
 
-   b. **Service Selection**
-   - Visual service dependency map
-   - Resource requirement estimates
-   - Automated dependency resolution
-   - Custom service combinations
-   - Optional remote access (VNC)
-     * Can be enabled/disabled during installation
-     * Part of the "remote" service profile
-     * Not required for basic media server functionality
+    ![Setup Wizard Screenshot](images/setup-wizard.png)
 
-   c. **Storage Configuration**
-   - Path validation and creation
-   - Permission checks
-   - Space requirement calculation
-   - Automated directory structure
+3.  **Access Services:** After installation, access your services at:
 
-   d. **Network Setup**
-   - Domain validation
-   - Port availability checking
-   - SSL certificate automation
-   - VPN configuration
+    *   Dashboard: `https://dashboard.yourdomain.com`
+    *   Portainer: `https://portainer.yourdomain.com`
+    *   Plex: `https://plex.yourdomain.com`
 
-   e. **Security Configuration**
-   - Two-factor authentication setup
-   - Fail2Ban configuration
-   - Firewall rule management
-   - Access control setup
+4.  **Verification:**
 
-   f. **Final Review & Deployment**
-   - Configuration summary
-   - Pre-deployment validation
-   - Progress tracking
-   - Error recovery
+    ```bash
+    sudo ./scripts/post_install_check.sh --all
+    docker-compose ps
+    ```
 
-### Method 2: Manual Installation
+## Detailed Installation Walkthrough
 
-1. **Install Dependencies**
-   ```bash
-   sudo ./scripts/install_dependencies.sh
-   ```
+This walkthrough provides a more in-depth explanation of each step in the installation process.
 
-2. **Install Docker**
-   ```bash
-   sudo ./scripts/install_docker.sh
-   ```
+### Pre-Installation Checklist
 
-3. **Configure System**
-   ```bash
-   # Copy sample configuration
-   cp sample_config.env config.env
-   
-   # Edit configuration
-   nano config.env
-   ```
-   See [Configuration Guide](configuration.md) for details.
+#### System Requirements
 
-4. **Create Directories**
-   ```bash
-   sudo ./scripts/create_directories.sh
-   ```
+1.  **Hardware:**
+    *   [ ] CPU: 4+ cores (Intel i5/Ryzen 5 or better recommended)
+    *   [ ] RAM: 8GB minimum (16GB+ recommended)
+    *   [ ] Storage: 20GB for system + media storage space
+    *   [ ] Network: 10Mbps+ internet connection (100Mbps+ recommended)
 
-5. **Configure Services**
-   ```bash
-   sudo ./scripts/configure_settings.sh
-   ```
+2.  **Software:**
+    *   [ ] Ubuntu 20.04+ or similar Linux distribution
+    *   [ ] Git installed (`sudo apt-get install git`)
+    *   [ ] Node.js 18.0.0+ and npm 9.0.0+
+    *   [ ] Root/sudo access
 
-6. **Launch Services**
-   ```bash
-   sudo ./scripts/launch_services.sh
-   ```
+3.  **Network:**
+    *   [ ] Domain name or DDNS hostname
+    *   [ ] Router access for port forwarding
+    *   [ ] Static IP or DHCP reservation configured
+    *   [ ] Required ports available (80, 443, 32400)
+
+### Installation Journey
+
+#### Stage 1: Preparation (15-30 minutes)
+
+1.  **System Updates:**
+
+    ```bash
+    sudo apt-get update
+    sudo apt-get upgrade
+    ```
+
+    *   *Potential Issue:* Slow repository response
+    *   *Solution:* Try different mirrors or check your internet connection.
+
+2.  **Directory Setup:**
+
+    ```bash
+    mkdir -p /opt/media-server
+    cd /opt/media-server
+    ```
+
+    *   *Potential Issue:* Permission denied
+    *   *Solution:* Use `sudo` or adjust directory permissions.
+
+3.  **Repository Clone:**
+
+    ```bash
+    git clone https://github.com/yourusername/monsterr-media-server.git
+    cd monsterr-media-server
+    ```
+
+    *   *Potential Issue:* Git clone fails
+    *   *Solution:* Check your internet connection and GitHub access.
+
+#### Stage 2: Setup Wizard Launch (5-10 minutes)
+
+1.  **Start Installation:**
+
+    ```bash
+    sudo ./install_media_server.sh
+    ```
+
+    *   *Potential Issue:* Script permission denied
+    *   *Solution:* Run `chmod +x install_media_server.sh`
+
+2.  **Initial Checks:** The installer will perform initial checks for system requirements, dependencies, and network connectivity.
+    *   *Potential Issue:* Failed requirements
+    *   *Solution:* Follow the on-screen instructions to install missing dependencies.
+
+#### Stage 3: Setup Wizard Interface
+
+The setup wizard will guide you through the following steps:
+
+1.  **System:** Hardware, software, and network validation.
+2.  **Services:** Select the services you want to install.
+3.  **Storage:** Configure storage locations for media, configuration, and backups.
+4.  **Network:** Configure your domain, port forwarding, and SSL.
+5.  **Security:** Set up two-factor authentication, firewall rules, and access control.
+6.  **Deploy:** Review your configuration and deploy the services.
+
+#### Stage 4: Verification (15-20 minutes)
+
+1.  **System Health Check:**
+
+    ```bash
+    sudo ./scripts/post_install_check.sh --all
+    ```
+
+2.  **Service Access:** Access your services via their respective URLs.
 
 ## Post-Installation Setup
 
-### 1. Access Services
-After installation, access your services at:
-- Dashboard: https://dashboard.yourdomain.com
-- Plex: https://plex.yourdomain.com
-- Remote Desktop: https://vnc.yourdomain.com (if enabled)
-- Other services: See [Service Configuration](configuration.md#service-specific-configuration)
+### Accessing Services
 
-### 2. Remote Access Setup
-If you enabled VNC during installation:
-1. Access VNC interface at https://vnc.yourdomain.com
-2. Complete two-factor authentication
-3. Set up VNC password in settings
-4. Configure desktop environment preferences
-See [VNC Access Guide](guides/vnc-access.md) for detailed setup and usage.
+After installation, access your services at their respective URLs, which will be displayed at the end of the setup process. Common service URLs include:
 
-### 2. Configure Media Libraries
-See [Configuration Guide](configuration.md#media-organization) for detailed media organization.
+*   Dashboard: `https://dashboard.yourdomain.com`
+*   Plex: `https://plex.yourdomain.com`
+*   Remote Desktop (if enabled): `https://vnc.yourdomain.com`
 
-Default Locations:
+### Configuring Media Libraries
+
+See the [Configuration Guide](configuration.md#media-organization) for detailed media organization instructions. Default media locations are:
+
 ```
 media/
 ├── movies/
@@ -171,117 +187,78 @@ media/
 └── podcasts/
 ```
 
-### 3. Security Setup
-See [Domain Setup Guide](domain-setup.md) for detailed domain configuration and [Network Setup Guide](network-setup.md#security-configuration) for security configuration.
+### Security Setup
 
-Required Steps:
-1. Configure Authelia
-2. Set up SSL certificates
-3. Configure Fail2Ban
-4. Review firewall rules
+See the [Domain Setup Guide](domain-setup.md) for detailed domain configuration and the [Network Setup Guide](network-setup.md#security-configuration) for security configuration instructions. Required security steps include configuring Authelia, setting up SSL certificates, configuring Fail2Ban, and reviewing firewall rules.
 
-### 4. Configure Backup System
-See [Backup Guide](backup.md) for detailed backup configuration.
+### Configuring Backups
 
-Basic Setup:
+See the [Backup Guide](backup.md) for detailed backup configuration instructions. Basic backup setup:
+
 ```bash
-# Set up backup system
 sudo ./scripts/setup_backup.sh
-
-# Verify backup system
 sudo ./scripts/backup_system.sh --verify
 ```
 
 ## Verification
 
-### 1. System Health Check
-```bash
-# Full system check
-sudo ./scripts/post_install_check.sh --all
+### System Health Check
 
-# View specific checks
-sudo ./scripts/post_install_check.sh --help
+```bash
+sudo ./scripts/post_install_check.sh --all
+sudo ./scripts/post_install_check.sh --help  # For specific checks
 ```
 
-### 2. Service Status
-```bash
-# Check container status
-docker-compose ps
+### Service Status
 
-# View service logs
+```bash
+docker-compose ps
 docker-compose logs [service_name]
 ```
 
-### 3. Network Verification
-```bash
-# Check network setup
-sudo ./scripts/post_install_check.sh --network
+### Network Verification
 
-# Test domain configuration
+```bash
+sudo ./scripts/post_install_check.sh --network
 sudo ./scripts/post_install_check.sh --domain
 ```
 
-## Troubleshooting
+## Common Issues
 
-If you encounter issues during installation:
+### Network Issues
 
-1. Check the setup wizard logs:
-   ```bash
-   # View setup wizard logs
-   tail -f /var/log/monsterr/setup-wizard.log
+*   **Symptom:** Cannot access services externally.
+*   **Solution:** Verify port forwarding, check firewall rules, and validate DNS settings.
 
-   # View API server logs
-   tail -f /var/log/monsterr/setup-api.log
-   ```
+### Permission Problems
 
-2. Use the error handler:
-   ```bash
-   sudo ./scripts/error_handler.sh --check-config
-   ```
+*   **Symptom:** Services fail to start.
+*   *Solution:* Check directory permissions, verify user/group settings, and review container permissions.
 
-3. Collect debug information:
-   ```bash
-   sudo ./scripts/collect_debug_info.sh
-   ```
+### Resource Constraints
 
-4. Check setup wizard status:
-   ```bash
-   # Check setup wizard process
-   sudo systemctl status monsterr-setup
+*   **Symptom:** System is sluggish or services crash.
+*   **Solution:** Reduce the number of running services, increase resource allocation, or optimize configurations.
 
-   # Check API server
-   sudo systemctl status monsterr-setup-api
-   ```
+### SSL Certificate Issues
 
-See [Troubleshooting Guide](troubleshooting.md) for detailed problem resolution.
+*   **Symptom:** Security warnings in the browser.
+*   **Solution:** Verify domain configuration, check certificate renewal, and validate SSL setup.
 
 ## Next Steps
 
-1. [Configure Services](configuration.md)
-   - Set up media libraries
-   - Configure automation
-   - Customize settings
+1.  Configure Services: Set up media libraries, configure automation, and customize settings.
+2.  Set Up Monitoring: Configure alerts, set up dashboards, and monitor system health.
+3.  Configure Backups: Set up a backup schedule, configure retention, and test recovery.
+4.  Review Security: Check SSL setup, review firewall rules, and test authentication.
 
-2. [Set Up Monitoring](monitoring.md)
-   - Configure alerts
-   - Set up dashboards
-   - Monitor system health
+## Support Resources
 
-3. [Configure Backups](backup.md)
-   - Set up backup schedule
-   - Configure retention
-   - Test recovery
+*   Documentation: `/docs` directory
+*   Issue Tracker: GitHub Issues
+*   Community Forums: \[Link to forums]
+*   Error Logs: `/var/log/monsterr/`
 
-4. [Review Security](network-setup.md#security-configuration)
-   - Check SSL setup
-   - Review firewall rules
-   - Test authentication
+## Version Information
 
-## Additional Resources
-- [Quick Start Guide](quick-start.md)
-- [Configuration Guide](configuration.md)
-- [Network Setup Guide](network-setup.md)
-- [Troubleshooting Guide](troubleshooting.md)
-- [Hardware Guide](hardware.md)
-- [Monitoring Guide](monitoring.md)
-- [Backup Guide](backup.md)
+Refer to the individual guides for their respective version information.

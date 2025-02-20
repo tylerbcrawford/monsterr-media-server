@@ -1,13 +1,17 @@
-# API Documentation
+# API Endpoints
 
 ## Overview
+
 This document describes the REST API endpoints provided by the Monsterr Media Server web interface and its integrated services.
 
 ## Base URL
+
 All web interface endpoints are relative to: `http://localhost:3000/api/v1`
 
 ## Authentication
+
 All endpoints require authentication via Authelia. Include the authentication token in the `Authorization` header:
+
 ```
 Authorization: Bearer <token>
 ```
@@ -17,9 +21,11 @@ Authorization: Bearer <token>
 ### System Status
 
 #### GET /status
-Get current system status and resource usage.
 
-**Response**
+Retrieves the current system status and resource usage.
+
+**Response:**
+
 ```json
 {
   "status": "running",
@@ -33,9 +39,11 @@ Get current system status and resource usage.
 ### Configuration
 
 #### GET /config
-Get current system configuration.
 
-**Response**
+Retrieves the current system configuration.
+
+**Response:**
+
 ```json
 {
   "domain": "media.example.com",
@@ -46,9 +54,11 @@ Get current system configuration.
 ```
 
 #### PUT /config
-Update system configuration.
 
-**Request Body**
+Updates the system configuration.
+
+**Request Body:**
+
 ```json
 {
   "domain": "media.example.com",
@@ -61,9 +71,11 @@ Update system configuration.
 ### Services
 
 #### GET /services
-List all services and their status.
 
-**Response**
+Lists all services and their status.
+
+**Response:**
+
 ```json
 {
   "services": [
@@ -84,25 +96,31 @@ List all services and their status.
 ```
 
 #### POST /services/{name}/restart
-Restart a specific service.
 
-**Parameters**
-- name: Service name (e.g., plex, sonarr)
+Restarts a specific service.
+
+**Parameters:**
+
+* `name`: Service name (e.g., plex, sonarr)
 
 ### Monitoring
 
 #### WebSocket Connection
+
 Connect to the monitoring WebSocket endpoint for real-time updates:
+
 ```
 ws://localhost:3001/monitoring
 ```
 
-**Events**
-- `metrics`: Real-time system metrics
-- `alert`: New system alerts
-- `status`: Service status changes
+**Events:**
 
-Example WebSocket message:
+* `metrics`: Real-time system metrics
+* `alert`: New system alerts
+* `status`: Service status changes
+
+**Example WebSocket Message:**
+
 ```json
 {
   "type": "metrics",
@@ -140,14 +158,17 @@ Example WebSocket message:
 ```
 
 #### GET /metrics/history
-Get historical system metrics.
 
-**Query Parameters**
-- start: Start timestamp (ISO 8601)
-- end: End timestamp (ISO 8601)
-- resolution: Data point interval (e.g., "5m", "1h")
+Retrieves historical system metrics.
 
-**Response**
+**Query Parameters:**
+
+* `start`: Start timestamp (ISO 8601)
+* `end`: End timestamp (ISO 8601)
+* `resolution`: Data point interval (e.g., "5m", "1h")
+
+**Response:**
+
 ```json
 {
   "metrics": [
@@ -175,9 +196,11 @@ Get historical system metrics.
 ```
 
 #### GET /metrics/current
-Get current system metrics snapshot.
 
-**Response**
+Retrieves the current system metrics snapshot.
+
+**Response:**
+
 ```json
 {
   "timestamp": "2025-02-15T22:45:00Z",
@@ -207,14 +230,17 @@ Get current system metrics snapshot.
 ```
 
 #### GET /alerts
-Get system alerts.
 
-**Query Parameters**
-- level: Alert level (info, warning, error)
-- limit: Number of alerts (default: 100)
-- since: Timestamp to fetch alerts from
+Retrieves system alerts.
 
-**Response**
+**Query Parameters:**
+
+* `level`: Alert level (info, warning, error)
+* `limit`: Number of alerts (default: 100)
+* `since`: Timestamp to fetch alerts from
+
+**Response:**
+
 ```json
 {
   "alerts": [
@@ -236,9 +262,11 @@ Get system alerts.
 ```
 
 #### GET /services/health
-Get detailed service health status.
 
-**Response**
+Retrieves detailed service health status.
+
+**Response:**
+
 ```json
 {
   "services": [
@@ -258,9 +286,11 @@ Get detailed service health status.
 ```
 
 #### POST /alerts/settings
-Update alert settings.
 
-**Request Body**
+Updates alert settings.
+
+**Request Body:**
+
 ```json
 {
   "thresholds": {
@@ -288,14 +318,17 @@ Update alert settings.
 ### Logs
 
 #### GET /logs
-Get system logs.
 
-**Query Parameters**
-- level: Log level (info, warn, error)
-- limit: Number of log entries (default: 100)
-- since: Timestamp to fetch logs from
+Retrieves system logs.
 
-**Response**
+**Query Parameters:**
+
+* `level`: Log level (info, warn, error)
+* `limit`: Number of log entries (default: 100)
+* `since`: Timestamp to fetch logs from
+
+**Response:**
+
 ```json
 {
   "logs": [
@@ -316,105 +349,132 @@ Get system logs.
 ## Service-Specific APIs
 
 ### Plex Media Server
-Base URL: `http://localhost:32400`
+
+* **Base URL:** `http://localhost:32400`
 
 #### Authentication
+
 Requires Plex token in headers:
+
 ```
 X-Plex-Token: your_plex_token
 ```
 
 #### Key Endpoints
-- GET `/library/sections`: List all library sections
-- GET `/library/sections/{id}/all`: Get all items in a section
-- GET `/status/sessions`: Get current playback sessions
-- POST `/library/sections/{id}/refresh`: Refresh a library section
+
+* `GET /library/sections`: Lists all library sections
+* `GET /library/sections/{id}/all`: Retrieves all items in a section
+* `GET /status/sessions`: Retrieves current playback sessions
+* `POST /library/sections/{id}/refresh`: Refreshes a library section
 
 ### Sonarr
-Base URL: `http://localhost:8989/api/v3`
+
+* **Base URL:** `http://localhost:8989/api/v3`
 
 #### Authentication
+
 Requires API key in headers:
+
 ```
 X-Api-Key: your_sonarr_api_key
 ```
 
 #### Key Endpoints
-- GET `/series`: List all series
-- POST `/series`: Add a new series
-- GET `/queue`: Get download queue
-- POST `/command`: Send commands (e.g., refresh series)
+
+* `GET /series`: Lists all series
+* `POST /series`: Adds a new series
+* `GET /queue`: Retrieves the download queue
+* `POST /command`: Sends commands (e.g., refresh series)
 
 ### Radarr
-Base URL: `http://localhost:7878/api/v3`
+
+* **Base URL:** `http://localhost:7878/api/v3`
 
 #### Authentication
+
 Requires API key in headers:
+
 ```
 X-Api-Key: your_radarr_api_key
 ```
 
 #### Key Endpoints
-- GET `/movie`: List all movies
-- POST `/movie`: Add a new movie
-- GET `/queue`: Get download queue
-- POST `/command`: Send commands (e.g., refresh movies)
+
+* `GET /movie`: Lists all movies
+* `POST /movie`: Adds a new movie
+* `GET /queue`: Retrieves the download queue
+* `POST /command`: Sends commands (e.g., refresh movies)
 
 ### Prowlarr
-Base URL: `http://localhost:9696/api/v1`
+
+* **Base URL:** `http://localhost:9696/api/v1`
 
 #### Authentication
+
 Requires API key in headers:
+
 ```
 X-Api-Key: your_prowlarr_api_key
 ```
 
 #### Key Endpoints
-- GET `/indexer`: List all indexers
-- POST `/indexer/test/{id}`: Test an indexer
-- GET `/health`: Get system health
+
+* `GET /indexer`: Lists all indexers
+* `POST /indexer/test/{id}`: Tests an indexer
+* `GET /health`: Retrieves system health
+
 
 ### Overseerr
-Base URL: `http://localhost:5055/api/v1`
+
+* **Base URL:** `http://localhost:5055/api/v1`
 
 #### Authentication
+
 Requires API key in headers:
+
 ```
 X-Api-Key: your_overseerr_api_key
 ```
 
 #### Key Endpoints
-- GET `/request`: List all requests
-- POST `/request`: Create new request
-- GET `/user`: List all users
-- GET `/status`: Get system status
+
+* `GET /request`: Lists all requests
+* `POST /request`: Creates a new request
+* `GET /user`: Lists all users
+* `GET /status`: Retrieves system status
 
 ### Tautulli
-Base URL: `http://localhost:8181/api/v2`
+
+* **Base URL:** `http://localhost:8181/api/v2`
 
 #### Authentication
-Requires API key as query parameter:
+
+Requires API key as a query parameter:
+
 ```
 ?apikey=your_tautulli_api_key
 ```
 
 #### Key Endpoints
-- GET `/get_activity`: Get current activity
-- GET `/get_libraries`: Get all libraries
-- GET `/get_history`: Get watch history
-- GET `/get_users`: Get all users
+
+* `GET /get_activity`: Retrieves current activity
+* `GET /get_libraries`: Retrieves all libraries
+* `GET /get_history`: Retrieves watch history
+* `GET /get_users`: Retrieves all users
 
 ## Error Handling
 
 All endpoints follow standard HTTP status codes:
-- 200: Success
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 500: Internal Server Error
+
+* 200: Success
+* 400: Bad Request
+* 401: Unauthorized
+* 403: Forbidden
+* 404: Not Found
+* 500: Internal Server Error
 
 Error responses include details:
+
 ```json
 {
   "error": {
@@ -426,14 +486,17 @@ Error responses include details:
 ```
 
 ## Rate Limiting
+
 API requests are limited to 100 requests per minute per IP address.
 
 ## Versioning
+
 The API follows semantic versioning. Breaking changes will result in a new major version number.
 
 ## Integration Examples
 
 ### Python Example
+
 ```python
 import requests
 import websockets
@@ -487,6 +550,7 @@ def add_movie_to_radarr(api_key, tmdb_id, base_url="http://localhost:7878"):
 ```
 
 ### JavaScript Example
+
 ```javascript
 // Monitoring WebSocket Client
 class MonitoringClient {

@@ -4,165 +4,171 @@ Before deploying your Monsterr Media Server, use this checklist to ensure everyt
 
 ## System Requirements
 
-- [ ] Ubuntu 20.04+ or Debian-based system
-- [ ] Minimum 2 CPU cores
-- [ ] Minimum 4GB RAM
-- [ ] Minimum 20GB free disk space
-- [ ] Active internet connection
-- [ ] Required ports (80, 443, 81) available
+*   [ ] Ubuntu 20.04+ or Debian-based system
+*   [ ] Minimum 2 CPU cores
+*   [ ] Minimum 4GB RAM
+*   [ ] Minimum 20GB free disk space
+*   [ ] Active internet connection
+*   [ ] Required ports (80, 443, 81) available
 
 ## Network Configuration
 
-- [ ] Static IP configured (if not using DDNS)
-- [ ] DDNS configured (if using dynamic IP)
-- [ ] Router port forwarding set up:
-  - [ ] Port 80 (HTTP)
-  - [ ] Port 443 (HTTPS)
-  - [ ] Port 81 (NPM Admin)
-  - [ ] Custom SSH port (if configured)
-- [ ] DNS records configured:
-  - [ ] A record for main domain
-  - [ ] CNAME/A records for subdomains
-  - [ ] DNS propagation verified
+*   [ ] Static IP configured (if not using DDNS)
+*   [ ] DDNS configured (if using dynamic IP)
+*   [ ] Router port forwarding set up:
+    *   [ ] Port 80 (HTTP)
+    *   [ ] Port 443 (HTTPS)
+    *   [ ] Port 81 (NPM Admin)
+    *   [ ] Custom SSH port (if configured)
+*   [ ] DNS records configured:
+    *   [ ] A record for the main domain
+    *   [ ] CNAME/A records for subdomains
+    *   [ ] DNS propagation verified
 
 ## Directory Structure
 
-- [ ] Media directory exists and is writable
-  - [ ] Correct ownership (PUID:PGID)
-  - [ ] Proper permissions (755)
-  - [ ] Sufficient disk space
-- [ ] Downloads directory exists and is writable
-  - [ ] Correct ownership (PUID:PGID)
-  - [ ] Proper permissions (755)
-  - [ ] Sufficient disk space
-- [ ] External drives mounted (if used)
-  - [ ] Mount points exist
-  - [ ] fstab entries added
-  - [ ] Mounts verified
+*   [ ] Media directory exists and is writable:
+    *   [ ] Correct ownership (PUID:PGID)
+    *   [ ] Proper permissions (755)
+    *   [ ] Sufficient disk space
+*   [ ] Downloads directory exists and is writable:
+    *   [ ] Correct ownership (PUID:PGID)
+    *   [ ] Proper permissions (755)
+    *   [ ] Sufficient disk space
+*   [ ] External drives mounted (if used):
+    *   [ ] Mount points exist
+    *   [ ] `/etc/fstab` entries added
+    *   [ ] Mounts verified
 
 ## Security Configuration
 
-- [ ] UFW firewall enabled (if selected)
-  - [ ] Required ports open
-  - [ ] Default deny policy active
-- [ ] Fail2Ban configured (if selected)
-  - [ ] SSH jail active
-  - [ ] NPM jail active
-- [ ] Custom SSH port configured (if used)
-  - [ ] Port forwarding updated
-  - [ ] UFW rules updated
-- [ ] SSL certificates ready
-  - [ ] Domain validation possible
-  - [ ] Email for Let's Encrypt notifications
+*   [ ] UFW firewall enabled (if selected):
+    *   [ ] Required ports open
+    *   [ ] Default deny policy active
+*   [ ] Fail2Ban configured (if selected):
+    *   [ ] SSH jail active
+    *   [ ] NPM jail active
+*   [ ] Custom SSH port configured (if used):
+    *   [ ] Port forwarding updated
+    *   [ ] UFW rules updated
+*   [ ] SSL certificates ready:
+    *   [ ] Domain validation possible
+    *   [ ] Email for Let's Encrypt notifications
 
 ## Docker Configuration
 
-- [ ] Docker installed
-- [ ] Docker Compose installed
-- [ ] Docker service active
-- [ ] User added to docker group
-- [ ] Docker networks created:
-  - [ ] proxy network
-  - [ ] downloads network
+*   [ ] Docker installed
+*   [ ] Docker Compose installed
+*   [ ] Docker service active
+*   [ ] User added to the docker group
+*   [ ] Docker networks created:
+    *   [ ] `proxy` network
+    *   [ ] `downloads` network
 
 ## Service Configuration
 
-- [ ] config.env file exists
-  - [ ] All required variables set
-  - [ ] Paths correctly configured
-  - [ ] Credentials set
-- [ ] Service selection completed
-  - [ ] Dependencies resolved
-  - [ ] Ports verified
-- [ ] Docker Compose files generated
-  - [ ] Volume mounts correct
-  - [ ] Network configuration correct
+*   [ ] `config.env` file exists:
+    *   [ ] All required variables set
+    *   [ ] Paths correctly configured
+    *   [ ] Credentials set
+*   [ ] Service selection completed:
+    *   [ ] Dependencies resolved
+    *   [ ] Ports verified
+*   [ ] Docker Compose files generated:
+    *   [ ] Volume mounts correct
+    *   [ ] Network configuration correct
 
 ## Web Interface
 
-- [ ] Web interface accessible
-- [ ] Forms working correctly
-- [ ] Configuration saving properly
-- [ ] Responsive design working
+*   [ ] Web interface accessible
+*   [ ] Forms working correctly
+*   [ ] Configuration saving properly
+*   [ ] Responsive design working
 
 ## Backup Preparation
 
-- [ ] Backup directory configured
-- [ ] Backup schedule set
-- [ ] Test backup possible
-- [ ] Restore procedure documented
+*   [ ] Backup directory configured
+*   [ ] Backup schedule set
+*   [ ] Test backup possible
+*   [ ] Restore procedure documented
 
 ## Documentation
 
-- [ ] Installation guide reviewed
-- [ ] Configuration steps documented
-- [ ] Custom paths noted
-- [ ] Recovery procedures documented
-- [ ] User instructions clear
+*   [ ] Installation guide reviewed
+*   [ ] Configuration steps documented
+*   [ ] Custom paths noted
+*   [ ] Recovery procedures documented
+*   [ ] User instructions clear
 
 ## Testing Environment
 
-- [ ] Clean test environment available
-- [ ] Required tools installed:
-  - [ ] Git
-  - [ ] curl
-  - [ ] wget
-  - [ ] netstat
-  - [ ] Python 3
-- [ ] Test user accounts ready
-- [ ] Test data available
+*   [ ] Clean test environment available
+*   [ ] Required tools installed:
+    *   [ ] Git
+    *   [ ] `curl`
+    *   [ ] `wget`
+    *   [ ] `netstat`
+    *   [ ] Python 3
+*   [ ] Test user accounts ready
+*   [ ] Test data available
 
 ## Post-Deployment Verification
 
-- [ ] post_install_check.sh ready
-- [ ] Container health checks configured
-- [ ] Monitoring setup prepared
-- [ ] Logging configured
-- [ ] Backup verification planned
+*   [ ] `post_install_check.sh` ready
+*   [ ] Container health checks configured
+*   [ ] Monitoring setup prepared
+*   [ ] Logging configured
+*   [ ] Backup verification planned
 
 ## Recovery Plan
 
-- [ ] Backup strategy documented
-- [ ] Restore procedures tested
-- [ ] Rollback plan prepared
-- [ ] Configuration backups ready
-- [ ] Emergency contacts listed
+*   [ ] Backup strategy documented
+*   [ ] Restore procedures tested
+*   [ ] Rollback plan prepared
+*   [ ] Configuration backups ready
+*   [ ] Emergency contacts listed
 
 ## Notes
 
-- Document any custom configurations or special requirements
-- Note any deviations from default settings
-- List any environment-specific considerations
-- Record any known issues or limitations
+*   Document any custom configurations or special requirements.
+*   Note any deviations from default settings.
+*   List any environment-specific considerations.
+*   Record any known issues or limitations.
 
 ## Final Checks
 
-1. Run system requirements check:
-   ```bash
-   sudo ./install_media_server.sh --check-only
-   ```
+1.  Run system requirements check:
 
-2. Verify network configuration:
-   ```bash
-   sudo ./scripts/post_install_check.sh --network
-   ```
+    ```bash
+    sudo ./install_media_server.sh --check-only
+    ```
 
-3. Test security settings:
-   ```bash
-   sudo ./scripts/post_install_check.sh --security
-   ```
+2.  Verify network configuration:
 
-4. Validate directory permissions:
-   ```bash
-   sudo ./scripts/post_install_check.sh --permissions
-   ```
+    ```bash
+    sudo ./scripts/post_install_check.sh --network
+    ```
 
-5. Check service configuration:
-   ```bash
-   sudo ./scripts/post_install_check.sh --services
-   ```
+3.  Test security settings:
+
+    ```bash
+    sudo ./scripts/post_install_check.sh --security
+    ```
+
+4.  Validate directory permissions:
+
+    ```bash
+    sudo ./scripts/post_install_check.sh --permissions
+    ```
+
+5.  Check service configuration:
+
+    ```bash
+    sudo ./scripts/post_install_check.sh --services
+    ```
 
 Once all items are checked and verified, you can proceed with the deployment by running:
+
 ```bash
 sudo ./install_media_server.sh
 ```

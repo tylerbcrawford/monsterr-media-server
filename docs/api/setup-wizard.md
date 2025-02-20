@@ -1,12 +1,15 @@
-# Setup Wizard API & UI Documentation
+# Setup Wizard API and UI Documentation
 
 ## Overview
+
 The Setup Wizard provides a streamlined interface for configuring and deploying the Monsterr Media Server. It consists of both a React-based UI and supporting API endpoints.
 
 ## UI Components
 
 ### Setup Wizard Navigation
+
 The wizard uses a standardized navigation bar with six steps:
+
 1. System
 2. Services
 3. Storage
@@ -15,12 +18,13 @@ The wizard uses a standardized navigation bar with six steps:
 6. Deploy
 
 Each step is represented by a menu bubble with:
-- Fixed width (120px)
-- Center-aligned text
-- State-based styling:
-  - Active: Blue (#1976d2)
-  - Completed: Green (#4caf50)
-  - Inactive: Gray (#e0e0e0)
+
+* Fixed width (120px)
+* Center-aligned text
+* State-based styling:
+    * Active: Blue (#1976d2)
+    * Completed: Green (#4caf50)
+    * Inactive: Gray (#e0e0e0)
 
 ```jsx
 // Example StepBubble component usage
@@ -34,9 +38,10 @@ Each step is represented by a menu bubble with:
 
 ## API Endpoints
 
-All API endpoints are prefixed with `/api/setup/`
+All API endpoints are prefixed with `/api/setup/`.
 
 ### System Check
+
 Validates system requirements and dependencies.
 
 ```http
@@ -44,6 +49,7 @@ POST /api/setup/system-check
 ```
 
 #### Response
+
 ```json
 {
   "cpu": {
@@ -69,6 +75,7 @@ POST /api/setup/system-check
 ```
 
 ### Validate Path
+
 Validates and creates storage paths if they don't exist.
 
 ```http
@@ -76,6 +83,7 @@ POST /api/setup/validate-path
 ```
 
 #### Request Body
+
 ```json
 {
   "path": "/opt/media-server/media"
@@ -83,6 +91,7 @@ POST /api/setup/validate-path
 ```
 
 #### Response
+
 ```json
 {
   "valid": true,
@@ -92,6 +101,7 @@ POST /api/setup/validate-path
 ```
 
 ### Validate Domain
+
 Validates domain configuration and DNS resolution.
 
 ```http
@@ -99,6 +109,7 @@ POST /api/setup/validate-domain
 ```
 
 #### Request Body
+
 ```json
 {
   "domain": "media.example.com"
@@ -106,6 +117,7 @@ POST /api/setup/validate-domain
 ```
 
 #### Response
+
 ```json
 {
   "valid": true
@@ -113,6 +125,7 @@ POST /api/setup/validate-domain
 ```
 
 ### Check Port
+
 Checks if a network port is available.
 
 ```http
@@ -120,6 +133,7 @@ POST /api/setup/check-port
 ```
 
 #### Request Body
+
 ```json
 {
   "port": 80
@@ -127,6 +141,7 @@ POST /api/setup/check-port
 ```
 
 #### Response
+
 ```json
 {
   "available": true
@@ -134,6 +149,7 @@ POST /api/setup/check-port
 ```
 
 ### Create Directories
+
 Creates required system directories.
 
 ```http
@@ -141,6 +157,7 @@ POST /api/setup/create-directories
 ```
 
 #### Response
+
 ```json
 {
   "success": true
@@ -148,6 +165,7 @@ POST /api/setup/create-directories
 ```
 
 ### Pull Docker Images
+
 Pulls required Docker images.
 
 ```http
@@ -155,6 +173,7 @@ POST /api/setup/pull-images
 ```
 
 #### Response
+
 ```json
 {
   "success": true
@@ -162,6 +181,7 @@ POST /api/setup/pull-images
 ```
 
 ### Deploy Services
+
 Deploys configured services.
 
 ```http
@@ -169,6 +189,7 @@ POST /api/setup/deploy
 ```
 
 #### Request Body
+
 ```json
 {
   "config": {
@@ -196,6 +217,7 @@ POST /api/setup/deploy
 ```
 
 #### Response
+
 ```json
 {
   "success": true
@@ -213,26 +235,30 @@ All endpoints return error responses in the following format:
 ```
 
 ### HTTP Status Codes
-- 200: Success
-- 400: Bad Request (invalid input)
-- 500: Internal Server Error
+
+* 200: Success
+* 400: Bad Request (invalid input)
+* 500: Internal Server Error
 
 ## Rate Limiting
-- Maximum 60 requests per minute per IP
-- Rate limit headers included in responses:
-  - X-RateLimit-Limit
-  - X-RateLimit-Remaining
-  - X-RateLimit-Reset
+
+* Maximum 60 requests per minute per IP
+* Rate limit headers included in responses:
+    * `X-RateLimit-Limit`
+    * `X-RateLimit-Remaining`
+    * `X-RateLimit-Reset`
 
 ## Security
-- All endpoints require CSRF token
-- Headers required:
-  - X-CSRF-Token
-  - Content-Type: application/json
+
+* All endpoints require a CSRF token.
+* Required Headers:
+    * `X-CSRF-Token`
+    * `Content-Type: application/json`
 
 ## Example Usage
 
 ### React Component
+
 ```jsx
 import React, { useState } from 'react';
 import { StepBubble } from './components';
@@ -266,6 +292,7 @@ const SetupWizard = () => {
 ```
 
 ### API Integration
+
 ```javascript
 import axios from 'axios';
 
@@ -304,19 +331,23 @@ const deploy = async (config) => {
 ```
 
 ## WebSocket Events
-The setup wizard provides real-time updates through WebSocket connections:
+
+The setup wizard provides real-time updates through WebSocket connections.
 
 ### Connection
+
 ```javascript
 const socket = io('/setup');
 ```
 
 ### Events
-- `system:update`: System status updates
-- `deployment:progress`: Deployment progress updates
-- `service:status`: Service status changes
+
+* `system:update`: System status updates
+* `deployment:progress`: Deployment progress updates
+* `service:status`: Service status changes
 
 ### Example WebSocket Usage
+
 ```javascript
 socket.on('deployment:progress', (data) => {
   console.log('Deployment progress:', data.progress);
@@ -332,12 +363,14 @@ socket.on('service:status', (data) => {
 ## Version History
 
 ### v1.1.0 (2025-02-15)
-- Added standardized menu bubble interface
-- Updated step labels for better clarity
-- Added UI component documentation
-- Improved state management examples
+
+* Added standardized menu bubble interface
+* Updated step labels for better clarity
+* Added UI component documentation
+* Improved state management examples
 
 ### v1.0.0 (2025-01-01)
-- Initial release of setup wizard
-- Basic API endpoints
-- WebSocket integration
+
+* Initial release of setup wizard
+* Basic API endpoints
+* WebSocket integration

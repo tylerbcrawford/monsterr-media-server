@@ -12,31 +12,31 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 When reporting bugs, please include as many details as possible:
 
-* Use a clear and descriptive title
-* Describe the exact steps to reproduce the problem
-* Provide specific examples to demonstrate the steps
-* Include the debug information from `collect_debug_info.sh`
-* Describe the behavior you observed and what behavior you expected
-* Include screenshots if possible
+*   Use a clear and descriptive title.
+*   Describe the exact steps to reproduce the problem.
+*   Provide specific examples to demonstrate the steps.
+*   Include the debug information from `collect_debug_info.sh`.
+*   Describe the behavior you observed and the behavior you expected.
+*   Include screenshots if possible.
 
 ### Suggesting Enhancements
 
 When suggesting enhancements, please include:
 
-* A clear and descriptive title
-* A detailed description of the proposed functionality
-* Any possible implementation details you have in mind
-* Why this enhancement would be useful to most users
+*   A clear and descriptive title.
+*   A detailed description of the proposed functionality.
+*   Any possible implementation details you have in mind.
+*   An explanation of why this enhancement would be useful to most users.
 
 ### Development Process
 
-1. Fork the repository
-2. Create a new branch for your feature
-3. Make your changes
-4. Run tests and linting
-5. Submit your changes
+1.  Fork the repository.
+2.  Create a new branch for your feature.
+3.  Make your changes.
+4.  Run tests and linting.
+5.  Submit your changes.
 
-### Setting Up Development Environment
+### Setting Up a Development Environment
 
 ```bash
 # Clone the repository
@@ -46,7 +46,7 @@ cd monsterr-media-server
 # Install dependencies
 sudo ./scripts/install/install_dependencies.sh
 
-# Set up web interface
+# Set up the web interface
 cd src/web_interface
 npm install
 ```
@@ -67,46 +67,46 @@ npm install
 
 #### Git Commit Messages
 
-* Use the present tense ("Add feature" not "Added feature")
-* Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
-* Limit the first line to 72 characters or less
-* Consider starting the commit message with an applicable emoji:
-    * 🎨 `:art:` when improving the format/structure of the code
-    * 🐛 `:bug:` when fixing a bug
-    * ✨ `:sparkles:` when adding a new feature
-    * 📝 `:memo:` when writing docs
-    * 🔧 `:wrench:` when updating configuration
-    * ⚡️ `:zap:` when improving performance
-    * 🔒 `:lock:` when dealing with security
+*   Use the present tense ("Add feature" not "Added feature").
+*   Use the imperative mood ("Move cursor to..." not "Moves cursor to...").
+*   Limit the first line to 72 characters or less.
+*   Consider starting the commit message with an applicable emoji:
+    *   🎨 `:art:` when improving the format/structure of the code
+    *   🐛 `:bug:` when fixing a bug
+    *   ✨ `:sparkles:` when adding a new feature
+    *   📝 `:memo:` when writing docs
+    *   🔧 `:wrench:` when updating configuration
+    *   ⚡️ `:zap:` when improving performance
+    *   🔒 `:lock:` when dealing with security
 
 #### JavaScript Style Guide
 
-* Use ESLint with the provided configuration
-* Follow the Prettier formatting rules
-* Use ES6+ features when appropriate
-* Add JSDoc comments for functions and complex code blocks
+*   Use ESLint with the provided configuration.
+*   Follow the Prettier formatting rules.
+*   Use ES6+ features when appropriate.
+*   Add JSDoc comments for functions and complex code blocks.
 
 #### Shell Script Style Guide
 
-* Follow [Google's Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
-* Use ShellCheck to validate scripts
-* Include usage documentation in script headers
-* Add error handling and logging
+*   Follow [Google's Shell Style Guide](https://google.github.io/styleguide/shellguide.html).
+*   Use ShellCheck to validate scripts.
+*   Include usage documentation in script headers.
+*   Add error handling and logging.
 
 #### Documentation Style Guide
 
-* Use Markdown for documentation
-* Keep line length to 80 characters
-* Use atx-style headers with a space after the #
-* Include code examples when relevant
-* Update table of contents when adding sections
+*   Use Markdown for documentation.
+*   Keep line length to 80 characters.
+*   Use atx-style headers with a space after the `#`.
+*   Include code examples when relevant.
+*   Update the table of contents when adding sections.
 
 ### Testing
 
-* Write unit tests for new features
-* Ensure all tests pass before submitting changes
-* Include integration tests when appropriate
-* Test on multiple platforms if possible
+*   Write unit tests for new features.
+*   Ensure all tests pass before submitting changes.
+*   Include integration tests when appropriate.
+*   Test on multiple platforms if possible.
 
 ```bash
 # Run unit tests
@@ -120,15 +120,15 @@ cd tests/integration
 
 ### Documentation
 
-* Update README.md if needed
-* Add/update API documentation
-* Include inline code documentation
-* Update guides as necessary
+*   Update `README.md` if needed.
+*   Add/update API documentation.
+*   Include inline code documentation.
+*   Update guides as necessary.
 
 ## Questions?
 
-* Check the [Troubleshooting Guide](docs/guides/troubleshooting.md)
-* Join our [Discord community](https://discord.gg/your-server)
+*   Check the [Troubleshooting Guide](docs/guides/troubleshooting.md).
+*   Join our [Discord community](https://discord.gg/your-server).
 
 ## License
 
