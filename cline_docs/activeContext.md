@@ -2,14 +2,13 @@
 
 ## Current Focus
 
-Documentation updates and preparing for beta testing.
+Organizing project files and preparing for beta testing.
 
 ## Recent Changes
 
-*   Consolidated installation guides into a single document.
-*   Created a documentation style guide and updated existing documentation to adhere to it.
-*   Added practical examples and a placeholder visual aid to the installation guide.  Further visual aids will be added later.
-*   Updated memory bank files to reflect the latest documentation changes.
+*   Organized preview HTML files into a dedicated `previews/` directory with subdirectories for `setup/`, `dashboard/`, and `general/`.
+*   Moved `install_media_server.sh` back to the root directory.
+*   Staged all changes and pushed them to GitHub.
 
 ## Next Steps
 
@@ -19,5 +18,6 @@ Documentation updates and preparing for beta testing.
 
 ## Current Status
 
+*   Project files organized.
 *   Documentation updates are in progress.
 *   Beta testing is the next major milestone.
