@@ -33,8 +33,17 @@
 *   ✅ Improved error handling
 *   ✅ Added service-specific setup steps
 *   ✅ Updated configuration persistence
+*   ✅ Created comprehensive setup wizard refinement plan
 
 ## In Progress
+
+### Setup Wizard Refinement (HIGH)
+
+*   🔄 Split services page into System-Related and Media-Related pages
+*   🔄 Add "Select All" functionality for service categories
+*   🔄 Implement inline warnings for deselected required services
+*   🔄 Apply initial visual design updates according to design guide
+*   🔄 Document future visual enhancements
 
 ### Security Improvements (HIGH)
 
@@ -104,6 +113,12 @@
 *   Current: Security review needed
 *   Status: Improvements planned
 
+### User Experience
+
+*   Target: Intuitive, streamlined setup process
+*   Current: Basic setup wizard implemented, refinement plan created
+*   Status: Implementation of refinements in progress
+
 ## Timeline
 
 ### Phase 1: Critical Issues (Weeks 1-3)
@@ -130,3 +145,4 @@
 *   Critical issues identified
 *   Timeline defined
 *   Resource requirements documented
+*   Setup wizard refinement plan created and documented
