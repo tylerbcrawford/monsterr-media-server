@@ -47,6 +47,13 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Enhanced UI elements for better visibility and consistency:
   * Updated checkbox styling to be monochromatic with white checkmarks
   * Improved stepper navigation visibility in both themes
+  * Redesigned theme toggle with minimal aesthetic:
+    * Removed separator line for cleaner look
+    * Added sun/moon material icons for theme indication
+    * Improved spacing and positioning in title area
+    * Integrated cleanly with header without disrupting layout
+  * Enhanced stepper bubbles with uppercase text and improved dark mode visibility
+  * Fixed active step hover state to maintain blue background color
   * Unified all chips with consistent background and border styling
   * Enhanced "Select All" button contrast for better readability
   * Ensured all elements maintain proper visibility in both light and dark modes
@@ -90,6 +97,8 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Visual design updates have been applied according to the design guide.
 * Dark mode has been implemented as the default theme with a toggle to switch to light mode.
 * Shared CSS architecture has been implemented for better maintainability.
+* Theme toggle has been redesigned with a minimal, icon-based approach.
+* Stepper navigation has been enhanced with improved text formatting and dark mode visibility.
 * Typography and styling have been standardized across all pages.
 * Project files are organized.
 * Documentation updates are in progress.
