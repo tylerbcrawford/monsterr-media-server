@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services (1/2) - Monsterr Media Server Setup</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        /* Base styles */
+        :root {
+            --primary-blue: #00AEEF;
+            --primary-green: #00B398;
+            --primary-yellow: #FFD700;
+            --primary-red: #F93822;
+            --background-primary: #F5F5F5;
+            --background-secondary: rgba(204, 204, 204, 0.1);
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --text-light: #999999;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'SF Pro', 'Roboto', sans-serif;
+            background-color: var(--background-primary);
+            color: var(--text-dark);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .paper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            padding: 2rem;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        /* Updated stepper styles */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            padding: 0 1rem;
+            gap: 1rem;
+        }
+        .step {
+            background: #e0e0e0;
+            color: var(--text-medium);
+            padding: 0.5rem 0;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            width: 120px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .step.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .step.completed {
+            background: var(--primary-green);
+            color: white;
+        }
+        /* Rest of the existing styles */
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        p {
+            font-size: 0.875rem;
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+        }
+        .resource-summary {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .resource-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        .resource-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .resource-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .resource-value {
+            font-size: 0.875rem;
+            color: var(--text-dark);
+        }
+        .info-box {
+            background: var(--background-secondary);
+            border-left: 4px solid var(--primary-blue);
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+        .info-box p {
+            font-size: 0.875rem;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .accordion {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .accordion-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .accordion-header-left {
+            display: flex;
+            align-items: center;
+        }
+        .select-all-btn {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+        .select-all-btn:hover {
+            background: #e0e0e0;
+        }
+        .accordion-content {
+            padding: 1.5rem;
+        }
+        .service-description {
+            font-size: 0.875rem;
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+        }
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .service-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .service-item-content {
+            flex: 1;
+        }
+        .service-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        .service-desc {
+            font-size: 0.875rem;
+            color: var(--text-medium);
+        }
+        .service-warning {
+            background: var(--background-secondary);
+            border-left: 4px solid var(--primary-yellow);
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-dark);
+            border-radius: 0 4px 4px 0;
+        }
+        .chip {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            display: inline-block;
+        }
+        .chip-required {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .chip-dependency {
+            background: var(--primary-yellow);
+            color: var(--text-dark);
+        }
+        .chip-security {
+            background: var(--primary-green);
+            color: white;
+        }
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.5rem;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="paper">
+            <h1>Monsterr Media Server Setup</h1>
+            
+            <div class="stepper">
+                <a href="preview-step1.html" class="step completed">System</a>
+                <a href="preview-step2-system.html" class="step active">Services (1/2)</a>
+                <a href="preview-step2-media.html" class="step">Services (2/2)</a>
+                <a href="preview-step3.html" class="step">Storage</a>
+                <a href="preview-step4.html" class="step">Network</a>
+                <a href="preview-step5.html" class="step">Security</a>
+                <a href="preview-step6.html" class="step">Deploy</a>
+            </div>
+
+            <h2>Select System Services</h2>
+            <p>Choose the system-related services you want to install. You can deselect required services, but this may cause issues with system functionality.</p>
+
+            <div class="resource-summary">
+                <div class="resource-header">
+                    <div class="resource-title">Resource Summary</div>
+                    <div class="resource-stats">
+                        <div class="resource-value">CPU Cores: 3</div>
+                        <div class="resource-value">Memory: 1.2GB</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <p>These are estimated minimum requirements. Actual usage may vary based on your media library size and usage patterns.</p>
+                </div>
+            </div>
+
+            <!-- Services sections -->
+            <div class="services">
+                <!-- Core Infrastructure -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <div class="accordion-header-left">
+                            Core Infrastructure
+                            <span class="chip chip-required">Required</span>
+                        </div>
+                        <button class="select-all-btn">Select All</button>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="service-description">Essential services for system operation</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked>
+                                <div class="service-item-content">
+                                    <div class="service-name">Nginx Proxy Manager</div>
+                                    <div class="service-desc">Reverse proxy for managing access to services</div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked>
+                                <div class="service-item-content">
+                                    <div class="service-name">Authelia</div>
+                                    <div class="service-desc">Two-factor authentication and SSO</div>
+                                    
+                                    <div class="service-warning" style="display: none;">
+                                        WARNING: This is a required service. Not installing it may cause issues with authentication and security.
+                                    </div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked>
+                                <div class="service-item-content">
+                                    <div class="service-name">Redis</div>
+                                    <div class="service-desc">Session management for Authelia</div>
+                                    
+                                    <div class="service-warning" style="display: none;">
+                                        WARNING: This is a required service. Not installing it may cause issues with authentication functionality.
+                                    </div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked>
+                                <div class="service-item-content">
+                                    <div class="service-name">Fail2Ban</div>
+                                    <div class="service-desc">Intrusion prevention system</div>
+                                    
+                                    <div class="service-warning" style="display: none;">
+                                        WARNING: This is a required service. Not installing it may cause security vulnerabilities.
+                                    </div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox" checked>
+                                <div class="service-item-content">
+                                    <div class="service-name">Portainer</div>
+                                    <div class="service-desc">Docker management interface</div>
+                                    
+                                    <div class="service-warning" style="display: none;">
+                                        WARNING: This is a required service. Not installing it may cause issues with system management.
+                                    </div>
+                                </div>
+                                <span class="chip chip-required">Required</span>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                                <span class="chip chip-security">Security Info</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remote Access - Moved up to be after Core Infrastructure -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <div class="accordion-header-left">
+                            Remote Access
+                        </div>
+                        <button class="select-all-btn">Select All</button>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="service-description">Secure remote desktop access</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">noVNC</div>
+                                    <div class="service-desc">Web-based VNC client with secure proxy</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                                <span class="chip chip-security">Security Info</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">VNC Server</div>
+                                    <div class="service-desc">Remote desktop server with KDE environment</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                                <span class="chip chip-security">Security Info</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Services -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <div class="accordion-header-left">
+                            Monitoring Services
+                        </div>
+                        <button class="select-all-btn">Select All</button>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="service-description">System monitoring and metrics</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Prometheus</div>
+                                    <div class="service-desc">Metrics collection</div>
+                                </div>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Grafana</div>
+                                    <div class="service-desc">Metrics visualization</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Tautulli</div>
+                                    <div class="service-desc">Plex statistics and monitoring</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Watchtower</div>
+                                    <div class="service-desc">Automatic container updates</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Utility Services -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <div class="accordion-header-left">
+                            Utility Services
+                        </div>
+                        <button class="select-all-btn">Select All</button>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="service-description">Additional utility and automation tools</div>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Recyclarr</div>
+                                    <div class="service-desc">Configuration management</div>
+                                </div>
+                                <span class="chip chip-dependency">Has Dependencies</span>
+                            </div>
+                            <div class="service-item">
+                                <input type="checkbox" class="checkbox">
+                                <div class="service-item-content">
+                                    <div class="service-name">Unpackerr</div>
+                                    <div class="service-desc">Automated extraction</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <a href="preview-step1.html" class="btn btn-secondary">Back</a>
+                <a href="preview-step2-media.html" class="btn btn-primary">Next</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add event listeners for checkboxes to show/hide warnings
+        document.addEventListener('DOMContentLoaded', function() {
+            const requiredCheckboxes = document.querySelectorAll('.service-item .checkbox');
+            
+            requiredCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const serviceItem = this.closest('.service-item');
+                    const warningElement = serviceItem.querySelector('.service-warning');
+                    const isRequired = serviceItem.querySelector('.chip-required') !== null;
+                    
+                    if (isRequired && warningElement) {
+                        if (!this.checked) {
+                            warningElement.style.display = 'block';
+                        } else {
+                            warningElement.style.display = 'none';
+                        }
+                    }
+                });
+            });
+
+            // Add event listeners for "Select All" buttons
+            const selectAllButtons = document.querySelectorAll('.select-all-btn');
+            
+            selectAllButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const accordion = this.closest('.accordion');
+                    const checkboxes = accordion.querySelectorAll('.checkbox');
+                    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                    
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = !allChecked;
+                        // Trigger the change event to update warnings
+                        const event = new Event('change');
+                        checkbox.dispatchEvent(event);
+                    });
+                    
+                    // Update button text
+                    this.textContent = allChecked ? 'Select All' : 'Deselect All';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

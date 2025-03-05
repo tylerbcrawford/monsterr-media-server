@@ -13,30 +13,36 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Planned a phased approach to visual design updates following the design guide.
 * Organized preview HTML files into a dedicated `previews/` directory with subdirectories for `setup/`, `dashboard/`, and `general/`.
 * Moved `install_media_server.sh` back to the root directory.
+* Implemented clickable navigation in the stepper for all setup wizard pages.
+* Split the services page into System-Related (Services 1/2) and Media-Related (Services 2/2) pages.
+* Added "Select All" buttons for each service category.
+* Implemented inline warnings for required services.
+* Applied initial visual design updates according to the design guide.
+* Reordered service categories on the System Services page to place Remote Access right after Core Infrastructure.
 
 ## Next Steps
 
-1. **Phase 1: Services Page Restructuring**
-   * Update navigation component to show "Services (1/2)" and "Services (2/2)"
-   * Create System Services Page with category selection
-   * Create Media Services Page with category selection
-   * Implement inline warning system for required services
-   * Update data management for split services pages
-
-2. **Phase 2: Visual Design Updates**
-   * Apply initial color updates from the design guide
-   * Update typography according to design guidelines
-   * Improve layout with better spacing and alignment
-   * Document future visual enhancements for later phases
-
-3. **Documentation and Testing**
-   * Update documentation to reflect the new setup wizard structure
+1. **Finalize Setup Wizard Refinement**
    * Test the new UI with various selection scenarios
    * Verify navigation between split pages works correctly
+   * Ensure all visual elements are consistent with the design guide
+
+2. **Documentation Updates**
+   * Update documentation to reflect the new setup wizard structure
+   * Document the new navigation flow
+   * Update screenshots in the documentation
+
+3. **Prepare for Beta Testing**
+   * Create a test plan for the refined setup wizard
+   * Identify key user scenarios to test
+   * Prepare feedback collection mechanism
 
 ## Current Status
 
-* Setup wizard refinement plan is complete and documented.
+* Setup wizard refinement plan has been implemented.
+* Services page has been split into two pages with improved organization.
+* Clickable navigation has been added to all setup wizard pages.
+* Visual design updates have been applied according to the design guide.
 * Project files are organized.
 * Documentation updates are in progress.
 * Beta testing preparation continues to be the next major milestone.

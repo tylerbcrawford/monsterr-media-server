@@ -6,10 +6,24 @@
     <title>Storage - Monsterr Media Server Setup</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <style>
+        /* Base styles with updated color palette */
+        :root {
+            --primary-blue: #00AEEF;
+            --primary-green: #00B398;
+            --primary-yellow: #FFD700;
+            --primary-red: #F93822;
+            --background-primary: #F5F5F5;
+            --background-secondary: rgba(204, 204, 204, 0.1);
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --text-light: #999999;
+        }
+        
         body {
             margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'SF Pro', 'Roboto', sans-serif;
+            background-color: var(--background-primary);
+            color: var(--text-dark);
         }
         .container {
             max-width: 1200px;
@@ -27,7 +41,9 @@
             font-size: 1.5rem;
             font-weight: 500;
             margin-bottom: 2rem;
-            color: #333;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         /* Updated stepper styles */
         .stepper {
@@ -39,7 +55,7 @@
         }
         .step {
             background: #e0e0e0;
-            color: #666;
+            color: var(--text-medium);
             padding: 0.5rem 0;
             border-radius: 100px;
             font-size: 0.875rem;
@@ -49,13 +65,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
         }
         .step.active {
-            background: #1976d2;
+            background: var(--primary-blue);
             color: white;
         }
         .step.completed {
-            background: #4caf50;
+            background: var(--primary-green);
             color: white;
         }
         .content {
@@ -65,9 +83,9 @@
             padding: 12px;
             border-radius: 4px;
             margin-bottom: 16px;
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            color: #1976d2;
+            background: var(--background-secondary);
+            border-left: 4px solid var(--primary-blue);
+            color: var(--text-dark);
         }
         .form-group {
             margin-bottom: 24px;
@@ -76,7 +94,10 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
         }
         .form-control {
             width: 100%;
@@ -84,7 +105,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'SF Pro', 'Roboto', sans-serif;
         }
         .storage-card {
             border: 1px solid #ddd;
@@ -95,7 +116,7 @@
         }
         .storage-info {
             margin-top: 8px;
-            color: #666;
+            color: var(--text-medium);
         }
         .storage-bar {
             height: 8px;
@@ -106,7 +127,7 @@
         }
         .storage-bar-fill {
             height: 100%;
-            background: #2196f3;
+            background: var(--primary-blue);
             width: 60%;
         }
         .navigation {
@@ -126,13 +147,13 @@
             border: none;
         }
         .btn-primary {
-            background: #1976d2;
+            background: var(--primary-blue);
             color: white;
         }
         .btn-secondary {
             background: #f5f5f5;
+            color: var(--text-dark);
             border: 1px solid #ddd;
-            color: #333;
         }
     </style>
 </head>
@@ -142,12 +163,13 @@
             <h1>Monsterr Media Server Setup</h1>
             
             <div class="stepper">
-                <span class="step completed">System</span>
-                <span class="step completed">Services</span>
-                <span class="step active">Storage</span>
-                <span class="step">Network</span>
-                <span class="step">Security</span>
-                <span class="step">Deploy</span>
+                <a href="preview-step1.html" class="step completed">System</a>
+                <a href="preview-step2-system.html" class="step completed">Services (1/2)</a>
+                <a href="preview-step2-media.html" class="step completed">Services (2/2)</a>
+                <a href="preview-step3.html" class="step active">Storage</a>
+                <a href="preview-step4.html" class="step">Network</a>
+                <a href="preview-step5.html" class="step">Security</a>
+                <a href="preview-step6.html" class="step">Deploy</a>
             </div>
 
             <div class="content">
@@ -202,7 +224,7 @@
             </div>
 
             <div class="navigation">
-                <a href="preview-step2.html" class="btn btn-secondary">Back</a>
+                <a href="preview-step2-media.html" class="btn btn-secondary">Back</a>
                 <a href="preview-step4.html" class="btn btn-primary">Next</a>
             </div>
         </div>
