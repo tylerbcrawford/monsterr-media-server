@@ -50,6 +50,10 @@ Refining the setup wizard to improve usability and implementing visual design up
   * Unified all chips with consistent background and border styling
   * Enhanced "Select All" button contrast for better readability
   * Ensured all elements maintain proper visibility in both light and dark modes
+* Fixed scaling issues in preview-step2-media.html:
+  * Addressed inconsistent styling that was causing a scaling up effect
+  * Added specific CSS rules to force proper zoom level
+  * Ensured accordion elements render correctly with proper overflow handling
 
 ## Next Steps
 
@@ -60,6 +64,7 @@ Refining the setup wizard to improve usability and implementing visual design up
    * ✅ Test dark/light mode toggle functionality across all pages
    * ✅ Implement shared CSS architecture for better maintainability
    * ✅ Standardize typography and styling across all pages
+   * ✅ Fix styling inconsistencies that cause display issues
 
 2. **Documentation Updates**
    * Update documentation to reflect the new setup wizard structure
