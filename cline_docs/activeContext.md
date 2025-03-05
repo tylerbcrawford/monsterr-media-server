@@ -47,11 +47,16 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Enhanced UI elements for better visibility and consistency:
   * Updated checkbox styling to be monochromatic with white checkmarks
   * Improved stepper navigation visibility in both themes
+  * Added bubble styling to page titles:
+    * Consistent background using step-background variable
+    * Rounded corners with 100px border radius
+    * Subtle box shadow for depth
+    * Proper spacing and alignment
   * Redesigned theme toggle with minimal aesthetic:
     * Removed separator line for cleaner look
     * Added sun/moon material icons for theme indication
-    * Improved spacing and positioning in title area
-    * Integrated cleanly with header without disrupting layout
+    * Moved outside title bubble for cleaner layout
+    * Positioned at top right with proper spacing
   * Enhanced stepper bubbles with uppercase text and improved dark mode visibility
   * Fixed active step hover state to maintain blue background color
   * Unified all chips with consistent background and border styling
@@ -106,9 +111,10 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Visual design updates have been applied according to the design guide.
 * Dark mode has been implemented as the default theme with a toggle to switch to light mode.
 * Shared CSS architecture has been implemented for better maintainability.
-* Theme toggle has been redesigned with a minimal, icon-based approach.
+* Theme toggle has been redesigned and repositioned for better visual hierarchy.
 * Stepper navigation has been enhanced with improved text formatting and dark mode visibility.
 * Typography and styling have been standardized across all pages.
+* Title styling has been enhanced with bubble effect across all setup pages.
 * Project files are organized.
 * Documentation updates are in progress.
 * Beta testing preparation continues to be the next major milestone.

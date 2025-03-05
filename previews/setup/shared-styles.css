@@ -103,12 +103,19 @@ h1 {
     justify-content: center;
     font-size: 24px;
     font-weight: 500;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
     color: var(--text-dark);
     text-transform: uppercase;
     letter-spacing: 0.075em;
     position: relative;
-    padding: 0 2rem;
+    padding: 0.75rem 3rem;
+    background: var(--step-background);
+    border-radius: 100px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 400px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 h2 {
@@ -581,18 +588,28 @@ p {
 .theme-toggle-container {
     position: absolute;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 3.5rem;
+    right: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-left: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 50%;
+    z-index: 10;
+    transition: var(--theme-transition);
+    background: var(--background-secondary);
+}
+
+.theme-toggle-container:hover {
+    background: var(--step-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .theme-toggle-icon {
     position: absolute;
     color: var(--text-dark);
-    font-size: 22px;
+    font-size: 20px;
     pointer-events: none;
     transition: all 0.2s ease;
 }
@@ -616,8 +633,8 @@ body.light-theme .theme-toggle-icon.moon {
 .theme-switch {
     position: relative;
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     margin: 0;
     display: flex;
     align-items: center;
