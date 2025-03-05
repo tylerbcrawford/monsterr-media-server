@@ -70,16 +70,13 @@ Refining the setup wizard to improve usability and implementing visual design up
      * Storage page now uses h2 and p tags instead of alert class
      * Network, Security, and Deploy pages updated to match
    * Added center alignment for all page headers and descriptions
-* Fixed scaling issues in preview-step2-media.html:
-  * Addressed inconsistent styling that was causing a scaling up effect
-  * Added specific CSS rules to force proper zoom level
-  * Ensured accordion elements render correctly with proper overflow handling
 
-* **Examined zoom/scaling effect issue in the Services (2/2) page:**
-   * Made attempt to address the scaling effect through CSS adjustments
-   * Added zoom and overflow rules to try to mitigate the scaling effect
-   * Decided to leave the existing implementation as is, since a complete resolution would require more extensive changes
-   * Considered the current aesthetic acceptable for the beta phase
+* Fixed scaling issues in preview-step2-media.html and preview-step1.html:
+  * Removed custom CSS overrides that were causing positioning inconsistencies
+  * Kept only essential scaling fixes in the style section
+  * Relied on shared-styles.css for theme toggle positioning
+  * Removed unnecessary transform and position properties that were affecting layout
+  * Fixed theme toggle positioning to be consistent across all setup wizard pages
 
 ## Next Steps
 

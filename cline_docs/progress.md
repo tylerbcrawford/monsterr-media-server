@@ -47,6 +47,8 @@
 *   ✅ Tested dark/light mode toggle functionality across all pages
 *   ✅ Added bubble styling to page titles across all setup pages
 *   ✅ Repositioned theme toggle for better visual hierarchy
+*   ✅ Fixed scaling issues in preview-step1.html and preview-step2-media.html
+*   ✅ Standardized theme toggle positioning across all pages
 
 ## In Progress
 
@@ -121,8 +123,8 @@
 ### User Experience
 
 *   Target: Intuitive, streamlined setup process
-*   Current: Setup wizard refinement implemented, including split services pages, improved navigation, shared CSS architecture, bubble-styled titles, and fully functional dark/light mode support
-*   Status: Visual design enhancements completed, other refinements still needed
+*   Current: Setup wizard refinement implemented, including split services pages, improved navigation, shared CSS architecture, bubble-styled titles, fully functional dark/light mode support, and consistent theme toggle positioning
+*   Status: Visual design enhancements completed, scaling issues resolved, other refinements still needed
 
 
 ## Timeline
@@ -158,3 +160,4 @@
 *   Shared CSS architecture implemented for better maintainability
 *   Dark mode implemented as default with light/dark theme toggle
 *   Title styling enhanced with bubble effect and theme toggle repositioned
+*   Scaling issues fixed and theme toggle positioning standardized across setup pages

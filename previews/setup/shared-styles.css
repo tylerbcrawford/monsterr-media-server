@@ -753,14 +753,15 @@ body.light-theme .theme-toggle-icon.moon {
 .requirement-item i {
     font-size: 20px;
     flex-shrink: 0;
+    color: var(--text-medium);
 }
 
-body .requirement-list .requirement-item i.material-icons.status-success {
-    color: #4CAF50 !important;
+.requirement-item i.material-icons.status-success {
+    color: #4CAF50;
 }
 
-body .requirement-list .requirement-item i.material-icons.status-error {
-    color: #FF5252 !important;
+.requirement-item i.material-icons.status-error {
+    color: #FF5252;
 }
 
 /* Summary section styles for deploy page */
