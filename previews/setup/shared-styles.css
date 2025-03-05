@@ -281,6 +281,68 @@ p {
     color: var(--text-dark);
 }
 
+/* Security page styles */
+.security-card {
+    background: var(--background-secondary);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: var(--theme-transition);
+}
+
+.security-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    transition: var(--theme-transition);
+}
+
+.security-option:last-child {
+    margin-bottom: 0;
+}
+
+.security-option-label {
+    margin-left: 1rem;
+    color: var(--text-dark);
+    transition: var(--theme-transition);
+}
+
+/* Password strength meter */
+.strength-meter {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    transition: var(--theme-transition);
+}
+
+.strength-meter-fill {
+    height: 100%;
+    background: var(--primary-green);
+    width: 80%;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Form field spacing helpers */
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.text-small {
+    font-size: 0.875rem;
+    color: var(--text-medium);
+}
+
+/* Utility classes */
+.hidden {
+    visibility: hidden;
+}
+
+.display-none {
+    display: none;
+}
+
 .info-box {
     background: var(--background-secondary);
     border-left: 6px solid var(--primary-blue);
@@ -638,4 +700,237 @@ input:checked + .slider:before {
 .requirement-item i {
     font-size: 20px;
     flex-shrink: 0;
+}
+
+/* Summary section styles for deploy page */
+.summary-section {
+    margin-bottom: 24px;
+}
+
+.summary-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: var(--theme-transition);
+}
+
+.summary-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: var(--primary-blue);
+    margin-right: 12px;
+    border-radius: 2px;
+    transition: var(--theme-transition);
+}
+
+.summary-card {
+    background: var(--background-secondary);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--theme-transition);
+}
+
+.summary-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+    transition: var(--theme-transition);
+}
+
+.summary-label {
+    width: 200px;
+    color: var(--text-medium);
+    transition: var(--theme-transition);
+}
+
+.summary-value {
+    flex-grow: 1;
+    color: var(--text-dark);
+    transition: var(--theme-transition);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    transition: var(--theme-transition);
+}
+
+.status-badge.status-success {
+    background: rgba(0, 179, 152, 0.2);
+    color: var(--primary-green);
+}
+
+.deploy-button {
+    background: var(--primary-green);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1.5rem;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+    font-family: 'SF Pro', 'Roboto', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: var(--theme-transition);
+}
+
+.deploy-button:hover {
+    filter: brightness(110%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.deploy-button:active {
+    filter: brightness(90%);
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Switch/Toggle styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: var(--theme-transition);
+    border-radius: 34px;
+}
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: var(--theme-transition);
+    border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+    background-color: var(--primary-blue);
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Port status styles */
+.port-status {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    transition: var(--theme-transition);
+}
+
+.status-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-icon.status-success {
+    background: var(--primary-green);
+}
+
+.status-icon.status-warning {
+    background: var(--primary-yellow);
+}
+
+.status-icon.status-error {
+    background: var(--primary-red);
+}
+
+/* Form field spacing */
+.form-group .field-row {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group .field-row .form-control.inline {
+    width: 100px;
+    display: inline-block;
+}
+
+.form-group .field-row .label-text {
+    margin-left: 8px;
+    color: var(--text-dark);
+}
+
+/* Redirect page styles */
+.redirect-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.redirect-message {
+    text-align: center;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.redirect-message h1 {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.redirect-message p {
+    color: var(--text-medium);
+    margin-bottom: 0.5rem;
+}
+
+.redirect-message a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    transition: var(--theme-transition);
+}
+
+.redirect-message a:hover {
+    text-decoration: underline;
 }

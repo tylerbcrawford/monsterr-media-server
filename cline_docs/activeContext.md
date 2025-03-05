@@ -29,12 +29,20 @@ Refining the setup wizard to improve usability and implementing visual design up
 
 * Enhanced visual design implementation:
   * Created a shared CSS file (shared-styles.css) to maintain consistency across all pages
-  * Updated header in preview-step2-system.html to use all caps format for consistency with other pages
   * Removed unnecessary resource summary section from preview-step2-system.html for a cleaner interface
+  * Ensured consistent header format across all setup wizard pages
   * Improved interactive elements with hover/active states and subtle animations
   * Enhanced form elements with better spacing, focus states, and visual feedback
   * Standardized component styling (border radius, spacing, transitions)
   * Created comprehensive documentation of visual design implementation and future enhancements
+
+* Improved typography and styling consistency:
+  * Fixed CSS syntax errors in shared-styles.css
+  * Added utility classes for visibility control (.hidden and .display-none)
+  * Standardized typography sizes and spacing across all pages
+  * Removed all inline styles in favor of shared CSS classes
+  * Updated warning toggles to use CSS classes instead of inline styles
+  * Removed redundant resource summary section from media services page
 
 ## Next Steps
 
@@ -44,6 +52,7 @@ Refining the setup wizard to improve usability and implementing visual design up
    * Ensure all visual elements are consistent with the design guide
    * ✅ Test dark/light mode toggle functionality across all pages
    * ✅ Implement shared CSS architecture for better maintainability
+   * ✅ Standardize typography and styling across all pages
 
 2. **Documentation Updates**
    * Update documentation to reflect the new setup wizard structure
@@ -63,6 +72,7 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Visual design updates have been applied according to the design guide.
 * Dark mode has been implemented as the default theme with a toggle to switch to light mode.
 * Shared CSS architecture has been implemented for better maintainability.
+* Typography and styling have been standardized across all pages.
 * Project files are organized.
 * Documentation updates are in progress.
 * Beta testing preparation continues to be the next major milestone.

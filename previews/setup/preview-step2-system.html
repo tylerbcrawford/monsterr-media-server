@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <div class="paper">
-            <h1>MONSTERR MEDIA SERVER SETUP</h1>
+            <h1>Monsterr Media Server Setup</h1>
             
             <!-- Theme toggle switch -->
             <div class="theme-toggle-container">
@@ -35,7 +35,6 @@
 
             <h2>Select System Services</h2>
             <p>Choose the system-related services you want to install. You can deselect required services, but this may cause issues with system functionality.</p>
-
 
             <!-- Services sections -->
             <div class="services">
@@ -64,8 +63,7 @@
                                 <div class="service-item-content">
                                     <div class="service-name">Authelia</div>
                                     <div class="service-desc">Two-factor authentication and SSO</div>
-                                    
-                                    <div class="service-warning" style="display: none;">
+                                    <div class="service-warning display-none">
                                         WARNING: This is a required service. Not installing it may cause issues with authentication and security.
                                     </div>
                                 </div>
@@ -77,8 +75,7 @@
                                 <div class="service-item-content">
                                     <div class="service-name">Redis</div>
                                     <div class="service-desc">Session management for Authelia</div>
-                                    
-                                    <div class="service-warning" style="display: none;">
+                                    <div class="service-warning display-none">
                                         WARNING: This is a required service. Not installing it may cause issues with authentication functionality.
                                     </div>
                                 </div>
@@ -89,8 +86,7 @@
                                 <div class="service-item-content">
                                     <div class="service-name">Fail2Ban</div>
                                     <div class="service-desc">Intrusion prevention system</div>
-                                    
-                                    <div class="service-warning" style="display: none;">
+                                    <div class="service-warning display-none">
                                         WARNING: This is a required service. Not installing it may cause security vulnerabilities.
                                     </div>
                                 </div>
@@ -101,8 +97,7 @@
                                 <div class="service-item-content">
                                     <div class="service-name">Portainer</div>
                                     <div class="service-desc">Docker management interface</div>
-                                    
-                                    <div class="service-warning" style="display: none;">
+                                    <div class="service-warning display-none">
                                         WARNING: This is a required service. Not installing it may cause issues with system management.
                                     </div>
                                 </div>
@@ -230,7 +225,6 @@
         </div>
     </div>
     
-
     <script>
         // Add event listeners for checkboxes to show/hide warnings
         document.addEventListener('DOMContentLoaded', function() {
@@ -243,11 +237,7 @@
                     const isRequired = serviceItem.querySelector('.chip-required') !== null;
                     
                     if (isRequired && warningElement) {
-                        if (!this.checked) {
-                            warningElement.style.display = 'block';
-                        } else {
-                            warningElement.style.display = 'none';
-                        }
+                        warningElement.classList.toggle('display-none', this.checked);
                     }
                 });
             });
