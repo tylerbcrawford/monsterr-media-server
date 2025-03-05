@@ -44,6 +44,13 @@ Refining the setup wizard to improve usability and implementing visual design up
   * Updated warning toggles to use CSS classes instead of inline styles
   * Removed redundant resource summary section from media services page
 
+* Enhanced UI elements for better visibility and consistency:
+  * Updated checkbox styling to be monochromatic with white checkmarks
+  * Improved stepper navigation visibility in both themes
+  * Unified all chips with consistent background and border styling
+  * Enhanced "Select All" button contrast for better readability
+  * Ensured all elements maintain proper visibility in both light and dark modes
+
 ## Next Steps
 
 1. **Finalize Setup Wizard Refinement**

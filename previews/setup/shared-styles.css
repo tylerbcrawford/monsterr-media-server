@@ -4,10 +4,10 @@
 /* Base theme variables */
 :root {
     /* Light Theme Colors */
-    --light-primary-blue: #00AEEF;
-    --light-primary-green: #00B398;
-    --light-primary-yellow: #FFD700;
-    --light-primary-red: #F93822;
+    --light-primary-blue: #666666;
+    --light-primary-green: #808080;
+    --light-primary-yellow: #999999;
+    --light-primary-red: #CC0000;
     --light-background-primary: #F5F5F5;
     --light-background-secondary: rgba(204, 204, 204, 0.1);
     --light-surface: #FFFFFF;
@@ -17,10 +17,10 @@
     --light-text-light: #999999;
     
     /* Dark Theme Colors */
-    --dark-primary-blue: #33BEFF;
-    --dark-primary-green: #33C5B0;
-    --dark-primary-yellow: #FFDF33;
-    --dark-primary-red: #FF6347;
+    --dark-primary-blue: #999999;
+    --dark-primary-green: #AAAAAA;
+    --dark-primary-yellow: #BBBBBB;
+    --dark-primary-red: #FF4444;
     --dark-background-primary: #121212;
     --dark-background-secondary: rgba(255, 255, 255, 0.05);
     --dark-surface: #1E1E1E;
@@ -126,8 +126,8 @@ p {
 }
 
 .step {
-    background: var(--border);
-    color: var(--text-medium);
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--text-dark);
     padding: 0.6rem 0;
     border-radius: 100px;
     font-size: 0.875rem;
@@ -143,19 +143,21 @@ p {
 }
 
 .step.active {
-    background: var(--primary-blue);
-    color: white;
+    background: #2196F3;
+    color: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .step:hover {
     filter: brightness(110%);
     transform: translateY(-1px);
+    background: rgba(0, 0, 0, 0.15);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .step.completed {
-    background: var(--primary-green);
-    color: white;
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--text-medium);
 }
 
 .step.completed:hover {
@@ -192,7 +194,7 @@ p {
 }
 
 .btn-primary {
-    background: var(--primary-blue);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
 }
 
@@ -407,19 +409,20 @@ p {
 /* Select All button */
 .select-all-btn {
     background: var(--background-secondary);
-    border: 1px solid var(--border);
+    border: 1px solid var(--text-light);
     border-radius: 6px;
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     margin-left: 1rem;
     cursor: pointer;
     transition: var(--theme-transition);
+    color: var(--text-dark);
 }
 
 .select-all-btn:hover {
-    background: var(--background-secondary);
+    background: var(--text-light);
+    color: var(--background-primary);
     filter: brightness(110%);
-    border-color: var(--primary-blue);
     transform: translateY(-1px);
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
@@ -473,24 +476,13 @@ p {
     border-radius: 12px;
     font-weight: 500;
     margin-left: 0.5rem;
-    margin-top: 0.25rem; /* Add some spacing when chips wrap */
+    margin-top: 0.25rem;
     display: inline-block;
-}
-
-.chip-required {
-    background: var(--primary-blue);
-    color: white;
-}
-
-.chip-dependency {
-    background: var(--primary-yellow);
+    background: var(--background-secondary);
+    border: 1px solid var(--text-light);
     color: var(--text-dark);
 }
 
-.chip-security {
-    background: var(--primary-green);
-    color: white;
-}
 
 /* Checkbox styling */
 .checkbox {
@@ -498,6 +490,35 @@ p {
     height: 22px;
     margin-right: 0.5rem;
     cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 2px solid var(--text-light);
+    border-radius: 4px;
+    background: var(--background-primary);
+    position: relative;
+    transition: var(--theme-transition);
+}
+
+.checkbox:checked {
+    background: var(--text-light);
+    border-color: var(--text-light);
+}
+
+.checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 8px;
+    height: 14px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox:hover {
+    border-color: var(--text-dark);
 }
 
 /* Storage elements */
@@ -574,7 +595,7 @@ p {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--primary-blue);
+    background-color: var(--border);
     transition: var(--theme-transition);
     border-radius: 24px;
 }
@@ -592,7 +613,7 @@ p {
 }
 
 input:checked + .slider {
-    background-color: var(--primary-green);
+    background-color: var(--primary-blue);
 }
 
 input:checked + .slider:before {
@@ -607,18 +628,18 @@ input:checked + .slider:before {
 
 /* Status indicators */
 .status-success {
-    color: var(--primary-green);
-    font-size: 20px;
+    color: white;
+    opacity: 0.8;
 }
 
 .status-warning {
-    color: var(--primary-yellow);
-    font-size: 20px;
+    color: white;
+    opacity: 0.8;
 }
 
 .status-error {
-    color: var(--primary-red);
-    font-size: 20px;
+    color: white;
+    opacity: 0.8;
 }
 
 /* Material icons */
@@ -711,7 +732,7 @@ input:checked + .slider:before {
     font-size: 1.125rem;
     font-weight: 500;
     margin-bottom: 1rem;
-    color: var(--primary-blue);
+    color: var(--text-dark);
     display: flex;
     align-items: center;
     text-transform: uppercase;
@@ -724,7 +745,7 @@ input:checked + .slider:before {
     display: inline-block;
     width: 4px;
     height: 24px;
-    background: var(--primary-blue);
+    background: var(--border);
     margin-right: 12px;
     border-radius: 2px;
     transition: var(--theme-transition);
@@ -767,8 +788,8 @@ input:checked + .slider:before {
 }
 
 .status-badge.status-success {
-    background: rgba(0, 179, 152, 0.2);
-    color: var(--primary-green);
+    background: var(--background-secondary);
+    color: var(--text-dark);
 }
 
 .deploy-button {
@@ -866,15 +887,15 @@ input:checked + .slider:before {
 }
 
 .status-icon.status-success {
-    background: var(--primary-green);
+    background: var(--background-primary);
 }
 
 .status-icon.status-warning {
-    background: var(--primary-yellow);
+    background: var(--background-primary);
 }
 
 .status-icon.status-error {
-    background: var(--primary-red);
+    background: var(--background-primary);
 }
 
 /* Form field spacing */
@@ -926,7 +947,7 @@ input:checked + .slider:before {
 }
 
 .redirect-message a {
-    color: var(--primary-blue);
+    color: var(--text-dark);
     text-decoration: none;
     transition: var(--theme-transition);
 }
