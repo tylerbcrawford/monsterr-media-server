@@ -74,6 +74,12 @@ We'll implement core visual changes that align with the design guide while maint
    - Improve alignment and grid structure
    - Enhance visual hierarchy of elements
 
+4. **Theme Consistency Improvements**
+    - Replace hardcoded colors with theme variables throughout the UI
+    - Ensure all UI elements properly adapt to both light and dark modes
+    - Fix styling issues in resource summaries, accordions, and form elements
+    - Update storage bars and toggle switches to respect theme settings
+
 ### 2.2 Future Visual Enhancements (Planned for Later)
 
 These improvements will be documented for implementation in a future update:
@@ -201,6 +207,14 @@ graph TD
    - Increase white space around key elements
    - Improve alignment of form elements
    - Enhance visual hierarchy through spacing and sizing
+
+4. **Theme Consistency Fixes**
+    - Update resource summary backgrounds and borders to use theme variables
+    - Fix accordion headers and borders to use theme variables
+    - Update "Select All" button styling to adapt to dark mode
+    - Fix storage bar backgrounds to use theme variables
+    - Update toggle switch slider backgrounds to use theme variables
+    - Test dark/light mode toggle functionality across all pages
 
 4. **Document Future Enhancements**
    - Create a roadmap for comprehensive visual updates
@@ -393,6 +407,15 @@ body {
   background: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+   padding: 2rem;
+}
+
+/* Updated to use theme variables */
+.paper {
+   background: var(--surface);
+   border-radius: 8px;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+   transition: var(--theme-transition);
   padding: 2rem;
 }
 
@@ -424,6 +447,35 @@ h1, h2 {
   border-left: 4px solid var(--primary-yellow);
   color: var(--text-dark);
 }
+
+/* Dark/Light Theme Variables */
+:root {
+    /* Light Theme Colors */
+    --light-primary-blue: #00AEEF;
+    --light-primary-green: #00B398;
+    --light-primary-yellow: #FFD700;
+    --light-primary-red: #F93822;
+    --light-background-primary: #F5F5F5;
+    --light-background-secondary: rgba(204, 204, 204, 0.1);
+    --light-surface: #FFFFFF;
+    --light-border: #e0e0e0;
+    --light-text-dark: #333333;
+    --light-text-medium: #666666;
+    --light-text-light: #999999;
+    
+    /* Dark Theme Colors */
+    --dark-primary-blue: #33BEFF;
+    --dark-primary-green: #33C5B0;
+    --dark-primary-yellow: #FFDF33;
+    --dark-primary-red: #FF6347;
+    --dark-background-primary: #121212;
+    --dark-background-secondary: rgba(255, 255, 255, 0.05);
+    --dark-surface: #1E1E1E;
+    --dark-border: #444444;
+    --dark-text-dark: #FFFFFF;
+    --dark-text-medium: #DDDDDD;
+    --dark-text-light: #888888;
+}
 ```
 
 ## Benefits of the New Approach
@@ -434,6 +486,7 @@ h1, h2 {
 - **Enhanced Safety**: Inline warning messages ensure users understand the implications of not installing required services
 - **Clearer Organization**: Grouping by system vs. media services creates a more logical flow
 - **Visual Consistency**: The phased approach to visual design updates ensures a cohesive look while allowing for incremental improvements
+- **Theme Adaptability**: All UI elements now properly adapt to both light and dark modes, ensuring readability and consistent appearance
 - **Future-Proof Design**: By documenting future enhancements, we establish a clear path for ongoing visual refinements
 
 ## Next Steps
@@ -443,4 +496,5 @@ After approval of this plan, we'll proceed with implementation in the following 
 1. Split the services page and implement category selection functionality
 2. Add inline warnings for required services
 3. Apply initial visual design updates
-4. Document future visual enhancements for later phases
+4. Implement dark/light mode theme consistency ✅
+5. Document future visual enhancements for later phases

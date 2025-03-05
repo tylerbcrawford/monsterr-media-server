@@ -19,6 +19,13 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Implemented inline warnings for required services.
 * Applied initial visual design updates according to the design guide.
 * Reordered service categories on the System Services page to place Remote Access right after Core Infrastructure.
+* Implemented switchable dark/light mode with dark mode as the default theme.
+
+* Fixed dark mode styling issues across setup wizard pages:
+  * Updated resource summary, accordion, and select-all button styling to use theme variables instead of hardcoded colors
+  * Fixed storage bar backgrounds to properly adapt to dark/light themes
+  * Updated toggle switch slider backgrounds to use theme variables
+  * Ensured consistent appearance and readability in both light and dark modes
 
 ## Next Steps
 
@@ -26,6 +33,7 @@ Refining the setup wizard to improve usability and implementing visual design up
    * Test the new UI with various selection scenarios
    * Verify navigation between split pages works correctly
    * Ensure all visual elements are consistent with the design guide
+   * ✅ Test dark/light mode toggle functionality across all pages
 
 2. **Documentation Updates**
    * Update documentation to reflect the new setup wizard structure
@@ -43,6 +51,7 @@ Refining the setup wizard to improve usability and implementing visual design up
 * Services page has been split into two pages with improved organization.
 * Clickable navigation has been added to all setup wizard pages.
 * Visual design updates have been applied according to the design guide.
+* Dark mode has been implemented as the default theme with a toggle to switch to light mode.
 * Project files are organized.
 * Documentation updates are in progress.
 * Beta testing preparation continues to be the next major milestone.
