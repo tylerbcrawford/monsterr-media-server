@@ -7,6 +7,7 @@
     --light-primary-blue: #666666;
     --light-primary-green: #4CAF50;
     --light-primary-yellow: #999999;
+    --light-step-background: rgba(0, 0, 0, 0.15);
     --light-primary-red: #CC0000;
     --light-background-primary: #F5F5F5;
     --light-background-secondary: rgba(204, 204, 204, 0.1);
@@ -19,6 +20,7 @@
     /* Dark Theme Colors */
     --dark-primary-blue: #999999;
     --dark-primary-green: #4CAF50;
+    --dark-step-background: rgba(255, 255, 255, 0.15);
     --dark-primary-yellow: #BBBBBB;
     --dark-primary-red: #FF4444;
     --dark-background-primary: #121212;
@@ -36,6 +38,7 @@
 /* Apply theme variables - default is dark */
 :root {
     --primary-blue: var(--dark-primary-blue);
+    --step-background: var(--dark-step-background);
     --primary-green: var(--dark-primary-green);
     --primary-yellow: var(--dark-primary-yellow);
     --primary-red: var(--dark-primary-red);
@@ -51,6 +54,7 @@
 /* Light theme class */
 .light-theme {
     --primary-blue: var(--light-primary-blue);
+    --step-background: var(--light-step-background);
     --primary-green: var(--light-primary-green);
     --primary-yellow: var(--light-primary-yellow);
     --primary-red: var(--light-primary-red);
@@ -137,7 +141,7 @@ p {
 }
 
 .step {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--step-background);
     color: var(--text-dark);
     padding: 0.6rem 0;
     border-radius: 100px;
@@ -162,7 +166,7 @@ p {
 
 .step:hover {
     filter: brightness(110%);
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--step-background);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -172,7 +176,7 @@ p {
 }
 
 .step.completed {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--step-background);
     color: var(--text-medium);
 }
 
