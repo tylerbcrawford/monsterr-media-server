@@ -110,6 +110,7 @@ h1 {
 h2 {
     font-size: 20px;
     font-weight: 500;
+    text-align: center;
     margin-bottom: 1.25rem;
     color: var(--text-dark);
     text-transform: uppercase;
@@ -120,6 +121,7 @@ h2 {
 p {
     font-size: 14px;
     color: var(--text-medium);
+    text-align: center;
     margin-bottom: 1.5rem;
     transition: var(--theme-transition);
     line-height: 1.5;
@@ -207,8 +209,8 @@ p {
 }
 
 .btn-primary {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: #2196F3;
+    color: #FFFFFF;
 }
 
 .btn-primary:hover {
@@ -566,7 +568,7 @@ p {
 
 .storage-bar-fill {
     height: 100%;
-    background: var(--primary-blue);
+    background: var(--primary-green);
     width: 60%;
     transition: width 0.5s ease-in-out;
 }
@@ -810,15 +812,15 @@ body .requirement-list .requirement-item i.material-icons.status-error {
 }
 
 .deploy-button {
-    background: var(--primary-green);
+    background: #2196F3;
     color: white;
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 2rem;
     font-size: 1rem;
     border-radius: 6px;
     border: none;
     cursor: pointer;
-    width: 100%;
-    margin-top: 1.5rem;
+    width: fit-content;
+    margin: 1.5rem auto;
     text-decoration: none;
     text-align: center;
     display: block;

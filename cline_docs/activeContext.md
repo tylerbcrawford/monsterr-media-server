@@ -57,6 +57,14 @@ Refining the setup wizard to improve usability and implementing visual design up
   * Unified all chips with consistent background and border styling
   * Enhanced "Select All" button contrast for better readability
   * Ensured all elements maintain proper visibility in both light and dark modes
+
+* Enhanced button styling and header consistency:
+   * Updated Next buttons to use consistent blue color (#2196F3) matching stepper bubbles
+   * Modified Deploy Media Server button to be more compact and centered
+   * Standardized header format across all setup wizard pages:
+     * Storage page now uses h2 and p tags instead of alert class
+     * Network, Security, and Deploy pages updated to match
+   * Added center alignment for all page headers and descriptions
 * Fixed scaling issues in preview-step2-media.html:
   * Addressed inconsistent styling that was causing a scaling up effect
   * Added specific CSS rules to force proper zoom level
@@ -74,6 +82,7 @@ Refining the setup wizard to improve usability and implementing visual design up
    * Test the new UI with various selection scenarios
    * Verify navigation between split pages works correctly
    * Ensure all visual elements are consistent with the design guide
+   * ✅ Ensure consistent button styling and header format across all pages
    * ✅ Test dark/light mode toggle functionality across all pages
    * ✅ Implement shared CSS architecture for better maintainability
    * ✅ Standardize typography and styling across all pages  
